@@ -1,4 +1,43 @@
-Date: 2023/10/05
+Date: 2023/12/06
+
+Meredith
+To do until next scrum: 
+research typescript
+research project architecture
+passport.js
+read prisma documentation
+test db
+Upload doc to lea
+
+Alex 
+Todo until next scrum: back end and front end tutorial, look into dependency question, look into logging 
+
+
+Laura
+Todo until next scrum: study typescript
+
+Shiyu
+Todo until next scrum:
+Finish the react typescript tutorial
+Research front end directory structure
+
+
+Nick
+
+Todo until next scrum:
+-typescript tutorial
+-docker/Jenkins tutorials + documentation
+-read up on file/folder structure convention for React
+
+
+
+
+--------------------------------------------------
+TEMPLATE
+--------------------------------------------------
+
+Date: 
+
 
 Alex:
  Finished: 
@@ -20,7 +59,7 @@ Meredith:
  Finished: 
   - 
  Working On: 
-  - 
+  -
  Challenges: 
   - 
 
