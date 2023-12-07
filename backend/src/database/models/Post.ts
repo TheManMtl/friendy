@@ -105,13 +105,13 @@ class Post extends Model {
   deletedAt!: Date;
 
   @BelongsTo(() => Image)
-  image!: Image;
+  image?: Image;
 
   @BelongsTo(() => User)
   author!: User;
   @BelongsTo(() => Post)
-  post!: Post;
+  post?: Post;
   @BelongsTo(() => User)
-  profile!: User;
+  profile?: User;
 }
 export default Post;

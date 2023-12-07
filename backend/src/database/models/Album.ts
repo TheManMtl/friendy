@@ -7,7 +7,7 @@ import{
     ForeignKey,
     BelongsTo
 } from 'sequelize-typescript';
-import UserProfile from './UserProfile';
+import User from './User';
 enum AlbumType {
     Timeline = 'timeline',
     ProfilePic = 'profilePic',
@@ -26,7 +26,7 @@ class Album extends Model{
 })
 id!: number;
 
-@ForeignKey(() => UserProfile)
+@ForeignKey(() => User)
 @Column({
     type: DataType.INTEGER,
 })
@@ -43,8 +43,8 @@ type!: AlbumType;
 title!: string;
 @CreatedAt
 createdAt!: Date;
-@BelongsTo(() => UserProfile)
-profile!: UserProfile;
+@BelongsTo(() => User)
+profile!: User;
 }
 
 export default Album;

@@ -49,7 +49,7 @@ import{
     //model associations
 
     @BelongsTo(() => User)
-    user: User;
+    user!: User;
 
     @BelongsTo(() => Post)
     post?: Post;
