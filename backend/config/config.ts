@@ -1,1 +1,1 @@
-import { Dialect, Sequelize } from 'sequelize'
+import { Dialect, Sequelize } from "sequelize";
