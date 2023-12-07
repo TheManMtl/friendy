@@ -9,3 +9,109 @@ import {
   ForeignKey,
   BelongsTo,
 } from "sequelize-typescript";
+
+import Image from "./Image";
+import UserProfile from "./UserProfile";
+
+enum ImageType {
+  Timeline = "timeline",
+  ProfilePic = "profilePic",
+  CoverPhoto = "coverPhoto",
+  AlbumImg = "albumImg",
+}
+
+@Table({
+  timestamps: true,
+  tableName: "post",
+})
+class Post extends Model {
+  @Column({
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true,
+  })
+  id!: number;
+
+  @ForeignKey(() => Image)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  imageId?: number;
+
+  @ForeignKey(() => UserProfile)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  authorId!: number;
+  @ForeignKey(() => Post)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  postId?: number;
+
+  @ForeignKey(() => UserProfile)
+  @Column({
+    type: DataType.INTEGER,
+  })
+  profileId?: number;
+
+  @Column({
+    type: DataType.ENUM("timeline", "profilePic", "coverPhoto", "albumImg"),
+    allowNull: false,
+  })
+  type!: ImageType;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: false,
+  })
+  content!: string;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  commentCount!: number;
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  likeCount!: number;
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+  })
+  isActive!: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+  })
+  isLocked!: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+  })
+  isDeleted!: boolean;
+
+  @CreatedAt
+  createdAt!: Date;
+
+  @UpdatedAt
+  updatedAt!: Date;
+
+  @DeletedAt
+  deletedAt!: Date;
+
+  @BelongsTo(() => Image)
+  image!: Image;
+
+  @BelongsTo(() => UserProfile)
+  author!: UserProfile;
+  @BelongsTo(() => Post)
+  post!: Post;
+  @BelongsTo(() => UserProfile)
+  profile!: UserProfile;
+}
+export default Post;

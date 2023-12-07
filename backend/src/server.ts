@@ -1,5 +1,7 @@
 import express from "express";
 import "./database/connection";
+import Image from "./database/models/Image";
+import Post from "./database/models/Post";
 
 const app = express();
 const port = 8080;
