@@ -16,9 +16,11 @@ import User from "./User";
 })
 class Friend extends Model {
   @Column({
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true,
     type: DataType.INTEGER,
   })
-  @PrimaryKey
   id!: number;
 
   @ForeignKey(() => User)
@@ -35,8 +37,8 @@ class Friend extends Model {
 
   @Column({
     type: DataType.DATE,
+    defaultValue: new Date(),
   })
-  @Default(() => new Date())
   requestedAt!: Date;
 
   @Column({

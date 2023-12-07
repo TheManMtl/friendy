@@ -14,6 +14,7 @@ if (!dbName || !dbUsername || !dbPassword || !dbHost || isNaN(dbPort)) {
   );
 }
 
+console.log(dbHost + " \n \n \n db host above");
 const sequelize = new Sequelize({
   database: dbName,
   dialect: "mysql",
@@ -22,6 +23,7 @@ const sequelize = new Sequelize({
   host: dbHost,
   port: dbPort,
   models: [__dirname + "/models"],
+  logging: console.log,
 });
 
 sequelize

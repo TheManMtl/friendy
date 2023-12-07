@@ -18,9 +18,11 @@ import Post from "./Post";
 })
 class User extends Model {
   @Column({
+    allowNull: false,
+    primaryKey: true,
+    autoIncrement: true,
     type: DataType.INTEGER,
   })
-  @PrimaryKey
   id!: number;
 
   @Column({
@@ -36,9 +38,9 @@ class User extends Model {
     validate: {
       len: [7, 100],
     },
+    unique: true,
+    allowNull: false,
   })
-  @Unique
-  @IsEmail
   email!: string;
 
   @Column({
@@ -48,14 +50,15 @@ class User extends Model {
 
   @Column({
     type: DataType.BOOLEAN,
+    defaultValue: true,
+    allowNull: false,
   })
-  @Default(true)
-  isActive!: string;
+  isActive!: boolean;
 
   @Column({
     type: DataType.ENUM("User", "Admin"),
+    defaultValue: "User",
   })
-  @Default("User")
   role!: string;
 
   @Column({
