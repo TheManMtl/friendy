@@ -23,21 +23,6 @@ class Image extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  fileName!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
   thumbnail!: string;
 }
 export default Image;
-
-    @Column({
-        type: DataType.STRING,
-        allowNull: false,
-    })
-    thumbnail!: string;
-  
- }  
- export default Image;
