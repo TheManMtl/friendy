@@ -8,6 +8,7 @@ import {
   Unique,
   IsEmail,
   Default,
+  BelongsTo,
 } from "sequelize-typescript";
 
 import Post from "./Post";
@@ -131,6 +132,13 @@ class User extends Model {
     type: DataType.DOUBLE,
   })
   sellerRating?: number;
+
+  @BelongsTo(() => User)
+  inRelationWith?: User;
+  @BelongsTo(() => Post)
+  profilePost?: Post;
+  @BelongsTo(() => Post)
+  profileCover?: Post;
 }
 
 export default User;

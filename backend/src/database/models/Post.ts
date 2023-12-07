@@ -11,7 +11,7 @@ import {
 } from "sequelize-typescript";
 
 import Image from "./Image";
-import UserProfile from "./UserProfile";
+import User from "./User";
 
 enum ImageType {
   Timeline = "timeline",
@@ -38,7 +38,7 @@ class Post extends Model {
   })
   imageId?: number;
 
-  @ForeignKey(() => UserProfile)
+  @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
   })
@@ -49,7 +49,7 @@ class Post extends Model {
   })
   postId?: number;
 
-  @ForeignKey(() => UserProfile)
+  @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
   })
@@ -107,11 +107,11 @@ class Post extends Model {
   @BelongsTo(() => Image)
   image!: Image;
 
-  @BelongsTo(() => UserProfile)
-  author!: UserProfile;
+  @BelongsTo(() => User)
+  author!: User;
   @BelongsTo(() => Post)
   post!: Post;
-  @BelongsTo(() => UserProfile)
-  profile!: UserProfile;
+  @BelongsTo(() => User)
+  profile!: User;
 }
 export default Post;
