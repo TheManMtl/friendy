@@ -31,6 +31,6 @@ import{
         allowNull: false,
     })
     thumbnail!: string;
-    
+  
  }  
  export default Image;
