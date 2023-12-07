@@ -48,6 +48,8 @@ class Like extends Model {
 
   @BelongsTo(() => User)
   user!: User;
+  @BelongsTo(() => User)
+  user!: User;
 
   @BelongsTo(() => Post)
   post?: Post;
