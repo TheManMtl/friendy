@@ -30,6 +30,68 @@ Todo until next scrum:
 -read up on file/folder structure convention for React
 
 
+Date: 
+
+
+Alex:
+ Finished: 
+	- Looked into prisma ORM with repository - decided against it
+	- looked into setting up backend with typescript 
+ Working On: 
+	- Revise db design with Meredith 
+	- Start setting up models 
+ Challenges: 
+	- n/a
+
+Ehsan:
+ Finished:
+	- created DB on aws(with Nick)
+	- Docker tutorial
+ Working On: 
+	- Docker + Typescrip Tutorials
+	- Jira tutorial
+ Challenges: 
+	- 
+
+Meredith:
+ Finished: 
+  	- tested db connection -- needs work
+	- submitted doc
+	- researched ts, file structure, dtos, ORMS, auth middleware
+	- Jira timeline & assignments
+ Working On: 
+	- revise db design with Alex
+	- start setting up the file structure for back
+ Challenges: 
+  - 
+
+Nick:
+ Finished: 
+  - Setup db w/ Ehsan
+  - Completed CI/CD test with Jenkins
+  - Git + Docker tutorial
+ Working On: 
+  - Typescript tutorial
+ Challenges: 
+  - EC2/Security Group troubleshooting
+
+Shiyu:
+Finished: 
+- studied react typescript tutorial
+- researched and created front-end directory structure
+- learned Jira
+To Do:
+- start setting up the file structure for front-end
+- start work on components
+
+Xuerun:
+Finished
+	-studied typescript style
+Working on:
+	-study how to upload files,images
+challenges:
+	-
+
 
 
 --------------------------------------------------
@@ -63,7 +125,7 @@ Meredith:
  Challenges: 
   - 
 
-Nic:
+Nick:
  Finished: 
   - 
  Working On: 
