@@ -13,6 +13,20 @@ app.get("/", async (req, res) => {
   res.send("Hello there, world");
 });
 
+//later, for seeding:
+
+/*
+import {users} from './db/seeders/users';
+
+const createUsers = () => {
+  users.map(user => {
+    db.User.create(user)
+  })
+}
+createUsers();
+*/
+
+// {force: true}    {alter: true}     <-- use as needed
 db.sequelize.sync().then(() => {
   app.listen(port, () => {
     console.log(`server running on post ${port}`);
