@@ -93,6 +93,65 @@ challenges:
 	-
 
 
+Date: Dec 08
+
+
+Alex:
+finished: set up config on database, created user and friend models, looked into fixing bug
+working on: fixing db config, adding a few User APIs
+problems: db not connecting, migrating
+
+Ehsan:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Meredith:
+ Finished: 
+	- set up jira
+	- revised db
+	- helped w/ sequelize models
+	- little bit of troubleshooting
+ Working On: 
+  	- help troubleshoot db migrations
+	- research redux
+	- check in later for next steps
+ Challenges: 
+  - 
+
+Nick:
+ 
+Finished:
+  - TypeScript tutorials
+Working On:
+  - Hosting troubleshooting (EC2/S3)
+  - Play around w/ Jira
+  - Redux tutorial
+Challenges:
+  - 
+
+Shiyu:
+Finished:
+-set up folder structure of front-end
+-added packages for front-end
+-typescript tutorial
+Working on:
+-start on creating login page
+-learn how to use Jira
+-create variable.css
+
+Xuerun:
+Finished
+    -created image,post,album, albumPost model
+        -tried migration but had problem with config.json
+Working on:
+    -migrate tables to database
+challenges:
+    -
+
 
 --------------------------------------------------
 TEMPLATE
