@@ -23,7 +23,7 @@ class User extends Model {
     autoIncrement: true,
     type: DataType.INTEGER,
   })
-  id!: number;
+  declare id: number;
 
   @Column({
     type: DataType.STRING,

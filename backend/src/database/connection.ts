@@ -14,20 +14,22 @@ if (!dbName || !dbUsername || !dbPassword || !dbHost || isNaN(dbPort)) {
   );
 }
 
-console.log(dbHost + " \n \n \n db host above");
+console.log(`admin: `);
 const sequelize = new Sequelize({
   database: dbName,
   dialect: "mysql",
   username: dbUsername,
   password: dbPassword,
-  host: dbHost,
+  host: "friendydb.cdafs7xhxrbx.us-east-2.rds.amazonaws.com",
   port: dbPort,
   models: [__dirname + "/models"],
   logging: console.log,
 });
+console.log("Sequelize instance  :", sequelize);
 
 sequelize
   .authenticate()
+
   .then(() => {
     console.log("Database connection has been established successfully.");
   })

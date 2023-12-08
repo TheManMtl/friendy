@@ -21,7 +21,7 @@ class Friend extends Model {
     autoIncrement: true,
     type: DataType.INTEGER,
   })
-  id!: number;
+  declare id: number;
 
   @ForeignKey(() => User)
   @Column({

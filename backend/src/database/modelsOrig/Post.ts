@@ -30,7 +30,7 @@ class Post extends Model {
     primaryKey: true,
     autoIncrement: true,
   })
-  id!: number;
+  declare id: number;
 
   @ForeignKey(() => Image)
   @Column({
@@ -96,13 +96,13 @@ class Post extends Model {
   isDeleted!: boolean;
 
   @CreatedAt
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @UpdatedAt
-  updatedAt!: Date;
+  declare updatedAt: Date;
 
   @DeletedAt
-  deletedAt!: Date;
+  declare deletedAt: Date;
 
   @BelongsTo(() => Image)
   image?: Image;

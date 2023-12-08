@@ -1,6 +1,6 @@
 import User from "./User";
 import Post from "./Post";
-import Like from "./Like";
+import Comment from "./Comment";
 
 import {
   Table,
@@ -9,22 +9,20 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
-  HasMany,
 } from "sequelize-typescript";
 
 @Table({
   timestamps: true,
-  tableName: "comment",
+  tableName: "like",
 })
-class Comment extends Model {
+class Like extends Model {
   @Column({
     allowNull: false,
     primaryKey: true,
     autoIncrement: true,
   })
-  id!: number;
+  declare id: number;
 
-  // author of comment
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
@@ -32,35 +30,19 @@ class Comment extends Model {
   })
   userId!: number;
 
-  // top-level post
   @ForeignKey(() => Post)
   @Column({
     type: DataType.INTEGER,
-    allowNull: false,
+    allowNull: true,
   })
-  postId!: number;
+  postId?: number;
 
-  // parent comment if nested
   @ForeignKey(() => Comment)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
-  parentId?: number;
-
-  // comment body
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  body!: string;
-
-  // like count
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: false,
-  })
-  likeCount!: number;
+  commentId?: number;
 
   //model associations
 
@@ -68,13 +50,10 @@ class Comment extends Model {
   user!: User;
 
   @BelongsTo(() => Post)
-  post!: Post;
+  post?: Post;
 
   @BelongsTo(() => Comment)
   comment?: Comment;
-
-  @HasMany(() => Like)
-  likes?: Like[];
 }
 
-export default Comment;
+export default Like;
