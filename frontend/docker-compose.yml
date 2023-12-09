@@ -11,7 +11,7 @@ services:
       - "traefik.http.routers.front.tls=true"
       - "traefik.http.routers.front.tls.certresolver=le"            
       - "traefik.http.routers.front.service=front"
-      - "traefik.http.services.front.loadbalancer.server.port=3000"
+      # - "traefik.http.services.front.loadbalancer.server.port=3000"
 
     networks:
       - friendy
