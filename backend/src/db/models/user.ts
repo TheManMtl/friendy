@@ -4,12 +4,12 @@
 import {
   Model
 } from 'sequelize';
-enum Role{
+enum Role {
   User = "User",
   Admin = "Admin"
 
 }
-enum RelationshipStatus{
+enum RelationshipStatus {
   Single = "Single",
   InARelationship = "In a relationship",
   Dating = "Dating",
@@ -25,7 +25,7 @@ interface UserAttributes {
   email: string;
   password: string;
   isActive: boolean;
-  role: Role ;
+  role: Role;
 
   //nullable
   location?: string;
@@ -76,34 +76,34 @@ module.exports = (sequelize: any, DataTypes: any) => {
 
     static associate(models: any) {
 
-        this.hasMany(models.Comment, {
-          foreignKey: 'authorId',
-        });
-          this.hasMany(models.Post, {
-            foreignKey: 'profileId',
-          });
-        this.belongsTo(models.User,{
-          foreignKey: 'relationshipWithId',
-          as:'relationshipWith'
-        });
-        this.belongsTo(models.Post,{
-          foreignKey: 'profilePostId',
-        });
-        this.belongsTo(models.Post,{
-          foreignKey: 'coverPostId',
-        });
-        this.hasMany(models.Friend,{
-          foreignKey: 'requestedById',
-        });
-        this.hasMany(models.Friend,{
-          foreignKey: 'requestedToId',
-        });
-        this.hasMany(models.Album,{
-          foreignKey: 'profileId',
-        });
-        this.hasMany(models.Like,{
-          foreignKey: 'userId',
-        });
+      this.hasMany(models.Comment, {
+        foreignKey: 'authorId',
+      });
+      this.hasMany(models.Post, {
+        foreignKey: 'profileId',
+      });
+      this.belongsTo(models.User, {
+        foreignKey: 'relationshipWithId',
+        as: 'relationshipWith'
+      });
+      this.belongsTo(models.Post, {
+        foreignKey: 'profilePostId',
+      });
+      this.belongsTo(models.Post, {
+        foreignKey: 'coverPostId',
+      });
+      this.hasMany(models.Friend, {
+        foreignKey: 'requestedById',
+      });
+      this.hasMany(models.Friend, {
+        foreignKey: 'requestedToId',
+      });
+      this.hasMany(models.Album, {
+        foreignKey: 'profileId',
+      });
+      this.hasMany(models.Like, {
+        foreignKey: 'userId',
+      });
     }
   }
   User.init({
@@ -127,7 +127,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
       validate: {
         len: [7, 100],
       },
-      unique: true,
       allowNull: false,
     },
 
@@ -226,6 +225,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
   },
     {
       sequelize,
+      indexes: [
+        { fields: ['email'], unique: true }
+      ],
       modelName: 'User',
     });
   return User;
