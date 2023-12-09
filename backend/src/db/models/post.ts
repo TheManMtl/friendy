@@ -23,8 +23,8 @@ interface PostAttributes {
   isActive: boolean;
   isLocked: boolean;
   isDeleted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  //createdAt: Date;
+  //updatedAt: Date;
 
   //nullable
   imageId?: number;
@@ -51,8 +51,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     isActive!: boolean;
     isLocked!: boolean;
     isDeleted!: boolean;
-    createdAt!: Date;
-    updatedAt!: Date;
+    //createdAt!: Date;
+    //updatedAt!: Date;
   
     //nullable
     imageId?: number;
@@ -61,6 +61,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     content?: string;
     deletedAt?: Date;
     static associate(models: any) {
+
       this.belongsTo(models.User, {
         foreignKey: 'authorId',
       });
@@ -72,7 +73,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         foreignKey: 'postId', 
         as: 'ParentPost' 
       });
-      this.hasOne(models.User, {
+      this.belongsTo(models.User, {
         foreignKey: 'profileId',
       });
 
@@ -171,7 +172,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
       allowNull: false
-    },
+    }
+
+/*
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -187,7 +190,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
       type: DataTypes.DATE,
       allowNull: true
     }
+    */
   },
+
+  
     {
       sequelize,
       modelName: 'Post',

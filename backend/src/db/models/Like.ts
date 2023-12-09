@@ -34,6 +34,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     
 
         static associate(models: any) {
+
         this.belongsTo(models.User, {
             foreignKey: 'userId',
         });
@@ -41,7 +42,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         this.belongsTo(models.Post, {
             foreignKey: 'postId',
         });
-        this.belongsTo(models.Comment, {
+        this.hasMany(models.Comment, {
             foreignKey: 'commentId',
         });
     }

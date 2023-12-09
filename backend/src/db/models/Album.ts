@@ -4,10 +4,10 @@ import {
 } from 'sequelize';
 
 enum AlbumType {
-    Timeline = "timeline",
+
     ProfilePic = "profilePic",
     CoverPhoto = "coverPhoto",
-    AlbumImg = "albumImg",
+    Custom = "custom"
 }
 interface AlbumAttributes {
 
@@ -47,6 +47,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
             this.belongsTo(models.User, {
                 foreignKey: 'profileId',
             });
+            
             this.belongsToMany(models.Post, {
                 through: 'AlbumPost',
                 foreignKey: 'albumId',

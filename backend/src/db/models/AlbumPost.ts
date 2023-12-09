@@ -28,15 +28,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     
 
         static associate(models: any) {
-            this.belongsToMany(models.Album, {
-                through: 'AlbumPost',
-                foreignKey: 'albumId',
-            });
 
-            this.belongsToMany(models.Post, {
-                through: 'AlbumPost',
-                foreignKey: 'postId',
-            });
+
         }
     }
     AlbumPost.init({
