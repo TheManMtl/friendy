@@ -123,7 +123,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
           len: [7, 100],
         },
         allowNull: false,
-        unique: true,
       },
 
       password: {
