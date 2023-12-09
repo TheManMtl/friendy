@@ -4,6 +4,18 @@
 import {
   Model
 } from 'sequelize';
+enum Role{
+  User = "User",
+  Admin = "Admin"
+
+}
+enum RelationshipStatus{
+  Single = "Single",
+  InARelationship = "In a relationship",
+  Dating = "Dating",
+  Engaged = "Engaged",
+  Married = "Married"
+}
 
 interface UserAttributes {
 
@@ -13,7 +25,7 @@ interface UserAttributes {
   email: string;
   password: string;
   isActive: boolean;
-  role: Enumerator;
+  role: Role ;
 
   //nullable
   location?: string;
@@ -21,7 +33,7 @@ interface UserAttributes {
   workplace?: string;
   position?: string;
   birthday?: Date;
-  relationshipStatus?: Enumerator;
+  relationshipStatus?: RelationshipStatus;
   relationshipWithId?: number;
   profilePostId?: number;
   coverPostId?: number;
@@ -44,7 +56,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     email!: string;
     password!: string;
     isActive!: boolean;
-    role!: Enumerator;
+    role!: Role;
 
     //nullable
     location?: string;
@@ -52,7 +64,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     workplace?: string;
     position?: string;
     birthday?: Date;
-    relationshipStatus?: Enumerator;
+    relationshipStatus?: RelationshipStatus;
     relationshipWithId?: number;
     profilePostId?: number;
     coverPostId?: number;
@@ -61,7 +73,35 @@ module.exports = (sequelize: any, DataTypes: any) => {
     sellerRating?: number;
 
     static associate(models: any) {
-  
+        this.hasMany(models.Comment, {
+          foreignKey: 'authorId',
+        });
+          this.hasMany(models.Post, {
+            foreignKey: 'profileId',
+          });
+        this.belongsTo(models.User,{
+          foreignKey: 'relationshipWithId',
+          as:'relationshipWith'
+        });
+        this.belongsTo(models.Post,{
+          foreignKey: 'profilePostId',
+        });
+        this.belongsTo(models.Post,{
+          foreignKey: 'coverPostId',
+        });
+        this.hasMany(models.Comment, {
+          foreignKey: 'userId',
+          });
+        this.hasMany(models.Friend,{
+          foreignKey: 'requestedById',
+        });
+        this.hasMany(models.Friend,{
+          foreignKey: 'requestedToId',
+        });
+        this.hasMany(models.Album,{
+          foreignKey: 'profileId',
+        });
+        
     }
   }
   User.init({
@@ -142,7 +182,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
     },
 
     relationshipStatus: {
-      type: DataTypes.ENUM("Single", "In a relationship", "Dating", "Engaged", "Married")
+      type: DataTypes.ENUM(RelationshipStatus.Single,
+        RelationshipStatus.InARelationship,
+        RelationshipStatus.Dating,
+        RelationshipStatus.Engaged,
+        RelationshipStatus.Married)
     },
 
     relationshipWithId: {
@@ -158,11 +202,13 @@ module.exports = (sequelize: any, DataTypes: any) => {
     },
 
     relationshipUpdatedAt: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      defaultValue: sequelize.fn('now')
     },
 
     profileUpdatedAt: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      defaultValue: sequelize.fn('now')
     },
 
     sellerRating: {

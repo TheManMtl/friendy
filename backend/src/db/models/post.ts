@@ -17,19 +17,21 @@ interface PostAttributes {
   //non-nullable
   id: number;
   authorId: number;
-  type: Enumerator;
+  type: PostType;
   commentCount: number;
   likeCount: number;
   isActive: boolean;
   isLocked: boolean;
   isDeleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 
   //nullable
   imageId?: number;
   postId?: number;
   profileId?: number;
   content?: string;
-
+  deletedAt?: Date;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
@@ -43,21 +45,50 @@ module.exports = (sequelize: any, DataTypes: any) => {
     //non-nullable
     id!: number;
     authorId!: number;
-    type!: Enumerator;
+    type!: PostType;
     commentCount!: number;
     likeCount!: number;
     isActive!: boolean;
     isLocked!: boolean;
     isDeleted!: boolean;
+    createdAt!: Date;
+    updatedAt!: Date;
   
     //nullable
     imageId?: number;
     postId?: number;
     profileId?: number;
     content?: string;
-
+    deletedAt?: Date;
     static associate(models: any) {
-  
+      this.belongsTo(models.User, {
+        foreignKey: 'authorId',
+      });
+      this.hasMany(models.Image, {
+        foreignKey: 'imageId',
+      });
+      //TODO check if this is correct
+      this.belongsTo(models.Post, {
+        foreignKey: 'postId', 
+        as: 'ParentPost' 
+      });
+      this.hasOne(models.User, {
+        foreignKey: 'profileId',
+      });
+
+      this.hasOne(models.User,{
+        foreignKey:'profilePostId',
+      });
+      this.hasOne(models.User,{
+        foreignKey:'coverPostId',
+      });
+      this.hasMany(models.Comment,{
+        foreignKey:'postId',
+      });
+      this.belongsToMany(models.Album, {
+        through: 'AlbumPost',
+        foreignKey: 'postId',
+      });
     }
   }
   Post.init({
@@ -101,18 +132,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
 
     profileId: {
       type: DataTypes.INTEGER,
-      references: {
-        model: 'Users',
-        key: 'id'
-      }
+     
     },
 
     imageId: {
       type: DataTypes.INTEGER,
-      references: {
-        model: 'Images',
-        key: 'id'
-      }
+     
     },
 
     commentCount: {
@@ -144,11 +169,26 @@ module.exports = (sequelize: any, DataTypes: any) => {
       defaultValue: false,
       allowNull: false
     },
-
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.fn('now')
+    },
+    
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.fn('now')
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true
+    }
   },
     {
       sequelize,
       modelName: 'Post',
+      paranoid: true, // Enable soft deletes. This enables the paranoid mode in Sequelize, which automatically handles soft deletes. When a record is deleted, Sequelize will set the deletedAt field to the current timestamp instead of physically removing the record from the database.
     });
   return Post;
 };
