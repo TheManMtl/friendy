@@ -51,9 +51,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     isActive!: boolean;
     isLocked!: boolean;
     isDeleted!: boolean;
-    //createdAt!: Date;
-    //updatedAt!: Date;
-  
+
     //nullable
     imageId?: number;
     postId?: number;
@@ -65,7 +63,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
       this.belongsTo(models.User, {
         foreignKey: 'authorId',
       });
-      this.hasMany(models.Image, {
+      this.belongsTo(models.Image, {
         foreignKey: 'imageId',
       });
       //TODO check if this is correct

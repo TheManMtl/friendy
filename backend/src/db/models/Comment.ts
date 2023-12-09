@@ -12,8 +12,6 @@ interface CommentAttributes {
   postId: number;
   body: string;
   likeCount: number;
-  createdAt: Date;
-  updatedAt: Date;
 
   //nullable
   parentId?: number;
@@ -34,29 +32,28 @@ module.exports = (sequelize: any, DataTypes: any) => {
     postId!: number;
     body!: string;
     likeCount!: number;
-    createdAt!: Date;
-    updatedAt!: Date;
-  
+
+
     //nullable
     parentId?: number;
     deletedAt?: Date;
     static associate(models: any) {
-        this.belongsTo(models.User, {
-            foreignKey: 'userId',
-        });
-        this.belongsTo(models.Post, {
-            foreignKey: 'postId',
-        });
-        this.belongsTo(models.Comment, {
-            foreignKey: 'parentId',
-            as: 'parentComment'
-        });
-        this.hasMany(models.Like, {
-            foreignKey: 'commentId',
-        });
+      this.belongsTo(models.User, {
+        foreignKey: 'userId',
+      });
+      this.belongsTo(models.Post, {
+        foreignKey: 'postId',
+      });
+      this.belongsTo(models.Comment, {
+        foreignKey: 'parentId',
+        as: 'parentComment'
+      });
+      this.hasMany(models.Like, {
+        foreignKey: 'commentId',
+      });
     }
   }
- Comment.init({
+  Comment.init({
 
     id: {
       type: DataTypes.INTEGER,
@@ -68,18 +65,18 @@ module.exports = (sequelize: any, DataTypes: any) => {
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    
+
     },
 
     postId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-     
+      type: DataTypes.INTEGER,
+      allowNull: false,
+
     },
     parentId: {
-        type: DataTypes.INTEGER,
-       
-      },
+      type: DataTypes.INTEGER,
+
+    },
 
     body: {
       type: DataTypes.TEXT,
@@ -90,26 +87,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
     },
 
     likeCount: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-        allowNull: false
-        },
-        createdAt: {
-          type: DataTypes.DATE,
-          allowNull: false,
-          defaultValue: sequelize.fn('now')
-        },
-        
-        updatedAt: {
-          type: DataTypes.DATE,
-          allowNull: false,
-          defaultValue: sequelize.fn('now')
-        },
-        deletedAt: {
-          type: DataTypes.DATE,
-          allowNull: true
-        }
-
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false
+    }
   },
     {
       sequelize,
