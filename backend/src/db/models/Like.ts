@@ -9,7 +9,6 @@ interface LikeAttributes {
     //non-nullable
     id: number;
     userId: number;
-    createdAt: Date;
 
     //nullable
     postId?: number;
@@ -27,7 +26,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         //non-nullable
         id!: number;
         userId!: number;
-        createdAt!: Date;
+
         //nullable
         postId?: number;
         commentId?: number;
@@ -42,7 +41,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         this.belongsTo(models.Post, {
             foreignKey: 'postId',
         });
-        this.hasMany(models.Comment, {
+        this.belongsTo(models.Comment, {
             foreignKey: 'commentId',
         });
     }
@@ -67,11 +66,6 @@ Like.init({
     commentId: {
         type: DataTypes.INTEGER,
         
-    },
-    createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: sequelize.fn('now')
     },
 },
     {

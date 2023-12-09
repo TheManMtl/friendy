@@ -15,8 +15,6 @@ interface AlbumAttributes {
     id: number;
     type: AlbumType;
     title: string;
-    createdAt: Date;
-    updatedAt: Date;
 
 
     //nullable
@@ -36,8 +34,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
         id!: number;
         type!: AlbumType;
         title!: string;
-        createdAt!: Date;
-        updatedAt!: Date;
 
         //nullable
         profileId?: number;
@@ -78,17 +74,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
             allowNull: false,
         },
 
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: sequelize.fn('now')
-          },
-          
-          updatedAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: sequelize.fn('now')
-          },
           deletedAt: {
             type: DataTypes.DATE,
             allowNull: true

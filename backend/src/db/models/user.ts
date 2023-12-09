@@ -32,6 +32,7 @@ interface UserAttributes {
   school?: string;
   workplace?: string;
   position?: string;
+  bio?: string;
   birthday?: Date;
   relationshipStatus?: RelationshipStatus;
   relationshipWithId?: number;
@@ -63,6 +64,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     school?: string;
     workplace?: string;
     position?: string;
+    bio?: string;
     birthday?: Date;
     relationshipStatus?: RelationshipStatus;
     relationshipWithId?: number;
@@ -73,6 +75,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     sellerRating?: number;
 
     static associate(models: any) {
+
         this.hasMany(models.Comment, {
           foreignKey: 'authorId',
         });
@@ -89,9 +92,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
         this.belongsTo(models.Post,{
           foreignKey: 'coverPostId',
         });
-        this.hasMany(models.Comment, {
-          foreignKey: 'userId',
-          });
         this.hasMany(models.Friend,{
           foreignKey: 'requestedById',
         });
@@ -176,6 +176,13 @@ module.exports = (sequelize: any, DataTypes: any) => {
       type: DataTypes.STRING,
       validate: {
         len: [5, 50],
+      }
+    },
+
+    bio: {
+      type: DataTypes.STRING,
+      validate: {
+        len: [0, 200],
       }
     },
 

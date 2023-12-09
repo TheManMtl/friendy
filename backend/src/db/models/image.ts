@@ -25,7 +25,8 @@ module.exports = (sequelize: any, DataTypes: any) => {
     thumbnail!: string;
 
     static associate(models: any) {
-      this.belongsTo(models.Post, {
+
+      this.hasOne(models.Post, {
         foreignKey: 'imageId',
       });
     }
