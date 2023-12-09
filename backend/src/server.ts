@@ -1,17 +1,10 @@
-import express from "express";
-require("dotenv").config();
+import dotenv from "dotenv";
+import app from "./app";
+dotenv.config();
 
-// import "./database/connection";
-// import Image from "./database/models/Image";
-// import Post from "./database/models/Post";
-
-const app = express();
+//const app = express();
 const port = process.env.PORT || 8181;
 import db from "./db/models";
-
-app.get("/", async (req, res) => {
-  res.send("Hello there, world");
-});
 
 //for seeding:
 /*
@@ -31,13 +24,3 @@ db.sequelize.sync().then(() => {
     console.log(`server running on post ${port}`);
   });
 });
-
-// app.get("/images", async (req, res) => {
-//   try {
-//     const images = await Image.findAll(); // Fetch all images from the database
-//     res.json(images);
-//   } catch (error) {
-//     console.error("Error fetching images:", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
