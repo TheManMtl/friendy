@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+
+  front:
+    image: front
+    expose:
+      - 443        
+    labels:
+      - "traefik.http.routers.front.rule=Host(`front.fullstak.pro`)"
+      - "traefik.http.routers.front.tls=true"
+      - "traefik.http.routers.front.tls.certresolver=le"            
+      - "traefik.http.routers.front.service=front"
+      - "traefik.http.services.front.loadbalancer.server.port=3000"
+
+    networks:
+      - friendy
+    restart: always        
+
+networks:
+  friendy:
+    external: true
