@@ -1,30 +1,26 @@
 //TODO: MODEL ASSOCIATIONS
 
-'use strict';
-import {
-  Model
-} from 'sequelize';
+"use strict";
+import { Model } from "sequelize";
 enum Role {
   User = "User",
-  Admin = "Admin"
-
+  Admin = "Admin",
 }
 enum RelationshipStatus {
   Single = "Single",
   InARelationship = "In a relationship",
   Dating = "Dating",
   Engaged = "Engaged",
-  Married = "Married"
+  Married = "Married",
 }
 
 interface UserAttributes {
-
   //non-nullable
   id: number;
   name: string;
   email: string;
   password: string;
-  isActive: boolean;
+  isDeleted: boolean;
   role: Role;
 
   //nullable
@@ -41,7 +37,6 @@ interface UserAttributes {
   relationshipUpdatedAt?: Date;
   profileUpdatedAt?: Date;
   sellerRating?: number;
-
 }
 module.exports = (sequelize: any, DataTypes: any) => {
   class User extends Model<UserAttributes> implements UserAttributes {
@@ -56,7 +51,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     name!: string;
     email!: string;
     password!: string;
-    isActive!: boolean;
+    isDeleted!: boolean;
     role!: Role;
 
     //nullable
@@ -75,160 +70,162 @@ module.exports = (sequelize: any, DataTypes: any) => {
     sellerRating?: number;
 
     static associate(models: any) {
-
       this.hasMany(models.Comment, {
-        foreignKey: 'authorId',
+        foreignKey: "authorId",
       });
       this.hasMany(models.Post, {
-        foreignKey: 'profileId',
+        foreignKey: "profileId",
       });
       this.belongsTo(models.User, {
-        foreignKey: 'relationshipWithId',
-        as: 'relationshipWith'
+        foreignKey: "relationshipWithId",
+        as: "relationshipWith",
       });
       this.belongsTo(models.Post, {
-        foreignKey: 'profilePostId',
+        foreignKey: "profilePostId",
       });
       this.belongsTo(models.Post, {
-        foreignKey: 'coverPostId',
+        foreignKey: "coverPostId",
       });
       this.hasMany(models.Friend, {
-        foreignKey: 'requestedById',
+        foreignKey: "requestedById",
       });
       this.hasMany(models.Friend, {
-        foreignKey: 'requestedToId',
+        foreignKey: "requestedToId",
       });
       this.hasMany(models.Album, {
-        foreignKey: 'profileId',
+        foreignKey: "profileId",
       });
       this.hasMany(models.Like, {
-        foreignKey: 'userId',
+        foreignKey: "userId",
       });
     }
   }
-  User.init({
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
-
-    name: {
-      type: DataTypes.STRING,
-      validate: {
-        len: [5, 100],
+  User.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
       },
-      allowNull: false
-    },
 
-    email: {
-      type: DataTypes.STRING,
-      validate: {
-        len: [7, 100],
+      name: {
+        type: DataTypes.STRING,
+        validate: {
+          len: [5, 100],
+        },
+        allowNull: false,
       },
-      allowNull: false,
-    },
 
-    password: {
-      type: DataTypes.STRING,
-      validate: {
-        len: [8, 100],
+      email: {
+        type: DataTypes.STRING,
+        validate: {
+          len: [7, 100],
+        },
+        allowNull: false,
+        unique: true,
       },
-      allowNull: false,
-    },
 
-    isActive: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: true,
-      allowNull: false
-    },
+      password: {
+        type: DataTypes.STRING,
+        validate: {
+          len: [8, 100],
+        },
+        allowNull: false,
+      },
 
-    role: {
-      type: DataTypes.ENUM("User", "Admin"),
-      allowNull: false,
-      defaultValue: "User"
-    },
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
 
-    location: {
-      type: DataTypes.STRING,
-      validate: {
-        len: [5, 100],
-      }
-    },
+      role: {
+        type: DataTypes.ENUM("User", "Admin"),
+        allowNull: false,
+        defaultValue: "User",
+      },
 
-    school: {
-      type: DataTypes.STRING,
-      validate: {
-        len: [5, 50],
-      }
-    },
+      location: {
+        type: DataTypes.STRING,
+        validate: {
+          len: [5, 100],
+        },
+      },
 
-    workplace: {
-      type: DataTypes.STRING,
-      validate: {
-        len: [5, 50],
-      }
-    },
+      school: {
+        type: DataTypes.STRING,
+        validate: {
+          len: [5, 50],
+        },
+      },
 
-    position: {
-      type: DataTypes.STRING,
-      validate: {
-        len: [5, 50],
-      }
-    },
+      workplace: {
+        type: DataTypes.STRING,
+        validate: {
+          len: [5, 50],
+        },
+      },
 
-    bio: {
-      type: DataTypes.STRING,
-      validate: {
-        len: [0, 200],
-      }
-    },
+      position: {
+        type: DataTypes.STRING,
+        validate: {
+          len: [5, 50],
+        },
+      },
 
-    birthday: {
-      type: DataTypes.DATEONLY
-    },
+      bio: {
+        type: DataTypes.STRING,
+        validate: {
+          len: [0, 200],
+        },
+      },
 
-    relationshipStatus: {
-      type: DataTypes.ENUM(RelationshipStatus.Single,
-        RelationshipStatus.InARelationship,
-        RelationshipStatus.Dating,
-        RelationshipStatus.Engaged,
-        RelationshipStatus.Married)
-    },
+      birthday: {
+        type: DataTypes.DATEONLY,
+      },
 
-    relationshipWithId: {
-      type: DataTypes.INTEGER
-    },
+      relationshipStatus: {
+        type: DataTypes.ENUM(
+          RelationshipStatus.Single,
+          RelationshipStatus.InARelationship,
+          RelationshipStatus.Dating,
+          RelationshipStatus.Engaged,
+          RelationshipStatus.Married
+        ),
+      },
 
-    profilePostId: {
-      type: DataTypes.INTEGER
-    },
+      relationshipWithId: {
+        type: DataTypes.INTEGER,
+      },
 
-    coverPostId: {
-      type: DataTypes.INTEGER
-    },
+      profilePostId: {
+        type: DataTypes.INTEGER,
+      },
 
-    relationshipUpdatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: sequelize.fn('now')
-    },
+      coverPostId: {
+        type: DataTypes.INTEGER,
+      },
 
-    profileUpdatedAt: {
-      type: DataTypes.DATE,
-      defaultValue: sequelize.fn('now')
-    },
+      relationshipUpdatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: sequelize.fn("now"),
+      },
 
-    sellerRating: {
-      type: DataTypes.DOUBLE
-    }
-  },
+      profileUpdatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: sequelize.fn("now"),
+      },
+
+      sellerRating: {
+        type: DataTypes.DOUBLE,
+      },
+    },
     {
       sequelize,
-      indexes: [
-        { fields: ['email'], unique: true }
-      ],
-      modelName: 'User',
-    });
+      indexes: [{ fields: ["email"], unique: true }],
+      modelName: "User",
+    }
+  );
   return User;
 };

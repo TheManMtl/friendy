@@ -1,90 +1,85 @@
-'use strict';
-import {
-    Model
-} from 'sequelize';
+"use strict";
+import { Model } from "sequelize";
 
 enum AlbumType {
-
-    ProfilePic = "profilePic",
-    CoverPhoto = "coverPhoto",
-    Custom = "custom"
+  ProfilePic = "profilePic",
+  CoverPhoto = "coverPhoto",
+  Custom = "custom",
 }
 interface AlbumAttributes {
+  //non-nullable
+  id: number;
+  type: AlbumType;
+  title: string;
+  isDeleted: boolean;
 
-    //non-nullable
-    id: number;
-    type: AlbumType;
-    title: string;
-
-
-    //nullable
-    profileId?: number;
-    deletedAt?: Date;
+  //nullable
+  profileId?: number;
 }
 
 module.exports = (sequelize: any, DataTypes: any) => {
-    class Album extends Model<AlbumAttributes> implements AlbumAttributes {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
+  class Album extends Model<AlbumAttributes> implements AlbumAttributes {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
 
-        //non-nullable
-        id!: number;
-        type!: AlbumType;
-        title!: string;
+    //non-nullable
+    id!: number;
+    type!: AlbumType;
+    title!: string;
+    isDeleted!: boolean;
 
-        //nullable
-        profileId?: number;
-        deletedAt?: Date;
+    //nullable
+    profileId?: number;
 
-        static associate(models: any) {
-            this.belongsTo(models.User, {
-                foreignKey: 'profileId',
-            });
-            
-            this.belongsToMany(models.Post, {
-                through: 'AlbumPost',
-                foreignKey: 'albumId',
-              });
+    static associate(models: any) {
+      this.belongsTo(models.User, {
+        foreignKey: "profileId",
+      });
 
-        }
+      this.belongsToMany(models.Post, {
+        through: "AlbumPost",
+        foreignKey: "albumId",
+      });
     }
-    Album.init({
-        id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            primaryKey: true,
-            autoIncrement: true
-        },
+  }
+  Album.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
 
-        profileId: {
-            type: DataTypes.INTEGER,
-        },
+      profileId: {
+        type: DataTypes.INTEGER,
+      },
 
-        type: {
-            type: DataTypes.ENUM("profilePic", "coverPhoto", "custom"),
-            allowNull: false,
-            defaultValue: "profilePic"
-        },
+      type: {
+        type: DataTypes.ENUM("profilePic", "coverPhoto", "custom"),
+        allowNull: false,
+        defaultValue: "profilePic",
+      },
 
-        title: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
 
-          deletedAt: {
-            type: DataTypes.DATE,
-            allowNull: true
-          }
-
-
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
     },
-        {
-            sequelize,
-            modelName: 'Album',
-            paranoid: true,
-        });
-    return Album;
+    {
+      sequelize,
+      modelName: "Album",
+      paranoid: true,
+    }
+  );
+  return Album;
 };
