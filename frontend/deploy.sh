@@ -1,3 +1,3 @@
-sudo docker build -t front .
+ docker build -t front .
 
-sudo docker compose up -d --remove-orphans
+ docker compose up -d --remove-orphans
