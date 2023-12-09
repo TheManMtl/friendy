@@ -13,13 +13,12 @@ app.get("/", async (req, res) => {
   res.send("Hello there, world");
 });
 
-//later, for seeding:
-
+//for seeding:
 /*
-import {users} from './db/seeders/users';
+import users from './db/seeders/users';
 
 const createUsers = () => {
-  users.map(user => {
+  users.map((user: any) => {
     db.User.create(user)
   })
 }
