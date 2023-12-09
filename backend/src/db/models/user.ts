@@ -101,7 +101,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
         this.hasMany(models.Album,{
           foreignKey: 'profileId',
         });
-        
+        this.hasMany(models.Like,{
+          foreignKey: 'userId',
+        });
     }
   }
   User.init({

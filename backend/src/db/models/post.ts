@@ -89,6 +89,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
         through: 'AlbumPost',
         foreignKey: 'postId',
       });
+      this.hasMany(models.Like, {
+        foreignKey: 'postId',
+      });
     }
   }
   Post.init({

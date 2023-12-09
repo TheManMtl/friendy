@@ -51,6 +51,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
             foreignKey: 'parentId',
             as: 'parentComment'
         });
+        this.hasMany(models.Like, {
+            foreignKey: 'commentId',
+        });
     }
   }
  Comment.init({
