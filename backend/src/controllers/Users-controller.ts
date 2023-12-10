@@ -1,0 +1,127 @@
+import { RequestHandler } from "express";
+//import {User} from "../db/models";
+//const {User} = require("../db/models")
+import models from "../db/models";
+import bcrypt from "bcrypt";
+import validator from "validator";
+import session from "express-session";
+import jwt from "jsonwebtoken";
+
+const User = models.User;
+
+interface SignUpBody {
+  name?: string;
+  password?: string;
+  passwordCopy?: string;
+  email?: string;
+}
+
+interface LoginBody {
+  email?: string;
+  password?: string;
+}
+
+export const signUp: RequestHandler<
+  unknown,
+  unknown,
+  SignUpBody,
+  unknown
+> = async (req, res, next) => {
+  try {
+    const name = req.body.name;
+    const passwordRaw = req.body.password;
+    const passwordCopy = req.body.passwordCopy;
+    const email = req.body.email;
+    if (!name || !passwordRaw || !passwordCopy || !email) {
+      return res.status(400).send({ message: "missing parameters" });
+    }
+    if (passwordCopy != passwordRaw) {
+      return res.status(400).send({ message: "passwords do not match" });
+    }
+    if (name!.length < 4 || name!.length > 25) {
+      res
+        .status(400)
+        .send({ message: "name must be between 4 and 25 characters" });
+    }
+
+    if (!validator.isEmail(email!)) {
+      return res
+        .status(400)
+        .send({ message: "you must register with a valid email" });
+    }
+
+    const existingUsername = await User.findOne({
+      where: {
+        email: email!,
+      },
+    });
+
+    if (existingUsername) {
+      return res.status(400).send({ message: "username already taken" });
+    }
+    const passwordHashed = await bcrypt.hash(passwordRaw!, 10);
+    const newUser = await User.create({
+      name: name,
+      password: passwordHashed,
+      email: email,
+    });
+    newUser.password = null;
+    return res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const login: RequestHandler<
+  unknown,
+  unknown,
+  LoginBody,
+  unknown
+> = async (req, res, next) => {
+  const email = req.body.email;
+  const passwordRaw = req.body.password;
+
+  if (!email || !passwordRaw) {
+    return res
+      .status(400)
+      .send({ message: "Please provide email and password." });
+  }
+  try {
+    const user = await User.findOne({
+      where: {
+        email: email!,
+        isDeleted: false,
+      },
+    });
+
+    if (!user) {
+      console.log("email wrong");
+      return res.status(400).send({ message: "Invalid credentials." });
+    }
+
+    const passwordMatch = await bcrypt.compare(passwordRaw!, user!.password);
+
+    if (!passwordMatch) {
+      console.log("password wrong");
+      return res.status(401).send({ message: "Invalid credentials" });
+    }
+
+    const id = user.id;
+    const role = user.role;
+    const name = user.name;
+
+    const token = jwt.sign({ user }, process.env.JWT_SECRET!, {
+      expiresIn: "10h",
+    });
+    req.session.userId = user.id;
+    return res.status(200).json({
+      token: token,
+      name: user.name,
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

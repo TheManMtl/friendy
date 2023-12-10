@@ -1,16 +1,30 @@
 import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
+import userRoutes from "./routes/Users-routes";
+import session from "express-session";
 
 dotenv.config();
 const app = express();
 
 app.use(express.json());
 
+app.use(
+  session({
+    name: "id",
+    secret: process.env.JWT_SECRET!,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      expires: new Date(Date.now() + 60 * 60 * 24 * 1000),
+    },
+  })
+);
+
 app.get("/", async (req, res) => {
   res.send("Hello there, world");
 });
 
-//
+app.use("/api/users", userRoutes);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   console.error(error);
