@@ -1,19 +1,15 @@
 import { faker } from '@faker-js/faker';
 import db from "../models";
-//import User from "../models";
+import User from "../models";
 
 const posts: any = [];
 const createPosts = async () => {
 
-    const users = await db.User.findAll();
+    const users = await db.User.findAll({raw: true});
     console.log("-----------------BEGIN USER PROCESSION-----------------");
     console.log(users);
     console.log("-----------------END USER PROCESSTION-----------------");
-    users.map((user: typeof db.User) => {
-
-        user = user.dataValues;
-
-        //console.log(user);
+    users.map((user: typeof User) => {
 
         const post = {
 
