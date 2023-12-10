@@ -18,6 +18,25 @@ const createUsers = () => {
 createUsers();
 */
 
+/*
+import createPosts from './db/seeders/posts';
+
+const savePosts = async () => {
+
+  await createPosts().then( (posts) => {
+
+    console.log(posts);
+
+    posts.map((post: any) => {
+      db.Post.create(post);
+    })
+  })
+}
+savePosts();
+*/
+
+
+
 // {force: true}    {alter: true}     <-- use as needed
 db.sequelize.sync().then(() => {
   app.listen(port, () => {
