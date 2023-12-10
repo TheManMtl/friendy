@@ -108,12 +108,12 @@ export const login: RequestHandler<
 
     const id = user.id;
     const role = user.role;
-    const name = user.name;
-
-    const token = jwt.sign({ user }, process.env.JWT_SECRET!, {
+    const token = jwt.sign({ id, role }, process.env.JWT_SECRET!, {
       expiresIn: "10h",
     });
     req.session.userId = user.id;
+    req.session.name = user.name;
+
     return res.status(200).json({
       token: token,
       name: user.name,
