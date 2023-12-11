@@ -153,6 +153,76 @@ challenges:
     -
 
 
+Date: Dec 11
+
+
+Alex:
+Finished     -created login/registration (tokens + sessions)
+    -created authentication middleware
+    -created friend requests Working on:     -view/accept/decline friend requests     -view all friends 
+    -generate profile info (single profile) challenges:     - associations in model 
+
+
+Ehsan:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Meredith:
+ Finished: 
+ 	- troubleshooting db connection
+ 	- revised models
+	- seeded dummy data for users, posts, friends
+	- started working on API
+ Working On: 
+ 	- help with backend issues
+	- implement db triggers
+	- start implementing auth in front
+ Challenges: 
+  - 
+
+Nick:
+Finished
+   -button component
+   -decided on Jest for unit testing
+   -EC2/hosting troubleshooting
+ 
+Working on:
+   -unit tests
+   -friends page
+   -EC2 w/ Ehsan
+ 
+Not finished/challenges:
+   -dockerfile configuration
+
+
+Shiyu:
+Finished:
+-created login page
+-created nav bar
+-created colour palette and logo
+-started profile page
+Working on
+-continue with profile page
+-create reusable components for profile pages
+-create register page
+
+
+
+Xuerun:
+Finished
+    -recreated models
+    -set up aws s3
+    -created s3 middleware
+Working on:
+    -keep working on image controller
+    -keep working on album route and controller
+challenges:
+    -
+
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------
