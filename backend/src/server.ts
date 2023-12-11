@@ -23,9 +23,12 @@ async function seedFriends() { return await saveFriends(); }
 seedFriends();
 */
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 // {force: true}    {alter: true}     <-- use as needed
-db.sequelize.sync().then(() => {
+db.sequelize.authenticate().then(() => {
   app.listen(port, () => {
     console.log(`server running on post ${port}`);
   });
