@@ -12,3 +12,8 @@ nav {
   background-color: aqua;
   border-bottom: 1px solid #ddd;
 }
+
+a {
+  color: #333;
+  text-decoration: none;
+}

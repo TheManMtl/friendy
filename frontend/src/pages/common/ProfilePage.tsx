@@ -1,6 +1,8 @@
 import React from "react";
 import "./ProfilePage.css";
 import ProfileImage from "../../components/common/ProfileImage/ProfileImage";
+import PostCard from "../../components/common/PostCard/PostCard";
+import PostInput from "../../components/common/PostInput/PostInput";
 
 function ProfilePage() {
   return (
@@ -70,7 +72,7 @@ function ProfilePage() {
         </div>
       </div>
 
-      <div className="contentSection row mt-3 px-5 py-3">
+      <div className="contentSection row mt-3 px-5 py-3 d-flex justify-content-center">
         <div className="leftContent col-md-4">
           <div className="IntroCard card py-4">
             <h4>Intro</h4>
@@ -90,7 +92,7 @@ function ProfilePage() {
               <p>
                 From <a href="/">Colombo, Sri Lanka</a>
               </p>
-              <button>Edit details</button>
+              <button className="btn btn-secondary">Edit details</button>
             </div>
           </div>
 
@@ -177,7 +179,17 @@ function ProfilePage() {
               </div>
             </div>
           </div>
-          <div className="rightContent col-md-7"></div>
+        </div>
+        {/* right content */}
+        <div className="rightContent col-md-7">
+          <PostInput
+            src={
+              "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
+            }
+            alt={"profile"}
+            size={"small"}
+          />
+          <PostCard />
         </div>
       </div>
     </div>
