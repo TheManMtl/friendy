@@ -82,6 +82,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
       });
       this.belongsTo(models.Post, {
         foreignKey: "profilePostId",
+        as: "profileImg",
       });
       this.belongsTo(models.Post, {
         foreignKey: "coverPostId",
@@ -98,13 +99,13 @@ module.exports = (sequelize: any, DataTypes: any) => {
       this.belongsToMany(models.User, {
         through: "Friend",
         foreignKey: "requestedById",
-        as: "friendsA"
+        as: "friendsA",
       });
 
       this.belongsToMany(models.User, {
         through: "Friend",
         foreignKey: "requestedToId",
-        as: "friendsB"
+        as: "friendsB",
       });
 
       this.hasMany(models.Album, {
