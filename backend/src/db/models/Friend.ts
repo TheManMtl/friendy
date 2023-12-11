@@ -70,6 +70,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     },
     {
       sequelize,
+      indexes: [{ fields: ["requestedById", "requestedToId"], unique: true }],
       modelName: "Friend",
     }
   );

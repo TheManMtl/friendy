@@ -94,6 +94,19 @@ module.exports = (sequelize: any, DataTypes: any) => {
         foreignKey: "requestedToId",
         as: "requestedTo",
       });
+
+      this.belongsToMany(models.User, {
+        through: "Friend",
+        foreignKey: "requestedById",
+        as: "friendsA"
+      });
+
+      this.belongsToMany(models.User, {
+        through: "Friend",
+        foreignKey: "requestedToId",
+        as: "friendsB"
+      });
+
       this.hasMany(models.Album, {
         foreignKey: "profileId",
       });
