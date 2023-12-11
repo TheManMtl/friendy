@@ -55,9 +55,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
     static associate(models: any) {
       this.belongsTo(models.User, {
         foreignKey: "authorId",
+        as: "author",
       });
       this.belongsTo(models.Image, {
         foreignKey: "imageId",
+        as: "image",
       });
       //TODO check if this is correct
       this.belongsTo(models.Post, {
