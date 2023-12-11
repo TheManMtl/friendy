@@ -13,7 +13,7 @@ type ButtonProps = {
 
 function Button({ label, icon, variant = 'default', onClick }: ButtonProps) {
 
-  // attach proper CSS class based on variant prop
+  // attach proper CSS class based on 'variant' prop
   const getButtonClass = () => {
     switch (variant) {
       case 'blue':
