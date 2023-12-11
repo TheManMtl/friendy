@@ -1,8 +1,9 @@
 import db from "../models";
 import models from "../models";
 const User = models.User;
+const Friend = models.Friend;
 
-const friends: any = [];
+const friends: typeof Friend = [];
 const createFriends = async () => {
 
     const users = await db.User.findAll({ raw: true });
@@ -73,7 +74,7 @@ const saveFriends = async () => {
   
       console.log(friends);
   
-      friends.map((friend: any) => {
+      friends.map((friend: typeof Friend) => {
         db.Friend.create(friend);
       })
     })
