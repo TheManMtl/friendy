@@ -11,6 +11,11 @@
   object-fit: cover;
 }
 
+/* Only for developing purposes */
+div {
+  outline: olivedrab solid 1px;
+}
+
 .btn-cover-image {
   position: absolute;
   top: 85%;
