@@ -10,7 +10,7 @@ router.post("/request", friends.createRequest);
 //active-requests?direction=received - friend requests you've received - defaults to this.
 router.get("/active-requests/", friends.findAllRequests);
 
-router.get("/all", friends.viewAllFriends);
+router.get("/all/:id", friends.viewAllFriends);
 router.put("/accept-request", friends.acceptRequest);
 router.delete("/decline-request", friends.deleteFriend);
 router.delete("/remove", friends.deleteFriend);

@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { CustomRequest } from "../middleware/auth";
 import models from "../db/models";
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 
 const User = models.User;
 const Friend = models.Friend;
@@ -18,10 +18,10 @@ interface requestProfile {
 }
 
 interface friendProfile {
-  id?: number;
+  friendId?: number;
   name?: string;
   userId?: number;
-  acceptedAt?: Date;
+  friendsSince?: Date;
   thumbnail?: string;
   profilePostId: number;
 }
@@ -238,27 +238,58 @@ export const viewAllFriends = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> => {
   try {
-    const primaryUser = 101;
+    const primaryUser = req.params.id;
+    console.log(primaryUser);
+    //  const primaryUser = 101;
 
-    const users = await User.findByPk(primaryUser, {
-      plain: true,
-      include: [
-        {
-          model: User,
-          attributes: ["id", "name"],
-          as: "friendsA",
-          // where: { acceptedAt: { [Op.not]: null } },
-        },
-        {
-          model: User,
-          attributes: ["id", "name"],
-          as: "friendsB",
-          // where: { acceptedAt: { [Op.not]: null } },
-        },
-      ],
-      nest: true,
+    const friends = await Friend.findAll({
+      where: {
+        [Op.or]: [
+          { requestedById: primaryUser },
+          { requestedToId: primaryUser },
+        ],
+        acceptedAt: { [Op.not]: null },
+      },
     });
-    return res.status(200).send(users);
+
+    const processedFriends: friendProfile[] = await Promise.all(
+      friends.map(async (friend: typeof Friend) => {
+        let userId;
+        if (friend.requestedById == primaryUser) {
+          userId = friend.requestedToId;
+        } else {
+          userId = friend.requestedById;
+        }
+
+        const theFriends = await User.findByPk(userId, {
+          attributes: ["name"],
+          include: [
+            {
+              model: Post,
+              as: "profileImg",
+              attributes: ["id"],
+              include: [
+                {
+                  model: Image,
+                  as: "image",
+                  attributes: ["id", "thumbnail"],
+                },
+              ],
+            },
+          ],
+        });
+        return {
+          friendId: friend.id,
+          name: theFriends.name,
+          userId: userId,
+          friendsSince: friend.acceptedAt,
+          thumbnail: theFriends.profileImg?.image?.thumbnail || null,
+          profilePostId: theFriends.profileImg?.id || null,
+        };
+      })
+    );
+    // console.log(processedFriends);
+    return res.status(200).send(processedFriends);
   } catch (error) {
     next(error);
   }
