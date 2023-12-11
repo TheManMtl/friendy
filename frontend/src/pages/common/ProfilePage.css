@@ -1,7 +1,7 @@
 /* Only for developing purposes */
-div {
+/* div {
   outline: olivedrab solid 1px;
-}
+} */
 
 .cover-image-container {
   width: 100%;
@@ -51,4 +51,14 @@ div {
   .rightContent {
     padding-right: 0px;
   }
+}
+
+.container-nav {
+  padding: 0px 110px;
+}
+
+.icon {
+  padding-left: 15px;
+  margin-right: 10px;
+  font-size: 25px;
 }

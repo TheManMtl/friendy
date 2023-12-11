@@ -3,6 +3,7 @@ import "./ProfilePage.css";
 import ProfileImage from "../../components/common/ProfileImage/ProfileImage";
 import PostCard from "../../components/common/PostCard/PostCard";
 import PostInput from "../../components/common/PostInput/PostInput";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 
 function ProfilePage() {
   return (
@@ -50,7 +51,7 @@ function ProfilePage() {
                   </div>
                 </div>
                 <div className="col-8">
-                  <h4 className="d-flex justify-contnet-start">Profile Name</h4>
+                  <h3 className="d-flex justify-contnet-start">Profile Name</h3>
                   <p className="d-flex justify-contnet-start">Profile Bio</p>
                 </div>
               </div>
@@ -62,42 +63,80 @@ function ProfilePage() {
             </div>
           </div>
         </div>
-        <div className="nav ">
-          <ul>
-            <li>Posts</li>
-            <li>About</li>
-            <li>Friends</li>
-            <li>Photos</li>
+        <hr />
+        <div className="container-nav">
+          <ul className="d-flex nav">
+            <li className="nav-item">
+              <a className="nav-link" href="/">
+                Posts
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/">
+                About
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/">
+                Friends
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/">
+                Photos
+              </a>
+            </li>
           </ul>
         </div>
       </div>
 
-      <div className="contentSection row mt-3 px-5 py-3 d-flex justify-content-center">
+      <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
         <div className="leftContent col-md-4">
           <div className="IntroCard card py-4">
-            <h4>Intro</h4>
-            <div className="d-flex justify-content-center">
-              <div>
-                <p>Self intro</p>
-                <button className="btn btn-secondary">Edit bio</button>
-              </div>
+            <div className="d-flex justify-content-start offset-1">
+              <h4>Intro</h4>
             </div>
-            <div className="details">
-              <p>
-                Studied at <a href="/">University of Moratuwa</a>
-              </p>
-              <p>
-                Went to <a href="/">Ananda College</a>
-              </p>
-              <p>
-                From <a href="/">Colombo, Sri Lanka</a>
-              </p>
-              <button className="btn btn-secondary">Edit details</button>
+            <div className="d-flex justify-content-center">
+              <p>Self intro</p>
+            </div>
+            <div>
+              <button className="btn btn-secondary col-10">Edit bio</button>
+            </div>
+
+            <div className="details my-5">
+              <div className="d-flex justify-content-start">
+                <i className="bi bi-mortarboard-fill icon"></i>
+                <p>
+                  Studied at <a href="/">University of Moratuwa</a>
+                </p>
+              </div>
+
+              <div className="d-flex justify-content-start">
+                <i className="bi bi-house-heart icon"></i>
+                <p className="mx-1">
+                  Lives in <a href="/">Montreal, QC</a>
+                </p>
+              </div>
+
+              <div className="d-flex justify-content-start ">
+                <i className="bi bi-geo-alt-fill icon"></i>
+                <p>
+                  From <a href="/">Colombo, Sri Lanka</a>
+                </p>
+              </div>
+              <div>
+                <button className="btn btn-secondary col-10">
+                  Edit details
+                </button>
+              </div>
             </div>
           </div>
 
           <div className="photosCard card mt-3 py-4">
-            <h4>Photos</h4>
+            <div className="d-flex mb-2 justify-content-start offset-1">
+              <h4>Photos</h4>
+            </div>
+
             <div className="row justify-content-center">
               <div className="col-md-8">
                 <div className="row">
@@ -182,14 +221,18 @@ function ProfilePage() {
         </div>
         {/* right content */}
         <div className="rightContent col-md-7">
-          <PostInput
-            src={
-              "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
-            }
-            alt={"profile"}
-            size={"small"}
-          />
-          <PostCard />
+          <div className="">
+            <PostInput
+              src={
+                "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
+              }
+              alt={"profile"}
+              size={"small"}
+            />
+          </div>
+          <div className="mt-2">
+            <PostCard />
+          </div>
         </div>
       </div>
     </div>

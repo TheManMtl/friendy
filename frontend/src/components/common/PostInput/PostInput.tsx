@@ -15,15 +15,23 @@ const PostInput: React.FC<Props> = ({ src, alt, size }) => {
           <ProfileImage src={src} alt={alt} size={size} />
         </div>
         <div className="col-11">
-          <button className="col-11 btn btn-input mt-1">
-            <a href="/profile"> What's on your mind?</a>
-          </button>
+          <a href="/profile">
+            <button className="col-11 btn-input mt-1">
+              What's on your mind?
+            </button>
+          </a>
         </div>
       </div>
       <hr />
-      <div className="row " style={{ flexDirection: "row" }}>
-        <p>Live video</p>
-        <p>Photos</p>
+      <div className="row py-2">
+        <div className="col-6">
+          {" "}
+          <a href="/profile">Photo/video</a>
+        </div>
+        <div className="col-6">
+          {" "}
+          <a href="/profile">Life event</a>
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 body {
   background-color: #f0f2f5;
   font-family: "Roboto", sans-serif;
-  font-size: 16px;
+  font-size: 20px;
   color: #333;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -9,11 +9,19 @@ body {
 }
 
 nav {
-  background-color: aqua;
   border-bottom: 1px solid #ddd;
 }
 
 a {
   color: #333;
   text-decoration: none;
+}
+
+h3 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.nav-link {
+  color: #333;
 }

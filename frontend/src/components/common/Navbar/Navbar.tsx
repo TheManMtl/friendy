@@ -87,7 +87,7 @@ function Navbar() {
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="/">
+                  <a className="nav-link" href="/profile">
                     <ProfileImage
                       src={"https://www.w3schools.com/howto/img_avatar.png"}
                       alt={"profile"}
