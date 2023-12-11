@@ -88,9 +88,11 @@ module.exports = (sequelize: any, DataTypes: any) => {
       });
       this.hasMany(models.Friend, {
         foreignKey: "requestedById",
+        as: "requestedBy",
       });
       this.hasMany(models.Friend, {
         foreignKey: "requestedToId",
+        as: "requestedTo",
       });
       this.hasMany(models.Album, {
         foreignKey: "profileId",

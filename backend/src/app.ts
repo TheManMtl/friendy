@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
 import userRoutes from "./routes/Users-routes";
+import friendRoutes from "./routes/friends-routes";
 import session from "express-session";
 
 dotenv.config();
@@ -25,6 +26,7 @@ app.get("/", async (req, res) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/friends", friendRoutes);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   console.error(error);

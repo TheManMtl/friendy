@@ -6,7 +6,7 @@ interface DecodedToken {
   role: string;
 }
 
-interface CustomRequest extends Request {
+export interface CustomRequest extends Request {
   id?: string;
   role?: string;
 }
