@@ -78,7 +78,7 @@ BEGIN
     -- Prohibit image posts with null image id
     IF NEW.type != 'timeline' AND NEW.profileId IS NOT NULL THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = `Posts of type 'profilePic', 'coverPhoto', or 'ablumImage' must include imageId, insert disallowed`;
+        SET MESSAGE_TEXT = `Posts on other profiles must be of type 'timeline', insert disallowed`;
     END IF;
 
 END //

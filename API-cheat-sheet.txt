@@ -1,0 +1,33 @@
+--------------------------------------FRIENDS--------------------------------------
+
+
+POST    /api/friends/request // currently hardcoded to send request from user 101 - prior to auth middleware implementation and token use
+
+GET     /api/friends/active-requests (INSTRUCTIONS BELOW)
+
+// TWO directions - query params sent/received
+// active-requests?direction=sent - friend requests you've made
+//active-requests?direction=received - friend requests you've received - defaults to this.
+// also currently hardcoded in lieu of logged in user
+
+
+GET     /api/friends/all/:id    //friends of user with this id (public)
+PUT     /api/friends/accept-request *will require auth
+DELETE  /api/friends/decline-request *will require auth
+DELETE  /api/friends/remove     //unfriend a friend *will require auth
+
+
+--------------------------------------USERS--------------------------------------
+
+
+POST    /api/signup
+POST    /api/login
+
+
+--------------------------------------POSTS--------------------------------------
+
+
+GET    /api/posts/user/:id  //get user's timeline posts by user id
+GET   /api/posts/:id        //get single post by post id
+
+(POST, PUT, and DELETE on posts not yet implemented)
