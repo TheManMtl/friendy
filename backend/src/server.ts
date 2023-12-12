@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import app from "./app";
+import multer = require("multer");
 dotenv.config();
 // const bucketName=process.env.BUCKET_NAME
 // const bucketRegion=process.env.BUCKET_REGION
@@ -59,7 +60,7 @@ upload.array("images", 9);
 // savePosts();
 
 // {force: true}    {alter: true}     <-- use as needed
-db.sequelize.sync().then(() => {
+db.sequelize.authenticate().then(() => {
   app.listen(port, () => {
     console.log(`server running on post ${port}`);
   });
