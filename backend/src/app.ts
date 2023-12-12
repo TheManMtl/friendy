@@ -2,7 +2,11 @@ import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
 import userRoutes from "./routes/Users-routes";
 import friendRoutes from "./routes/friends-routes";
+<<<<<<< Updated upstream
 import postRoutes from "./routes/posts-routes";
+=======
+import profileRoutes from "./routes/profile-routes";
+>>>>>>> Stashed changes
 import session from "express-session";
 
 dotenv.config();
@@ -28,7 +32,11 @@ app.get("/", async (req, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/friends", friendRoutes);
+<<<<<<< Updated upstream
 app.use("/api/posts", postRoutes);
+=======
+app.use("/api/profile", profileRoutes);
+>>>>>>> Stashed changes
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   console.error(error);

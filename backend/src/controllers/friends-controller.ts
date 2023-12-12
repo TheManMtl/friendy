@@ -272,7 +272,7 @@ export const viewAllFriends = async (
                 {
                   model: Image,
                   as: "image",
-                  attributes: ["id", "thumbnail"],
+                  attributes: ["id", "fileName"],
                 },
               ],
             },

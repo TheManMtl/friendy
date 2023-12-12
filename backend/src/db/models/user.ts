@@ -86,6 +86,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
       });
       this.belongsTo(models.Post, {
         foreignKey: "coverPostId",
+        as: "coverImg",
       });
       this.hasMany(models.Friend, {
         foreignKey: "requestedById",
