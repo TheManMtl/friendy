@@ -223,6 +223,74 @@ Working on:
 challenges:
     -
 
+
+Date: Dec 12
+
+
+Alex:
+Finished
+      -friend requests
+      - responding to friend requests
+      -viewing all friend requests (sent/received)
+      - deleting friends
+      - sending user profile info 
+Working on
+      - logout
+      - refresh tokens 
+      - post controller 
+Challenges
+      - N/A
+
+
+Ehsan:
+ Finished: 
+     docker tutorials, react tutorials,   worked on jenkins and docker file
+ Working on:
+     frontend
+
+
+Meredith:
+ Finished: 
+  - db triggers
+  - worked on auth, login, logout in front end
+ Working On: 
+  - implement & test login/logout components in front end pages
+ Challenges: 
+  - 
+
+Nick:
+Finished
+      -friends pages setup
+      -button unit test (need to push)
+      -friend page context
+Working on
+      -connecting friends page w/ backend
+      -starting with fetching info
+Challenges
+      -EC2 hosting
+
+
+Shiyu:
+Finished:
+-completed the layout of profile page
+-created post card, profile image and post input components
+-added css in global.css
+Working on
+-connect user profile with backend
+-continue with register page
+
+
+Xuerun:
+Finished
+    -user can upload multiple images
+    -thumbnail can be generated
+Working on:
+    -fix sharp bug
+    -continue working on album router and controller
+challenges:
+    -
+
+
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------
