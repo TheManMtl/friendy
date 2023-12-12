@@ -1,0 +1,35 @@
+body {
+  background-color: #f0f2f5;
+  font-family: "Roboto", sans-serif;
+  font-size: 20px;
+  color: #333;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+nav {
+  border-bottom: 1px solid #ddd;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+
+h3 {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+h5 {
+  font-weight: 600;
+}
+
+.nav-link {
+  color: #333;
+}
+
+.smallText {
+  font-size: 1.2rem;
+}

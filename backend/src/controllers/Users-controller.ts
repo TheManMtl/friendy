@@ -43,6 +43,28 @@ export const signUp: RequestHandler<
         .status(400)
         .send({ message: "name must be between 4 and 25 characters" });
     }
+    if (
+      validator.isStrongPassword(passwordRaw, {
+        returnScore: true,
+        pointsPerRepeat: 0,
+        pointsPerUnique: 0,
+        pointsForContainingLower: 10,
+        pointsForContainingUpper: 10,
+        pointsForContainingNumber: 5,
+        pointsForContainingSymbol: 5,
+      }) < 25
+    ) {
+      return res.status(400).send({
+        message:
+          "Password must contain at least one uppercase letter, one lower case letter, and one number or special character.",
+      });
+    }
+
+    if (!validator.isLength(passwordRaw, { min: 6, max: 100 })) {
+      res.status(400).send({
+        message: "Password must be between 6 and 100 characters long.",
+      });
+    }
 
     if (!validator.isEmail(email!)) {
       return res
@@ -108,12 +130,12 @@ export const login: RequestHandler<
 
     const id = user.id;
     const role = user.role;
-    const name = user.name;
-
-    const token = jwt.sign({ user }, process.env.JWT_SECRET!, {
+    const token = jwt.sign({ id, role }, process.env.JWT_SECRET!, {
       expiresIn: "10h",
     });
     req.session.userId = user.id;
+    req.session.name = user.name;
+
     return res.status(200).json({
       token: token,
       name: user.name,

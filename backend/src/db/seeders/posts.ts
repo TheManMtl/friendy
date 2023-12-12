@@ -1,11 +1,13 @@
 import { faker } from '@faker-js/faker';
 import db from "../models";
-import User from "../models";
+import models from "../models";
+const User = models.User;
+const Post = models.Post;
 
-const posts: any = [];
+const posts: typeof Post = [];
 const createPosts = async () => {
 
-    const users = await db.User.findAll({raw: true});
+    const users = await db.User.findAll({ raw: true });
     console.log("-----------------BEGIN USER PROCESSION-----------------");
     console.log(users);
     console.log("-----------------END USER PROCESSTION-----------------");
@@ -20,7 +22,17 @@ const createPosts = async () => {
 
     })
 
-   return posts;
+    return posts;
 }
 
-export default createPosts;
+const savePosts = async () => {
+
+    await createPosts().then((posts) => {
+
+        posts.map((post: typeof Post) => {
+            db.Post.create(post);
+        })
+    })
+  }
+
+export default savePosts;

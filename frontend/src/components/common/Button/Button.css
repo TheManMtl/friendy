@@ -1,0 +1,32 @@
+/* This is all temp styling, I'm ballparking based on different buttons I saw on FB */
+
+.button {
+    border:none;
+    border-radius: 5px;
+    color: black;
+}
+
+.btn-default {
+    background-color: #e0e2e8;
+}
+
+.btn-blue {
+    width:100%;
+    padding:0.5em;
+    font-size: 0.8em;
+    background-color: #e6f0fd;
+    color: #3560ec;
+}
+
+.btn-blue:hover {
+    background-color:#d7e8fd;
+}
+
+.btn-round {
+    border-radius: 100%;
+    background-color: #e0e2e8;
+}
+
+.btn-transparent {
+    background-color: hsla(225, 15%, 89%, 0.445);
+}

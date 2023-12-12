@@ -1,18 +1,12 @@
-'use strict';
-import {
-  Model
-} from 'sequelize';
-
+"use strict";
+import { Model } from "sequelize";
 
 interface FriendAttributes {
-
   //non-nullable
   id: number;
   requestedById: number;
   requestedToId: number;
   requestedAt: Date;
-  
-  
 
   //nullable
 
@@ -32,55 +26,53 @@ module.exports = (sequelize: any, DataTypes: any) => {
     requestedById!: number;
     requestedToId!: number;
     requestedAt!: Date;
-  
+
     //nullable
     acceptedAt?: Date;
 
     static associate(models: any) {
-        this.belongsTo(models.User, {
-            foreignKey: 'requestedById',
-        });
-        this.belongsTo(models.User, {
-            foreignKey: 'requestedToId',
-        });
-       
+      this.belongsTo(models.User, {
+        foreignKey: "requestedById",
+        as: "RequestedBy",
+      });
+      this.belongsTo(models.User, {
+        foreignKey: "requestedToId",
+        as: "RequestedTo",
+      });
     }
   }
- Friend.init({
-
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
-
-    requestedById: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    
-    },
-
-    requestedToId: {
+  Friend.init(
+    {
+      id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-     
-    },
-    requestedAt: {
+        primaryKey: true,
+        autoIncrement: true,
+      },
+
+      requestedById: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+
+      requestedToId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      requestedAt: {
         type: DataTypes.DATE,
         allowNull: false,
       },
 
-    acceptedAt: {
+      acceptedAt: {
         type: DataTypes.DATE,
-    
+      },
     },
-
-
-  },
     {
       sequelize,
-      modelName: 'Friend',
-    });
+      indexes: [{ fields: ["requestedById", "requestedToId"], unique: true }],
+      modelName: "Friend",
+    }
+  );
   return Friend;
 };

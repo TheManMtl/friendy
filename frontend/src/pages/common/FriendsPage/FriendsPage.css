@@ -1,0 +1,76 @@
+.leftMenu {
+    /* border: 1px solid black; */
+    width: 300px;
+    height: 100%;
+    box-shadow: 0.5px 0.5px 15px #bababa;
+    background-color: white;
+    z-index:1;
+}
+
+.leftMenu-option {
+    border: 0.5px solid rgb(240, 240, 240);
+    border-radius: 5px;
+    width: 95%;
+    margin-top: 7px;
+    position: relative;
+}
+
+.leftMenu-option .icon {
+    margin-left: 13px;
+    margin-right: 10px;
+}
+
+.leftMenu-option:hover {
+    background-color: #ececec;
+}
+
+ .bi-chevron-right {
+    margin-right: 10px !important;
+    position: absolute !important;
+    left:230px;
+} 
+
+.nav-link {
+    position:relative;
+}
+
+.mainPanel {
+    padding-right: 2rem;
+    width: calc(100vw - 300px);
+    height: 100%;
+    background-color:#ffffff;
+    overflow-y: scroll;
+    box-shadow: 0.5px 0.5px 15px #bababa;
+}
+
+.panel {
+    position: relative;
+    min-height: 300px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    margin: 10px;
+    border: 1px solid #c9c9c9;
+    box-shadow: -2px 2px 3px #d3d3d3;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+
+.friendName {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: white;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color:white;
+    height:120px;
+}

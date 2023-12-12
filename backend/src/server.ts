@@ -36,38 +36,24 @@ app.post('/posts', async (req, res) => {
 })
 
 //for seeding:
-/*
-import users from './db/seeders/users';
-
-const createUsers = () => {
-  users.map((user: any) => {
-    db.User.create(user)
-  })
-}
-createUsers();
+/* users
+import saveUsers from './db/seeders/users';
+async function seedUsers() { return await saveUsers(); }
+seedUsers();
 */
-
-/*
-import createPosts from './db/seeders/posts';
-
-const savePosts = async () => {
-
-  await createPosts().then( (posts) => {
-
-    console.log(posts);
-
-    posts.map((post: any) => {
-      db.Post.create(post);
-    })
-  })
-}
-savePosts();
+/* posts
+import savePosts from './db/seeders/posts';
+async function seedPosts() { return await savePosts(); }
+seedPosts();
 */
-
-
+/* friends
+import saveFriends from './db/seeders/friends';
+async function seedFriends() { return await saveFriends(); }
+seedFriends();
+*/
 
 // {force: true}    {alter: true}     <-- use as needed
-db.sequelize.sync().then(() => {
+db.sequelize.authenticate().then(() => {
   app.listen(port, () => {
     console.log(`server running on post ${port}`);
   });

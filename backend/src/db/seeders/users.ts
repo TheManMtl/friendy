@@ -1,6 +1,9 @@
 import { faker } from '@faker-js/faker';
+import db from "../models";
+import models from "../models";
+const User = models.User;
 
-const users: any = [];
+const users: typeof User = [];
 
 
 for (let i = 0; i < 100; i++) {
@@ -21,4 +24,11 @@ for (let i = 0; i < 100; i++) {
     users.push(user);
 }
 
-export default users;
+const saveUsers = async () => {
+
+    users.map((user: typeof User) => {
+        db.User.create(user);
+    })
+  }
+
+export default saveUsers;

@@ -1,0 +1,101 @@
+.nav-custom {
+  background-color: white;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0.5px 0.5px 15px #bababa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index:2;
+}
+
+.nav-center {
+  display: flex;
+}
+
+.parentDiv {
+  display: flex;
+  justify-content: space-between;
+}
+
+.left {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.middle {
+  display: flex;
+  justify-content: center;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.icon {
+  font-size: 1.5rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.iconRight {
+  font-size: 1.5rem;
+  margin-left: 1rem;
+}
+
+/* .profile {
+  border-radius: 50%;
+  width: 1rem;
+} */
+
+/* .profile-img-container {
+  margin-right: 1rem;
+  margin-left: 1rem;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+}
+
+.profile-img {
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+}
+
+.innerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+} */
+
+.logo {
+  width: 3rem;
+  height: 3rem;
+  margin-left: 0.5rem;
+}
+
+.btn-nav {
+  background-image: linear-gradient(to right, #ffd54f, #d500f9);
+  border-radius: 50%;
+}
+
+.btn-nav:hover {
+  background-image: linear-gradient(to left, #ffd54f, #d500f9);
+}
+
+.searchInput {
+  position: relative;
+  width: 300px;
+}
+
+.searchBtn {
+  color: white;
+  position: absolute;
+  right: 10px;
+  border-radius: 50px;
+  border: none;
+  padding: 10px;
+  top: 2px;
+  font-weight: 600;
+}
