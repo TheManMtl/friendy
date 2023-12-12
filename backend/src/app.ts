@@ -5,12 +5,19 @@ import friendRoutes from "./routes/friends-routes";
 import postRoutes from "./routes/posts-routes";
 import profileRoutes from "./routes/profile-routes";
 import session from "express-session";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
 
 app.use(express.json());
-
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTION"],
+    credentials: true,
+  })
+);
 app.use(
   session({
     name: "id",
