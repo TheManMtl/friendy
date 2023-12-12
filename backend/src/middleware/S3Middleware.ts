@@ -1,14 +1,13 @@
-import { Request, Response, NextFunction } from "express";
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const dotenv = require("dotenv");
-const multer = require("multer");
+import { Response, NextFunction } from "express";
+import { S3Client } from "@aws-sdk/client-s3";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-const bucketName = process.env.BUCKET_NAME;
-const bucketRegion = process.env.BUCKET_REGION;
-const accessKey = process.env.ACCESS_KEY;
-const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+const bucketName : string = process.env.BUCKET_NAME as string;
+const bucketRegion : string = process.env.BUCKET_REGION as string;
+const accessKey : string = process.env.ACCESS_KEY as string;
+const secretAccessKey : string = process.env.SECRET_ACCESS_KEY as string;
 
 console.log("bucketRegion", bucketRegion);
 console.log("accessKey", accessKey);

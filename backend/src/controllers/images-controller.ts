@@ -6,25 +6,25 @@ import models from "../db/models";
 const randomFileName = (byte = 32) => crypto.randomBytes(byte).toString('hex');
 
 export const add = async (req: any, res: any) => {
-    let originalImages = req.files["originalImages"];
-    let resizedImages = req.files["resizedImages"];
-    let images = [];
+    const originalImages = req.files["originalImages"];
+    const resizedImages = req.files["resizedImages"];
+    const images = [];
 
     try {
         for (let i = 0; i < originalImages.length; i++) {
-            let originalImage = originalImages[i];
-            let resizedImage = resizedImages[i];
-            let originalFileBuffer = await sharp(originalImage.buffer).toBuffer()
-            let resizedFileBuffer = await sharp(resizedImage.buffer).toBuffer()
-            let fileName = randomFileName();
-            let uploadOriginalParams = {
+            const originalImage = originalImages[i];
+            const resizedImage = resizedImages[i];
+            const originalFileBuffer = await sharp(originalImage.buffer).toBuffer()
+            const resizedFileBuffer = await sharp(resizedImage.buffer).toBuffer()
+            const fileName = randomFileName();
+            const uploadOriginalParams = {
                 Bucket: req.bucketName,
                 Body: originalFileBuffer,
                 Key: fileName,
                 ContentType: originalImage.mimetype
             };
 
-            let uploadResizedParams = {
+            const uploadResizedParams = {
                 Bucket: req.bucketName,
                 Body: resizedFileBuffer,
                 Key: fileName + "-resized",
@@ -36,7 +36,7 @@ export const add = async (req: any, res: any) => {
             await req.s3.send(new PutObjectCommand(uploadResizedParams));
 
             // save the image filename to the database
-            let image = await models.Image.create({
+            const image = await models.Image.create({
                 fileName: fileName,
                 thumbnail: fileName + "-resized"
             });
