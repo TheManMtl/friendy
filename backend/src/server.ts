@@ -1,16 +1,16 @@
 import dotenv from "dotenv";
 import multer from "multer";
 import app from "./app";
-import { S3Client } from "@aws-sdk/client-s3";
+// import { S3Client } from "@aws-sdk/client-s3";
 dotenv.config();
 // const bucketName=process.env.BUCKET_NAME
 // const bucketRegion=process.env.BUCKET_REGION
 // const accessKey=process.env.ACCESS_KEY
 // const secretAccessKey=process.env.SECRET_ACCESS_KEY
-// const s3 = new S3Client({ 
-//   region: bucketRegion, 
-//   credentials: { 
-//     accessKeyId: accessKey, 
+// const s3 = new S3Client({
+//   region: bucketRegion,
+//   credentials: {
+//     accessKeyId: accessKey,
 //     secretAccessKey: secretAccessKey }
 
 //    });
@@ -18,22 +18,22 @@ dotenv.config();
 const port = process.env.PORT || 8181;
 import db from "./db/models";
 
-const storage= multer.memoryStorage();
-const upload = multer({storage: storage});
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-app.post
-upload.array('images',9)
+app.post;
+upload.array("images", 9);
 
-app.post('/posts', async (req, res) => {
-  const file = req.file 
-  const caption = req.body.caption
+// app.post("/posts", async (req, res) => {
+//   const file = req.file;
+//   const caption = req.body.caption;
 
-  const fileBuffer = await sharp(file.buffer)
-    .resize({ height: 1920, width: 1080, fit: "contain" })
-    .toBuffer()
+// const fileBuffer = await sharp(file.buffer)
+//   .resize({ height: 1920, width: 1080, fit: "contain" })
+//   .toBuffer()
 
-  // ...
-})
+// ...
+// });
 
 //for seeding:
 /* users
