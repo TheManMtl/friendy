@@ -1,7 +1,5 @@
 import dotenv from "dotenv";
-import multer from "multer";
 import app from "./app";
-import { S3Client } from "@aws-sdk/client-s3";
 dotenv.config();
 // const bucketName=process.env.BUCKET_NAME
 // const bucketRegion=process.env.BUCKET_REGION
@@ -13,7 +11,6 @@ dotenv.config();
 //     accessKeyId: accessKey,
 //     secretAccessKey: secretAccessKey }
 
-//    });
 //const app = express();
 const port = process.env.PORT || 8181;
 import db from "./db/models";
@@ -36,24 +33,33 @@ upload.array("images", 9);
 // })
 
 //for seeding:
-/* users
-import saveUsers from './db/seeders/users';
-async function seedUsers() { return await saveUsers(); }
-seedUsers();
-*/
-/* posts
-import savePosts from './db/seeders/posts';
-async function seedPosts() { return await savePosts(); }
-seedPosts();
-*/
-/* friends
-import saveFriends from './db/seeders/friends';
-async function seedFriends() { return await saveFriends(); }
-seedFriends();
-*/
+
+// import users from './db/seeders/users';
+
+// const createUsers = () => {
+//   users.map((user: any) => {
+//     db.User.create(user)
+//   })
+// }
+// createUsers();
+
+// import createPosts from './db/seeders/posts';
+
+// const savePosts = async () => {
+
+//   await createPosts().then( (posts) => {
+
+//     console.log(posts);
+
+//     posts.map((post: any) => {
+//       db.Post.create(post);
+//     })
+//   })
+// }
+// savePosts();
 
 // {force: true}    {alter: true}     <-- use as needed
-db.sequelize.authenticate().then(() => {
+db.sequelize.sync().then(() => {
   app.listen(port, () => {
     console.log(`server running on post ${port}`);
   });
