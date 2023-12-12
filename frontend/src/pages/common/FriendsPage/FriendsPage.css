@@ -50,8 +50,8 @@
     background-size: cover;
     background-position: center;
     margin: 10px;
-    border: 1px solid #b1b1b1;
-    box-shadow: -1px 1px 2px rgb(161, 161, 161);
+    border: 1px solid #c9c9c9;
+    box-shadow: -2px 2px 3px #d3d3d3;
     border-radius: 8px;
     overflow: hidden;
     position: relative;
