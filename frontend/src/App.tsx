@@ -6,6 +6,7 @@ import LoginPage from './pages/common/LoginPage';
 import RegisterPage from './pages/common/RegisterPage';
 import ProfilePage from './pages/common/ProfilePage';
 import FriendsPage from './pages/common/FriendsPage/FriendsPage';
+import { FriendsPageProvider } from './context/FriendsPageContext';
 import Navbar from './components/common/Navbar/Navbar';
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -16,18 +17,29 @@ import "./assets/global.css";
 function App() {
   return (
     <div className="App">
-     <Navbar/>
-     <Router>
-      <Routes>
-        <Route path="/" element={<HomePage/>}/>
-        <Route path="/login" element={<LoginPage/>}/>
-        <Route path="/register" element={<RegisterPage/>}/>
-        <Route path="/profile" element={<ProfilePage/>}/>
-        <Route path="/friends" element={<FriendsPage/>}/>
-      </Routes>
+      <Navbar />
+      <Router>
+
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+
+          {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
+          <Route
+            path="/friends/*"
+            element={
+              <FriendsPageProvider>
+                <FriendsPage />
+              </FriendsPageProvider>
+            }
+          />
+
+        </Routes>
+
       </Router>
       {/* <Footer/> */}
-
     </div>
   );
 }
