@@ -5,7 +5,7 @@ import HomePage from './pages/common/HomePage';
 import LoginPage from './pages/common/LoginPage';
 import RegisterPage from './pages/common/RegisterPage';
 import ProfilePage from './pages/common/ProfilePage';
-import FriendsPage from './pages/common/FriendsPage';
+import FriendsPage from './pages/common/FriendsPage/FriendsPage';
 import Navbar from './components/common/Navbar/Navbar';
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap/dist/css/bootstrap.min.css";

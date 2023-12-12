@@ -1,6 +1,6 @@
 import React from 'react';
 import "./FriendsPage.css";
-import { Button } from '../../components/common';
+import { Button } from '../../../components/common';
 
 function FriendsPage() {
 
@@ -9,7 +9,7 @@ function FriendsPage() {
         <div key={index} className="panel justify-content-center align-items-center" style={{ backgroundImage: `url('https://picsum.photos/200/200?random=${index}')` }}>
             <br></br><br></br><br></br><br></br><br></br><br></br>
             <div className="friendName">
-                <h5>Friend {index + 1}</h5>
+                <h5 className="mb-4">Friend {index + 1}</h5>
                 <Button
                     label="Add Friend"
                     variant="blue"

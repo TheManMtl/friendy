@@ -1,12 +1,14 @@
 .leftMenu {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     width: 300px;
     height: 100%;
+    box-shadow: 0.5px 0.5px 15px #bababa;
+    background-color: white;
+    z-index:1;
 }
 
 .leftMenu-option {
-    background-color: #e2e2e2;
-    border: none;
+    border: 0.5px solid rgb(240, 240, 240);
     border-radius: 5px;
     width: 95%;
     margin-top: 7px;
@@ -19,7 +21,7 @@
 }
 
 .leftMenu-option:hover {
-    background-color: #c5c5c5;
+    background-color: #ececec;
 }
 
  .bi-chevron-right {
@@ -36,8 +38,9 @@
     padding-right: 2rem;
     width: calc(100vw - 300px);
     height: 100%;
-    background-color:rgb(222, 222, 241);
+    background-color:#ffffff;
     overflow-y: scroll;
+    box-shadow: 0.5px 0.5px 15px #bababa;
 }
 
 .panel {
@@ -56,7 +59,7 @@
 
 .panel-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 10px;
     padding: 10px;
 }
@@ -69,5 +72,5 @@
     padding: 10px;
     box-sizing: border-box;
     background-color:white;
-    height:100px;
+    height:120px;
 }

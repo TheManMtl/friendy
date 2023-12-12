@@ -1,8 +1,8 @@
 /* This is all temp styling, I'm ballparking based on different buttons I saw on FB */
 
 .button {
+    border:none;
     border-radius: 5px;
-    border: 1px solid slategrey;
     color: black;
 }
 
@@ -11,8 +11,15 @@
 }
 
 .btn-blue {
-    background-color: #115bf7;
-    color: white;
+    width:100%;
+    padding:0.5em;
+    font-size: 0.8em;
+    background-color: #e6f0fd;
+    color: #3560ec;
+}
+
+.btn-blue:hover {
+    background-color:#d7e8fd;
 }
 
 .btn-round {
