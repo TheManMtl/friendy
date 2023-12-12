@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import userRoutes from "./routes/Users-routes";
 import friendRoutes from "./routes/friends-routes";
 import postRoutes from "./routes/posts-routes";
+import profileRoutes from "./routes/profile-routes";
 import session from "express-session";
 
 dotenv.config();
@@ -23,12 +24,14 @@ app.use(
 );
 
 app.get("/", async (req, res) => {
+  console.log("hello world");
   res.send("Hello there, world");
 });
 
 app.use("/api/users", userRoutes);
 app.use("/api/friends", friendRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/profile", profileRoutes);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   console.error(error);

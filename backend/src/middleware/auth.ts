@@ -2,12 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 interface DecodedToken {
-  id: string;
-  role: string;
+  id?: number;
+  role?: string;
 }
 
 export interface CustomRequest extends Request {
-  id?: string;
+  id?: number;
   role?: string;
 }
 
@@ -69,6 +69,33 @@ export const authAdmin = async (
           req.role = decodedToken!.role;
           next();
         }
+      }
+    });
+  }
+};
+
+export const decodeUser = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const token = req.headers["x-access-token"] as string | undefined;
+  if (!token) {
+    req.id = undefined;
+    req.role = undefined;
+    next();
+  } else {
+    const jwtSecret = process.env.JWT_SECRET as string;
+    jwt.verify(token, jwtSecret, (err, decoded) => {
+      if (err) {
+        req.id = undefined;
+        req.role = undefined;
+        next();
+      } else {
+        const decodedToken = decoded as DecodedToken;
+        req.id = decodedToken!.id;
+        req.role = decodedToken!.role;
+        next();
       }
     });
   }
