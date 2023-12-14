@@ -17,8 +17,6 @@ import db from "./db/models";
 // }
 // createUsers();
 
-
-
 // import createPosts from './db/seeders/posts';
 
 // const savePosts = async () => {
@@ -34,11 +32,8 @@ import db from "./db/models";
 // }
 // savePosts();
 
-
-
-
 // {force: true}    {alter: true}     <-- use as needed
-db.sequelize.sync().then(() => {
+db.sequelize.authenticate().then(() => {
   app.listen(port, () => {
     console.log(`server running on post ${port}`);
   });

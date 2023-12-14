@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 import session from "express-session";
 import jwt from "jsonwebtoken";
+import { DecodedToken } from "../middleware/auth";
 
 const User = models.User;
 
@@ -130,19 +131,54 @@ export const login: RequestHandler<
 
     const id = user.id;
     const role = user.role;
-    const token = jwt.sign({ id, role }, process.env.JWT_SECRET!, {
-      expiresIn: "10h",
+    const accessToken = jwt.sign({ id, role }, process.env.JWT_SECRET!, {
+      expiresIn: "1h",
+    });
+    const refreshToken = jwt.sign({ id, role }, process.env.JWT_SECRET!, {
+      expiresIn: "1d",
     });
     req.session.userId = user.id;
     req.session.name = user.name;
 
-    return res.status(200).json({
-      token: token,
-      name: user.name,
-      email: user.email,
-      id: user.id,
-      role: user.role,
-    });
+    return res
+      .status(200)
+      .json({
+        token: accessToken,
+        name: user.name,
+        email: user.email,
+        id: user.id,
+        role: user.role,
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "strict",
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const refresh: RequestHandler<
+  unknown,
+  unknown,
+  LoginBody,
+  unknown
+> = async (req, res, next) => {
+  const refreshToken = req.cookies["refreshToken"];
+  if (!refreshToken) {
+    return res.status(401).send("Access Denied. No refresh token provided.");
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET!);
+    const decodedToken = decoded as DecodedToken;
+    const accessToken = jwt.sign(
+      { id: decodedToken.id, role: decodedToken.role },
+      process.env.JWT_SECRET!,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).send(accessToken);
   } catch (error) {
     next(error);
   }
