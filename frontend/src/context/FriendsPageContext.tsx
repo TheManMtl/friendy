@@ -13,6 +13,7 @@ type FriendsPageProviderProps = {
   children: ReactNode;
 };
 
+// provide the route
 export const FriendsPageProvider: React.FC<FriendsPageProviderProps> = ({ children }) => {
   const [selectedRoute, setSelectedRoute] = useState('/');
 
