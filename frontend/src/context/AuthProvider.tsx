@@ -10,7 +10,6 @@ type User = {
   email: string
   role: string;
   token: string;
-  refreshToken?: string; //TODO
 }
 
 type ContextType = {
