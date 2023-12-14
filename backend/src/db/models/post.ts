@@ -23,6 +23,7 @@ interface PostAttributes {
   //updatedAt: Date;
 
   //nullable
+  albumId?: number;
   imageId?: number;
   postId?: number;
   profileId?: number;
@@ -47,6 +48,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     isDeleted!: boolean;
 
     //nullable
+    albumId?: number;
     imageId?: number;
     postId?: number;
     profileId?: number;
@@ -62,6 +64,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
         as: "image",
       });
       //TODO check if this is correct
+      this.belongsTo(models.Album, {
+        foreignKey: "albumId",
+      });
       this.belongsTo(models.Post, {
         foreignKey: "postId",
         as: "ParentPost",
@@ -77,10 +82,6 @@ module.exports = (sequelize: any, DataTypes: any) => {
         foreignKey: "coverPostId",
       });
       this.hasMany(models.Comment, {
-        foreignKey: "postId",
-      });
-      this.belongsToMany(models.Album, {
-        through: "AlbumPost",
         foreignKey: "postId",
       });
       this.hasMany(models.Like, {
