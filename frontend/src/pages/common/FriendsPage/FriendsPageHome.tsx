@@ -23,7 +23,7 @@ function FriendsPageHome() {
     // Display results
     return (
         <div>
-            <div className="d-flex justify-content-between align-items-center p-2">
+            <div className="d-flex justify-content-between align-items-center p-2 m-2">
                 <h4>People you may know</h4>
             </div>
             <div className="panel-grid">
