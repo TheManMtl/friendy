@@ -5,6 +5,7 @@ import FriendsPageHome from './FriendsPageHome';
 import FriendsPageLeftMenu from './FriendsPageLeftMenu';
 import FriendsPageRequests from './FriendsPageRequests';
 import { useFriendsPageContext } from '../../../context/FriendsPageContext';
+import FriendsPageList from './FriendsPageList';
 
 function FriendsPage() {
     const { selectedRoute } = useFriendsPageContext();
@@ -15,6 +16,8 @@ function FriendsPage() {
                 return <FriendsPageHome />;
             case '/friends/requests':
                 return <FriendsPageRequests />;
+            case '/friends/list':
+                return <FriendsPageList />;
             default:
                 return <FriendsPageHome />;
         }
@@ -23,7 +26,6 @@ function FriendsPage() {
     return (
         <div className="d-flex" style={{ height: '91vh' }}>
             <FriendsPageLeftMenu />
-
             {/* Conditionally display mainPanel contents */}
             <div className="mainPanel">
                 {renderMainPanelContent()}

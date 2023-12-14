@@ -10,9 +10,11 @@ export default axios.create({
 export const axiosToken = axios.create({
     baseURL: Constants.BASE_URL,
     headers: { 'Content-Type': 'application/json' },
+    withCredentials: true,
 });
 
 export const axiosUpload = axios.create({
     baseURL: Constants.BASE_URL,
     headers: {'Content-Type': 'multipart/form-data'},
+    withCredentials: true,
 });

@@ -4,7 +4,7 @@ import { RequestHandler } from "express";
 import models from "../db/models";
 import bcrypt from "bcrypt";
 import validator from "validator";
-import session from "express-session";
+// import session from "express-session";
 import jwt from "jsonwebtoken";
 import { DecodedToken } from "../middleware/auth";
 
