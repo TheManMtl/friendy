@@ -1,21 +1,57 @@
 import models from '../db/models';
 const Post = models.Post;
 const User = models.User;
+const Image = models.Image;
 import express, { Express, Request, Response } from "express";
 
 
 // create new post
 // NOT IMPLEMENTED
 export const createPost = async (req: Request, res: Response) => {
+     const{image}=req.body;
+    try{
+        const post = await Post.create({
+            authorId: req.params.authorId,
+            profileId: req.body.profileId,
+            type: req.body.type,
+            text: req.body.text,
+           
+        });
+        if(image){
+            const {fileName}=image;
+            const existingImage=await Image.findOne({
+                where:{
+                    fileName:fileName
+                }
+            });
+            if(existingImage){
+                await existingImage.update({
+                    postId:post.id
+                })
+            }else{
+                const newImage=await Image.create({
+                    fileName:fileName,
+                    thumbnail:fileName+"-resized",
+                });
+                await newImage.update({
+                    postId:post.id
+                });
+            }
+    }
+    return res.status(201).json({ success: true, post });
+  } catch (error) {
+    console.error('Error creating post:', error);
+    // Handle errors and send an appropriate response
+    return res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
 
-    res.status(500).json({ message: "Not yet implemented!" });
 };
 
 // retrieve single post
 export const getPost = async (req: Request, res: Response) => {
     try {
 
-        var post = await Post.findOne(
+        const post = await Post.findOne(
             {
                 where: {
 
@@ -43,7 +79,7 @@ export const getTimeline = async (req: Request, res: Response) => {
 
     try {
 
-        var timeline = await Post.findAll({
+        const timeline = await Post.findAll({
 
             where: {
 
@@ -60,6 +96,7 @@ export const getTimeline = async (req: Request, res: Response) => {
         }
 
         res.json(timeline);
+       
 
     } catch (err) {
 
@@ -78,7 +115,7 @@ export const deletePost = async (req: Request, res: Response) => {
 
     try {
 
-        var post = await Post.findOne(
+        let post = await Post.findOne(
             {
                 where: {
 

@@ -33,6 +33,8 @@ export const createAlbum = async (req: any, res: any) => {
         res.status(201).json(album);
     }
 }
+export const addToAlbum = async (req: any, res: any) => {
+}
 // export const createAlbumPost = async (req: any, res: any) => {
    
 //     try {
