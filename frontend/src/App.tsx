@@ -12,30 +12,33 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./assets/global.css";
+import AuthProvider from "./context/AuthProvider";
 
 function App() {
   return (
     <div className="App">
-      <Navbar />
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+      <AuthProvider>
+        <Navbar />
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
 
-          {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
-          <Route
-            path="/friends/*"
-            element={
-              <FriendsPageProvider>
-                <FriendsPage />
-              </FriendsPageProvider>
-            }
-          />
-        </Routes>
-      </Router>
-      {/* <Footer/> */}
+            {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
+            <Route
+              path="/friends/*"
+              element={
+                <FriendsPageProvider>
+                  <FriendsPage />
+                </FriendsPageProvider>
+              }
+            />
+          </Routes>
+        </Router>
+        {/* <Footer/> */}
+      </AuthProvider>
     </div>
   );
 }

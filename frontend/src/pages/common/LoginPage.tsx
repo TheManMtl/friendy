@@ -1,12 +1,65 @@
 import React from "react";
 import "./LoginPage.css";
-import { useFormik, ErrorMessage } from "formik";
+import { useFormik, ErrorMessage, Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useState, useContext } from "react";
+import axios from "axios";
+import { AuthContext } from "../../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
-interface Props {}
+interface loginInfo {
+  email: string;
+  password: string;
+}
 
 function LoginPage() {
+  //Access authentication context
+  const authContext = useContext(AuthContext);
+  //use the user and setUser from the context
+  const { setUser } = authContext || {};
+
+  let navigate = useNavigate();
+
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().max(55).email().required(),
+    password: Yup.string().min(6).required(),
+  });
+
+  const onSubmit = (data: loginInfo) => {
+    console.log("====onSubmit=====");
+    axios
+      .post(`${process.env.REACT_APP_HOST_URL}/api/users/login`, data)
+      .then((response) => {
+        if (response.data.error) {
+          alert(response.data.error);
+        } else {
+          localStorage.setItem("accessToken", response.data.token);
+          if (setUser) {
+            setUser({
+              id: response.data.id,
+              name: response.data.name,
+              email: response.data.email,
+              role: response.data.role,
+              token: response.data.token,
+            });
+          } else {
+            console.error("setUser is not defined");
+          }
+
+          if (response.data.role !== "Admin") {
+            navigate("/");
+          } else {
+            navigate("/admin");
+          }
+        }
+      });
+  };
+
   return (
     <div>
       <div className="container px-4 py-5 mx-auto">
@@ -25,31 +78,42 @@ function LoginPage() {
 
                 <h6 className="msg-info">Please login to your account</h6>
 
-                <div className="form-group my-4">
-                  <input
-                    type="text"
-                    id="email"
-                    name="email"
-                    placeholder="Phone no or email id"
-                    className="form-control"
-                  />
-                </div>
+                <Formik
+                  initialValues={initialValues}
+                  onSubmit={onSubmit}
+                  validationSchema={validationSchema}
+                >
+                  {(formikProps) => (
+                    <Form className="formContainer">
+                      {/* Your form fields */}
+                      <div className="form-group my-4">
+                        <Field
+                          type="email"
+                          id="email"
+                          name="email"
+                          placeholder="Email"
+                        />
+                        <ErrorMessage name="email" component="div" />
+                      </div>
 
-                <div className="form-group my-4">
-                  <input
-                    type="password"
-                    id="psw"
-                    name="psw"
-                    placeholder="Password"
-                    className="form-control"
-                  />
-                </div>
+                      <div className="form-group my-4">
+                        <Field
+                          type="password"
+                          id="password"
+                          name="password"
+                          placeholder="Password"
+                        />
+                        <ErrorMessage name="password" component="div" />
+                      </div>
 
-                <div className="row justify-content-center my-3 px-3">
-                  <button className="btn-block btn-color">
-                    Login to Friendy
-                  </button>
-                </div>
+                      <div className="row justify-content-center my-3 px-3">
+                        <button className="btn-block btn-color">
+                          Login to Friendy
+                        </button>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
 
                 <div className="row justify-content-center my-2">
                   <a href="/">

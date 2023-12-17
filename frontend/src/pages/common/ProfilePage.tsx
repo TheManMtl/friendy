@@ -47,25 +47,25 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const [profileUrl, setProfileUrl] = useState<String | null>("");
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_HOST_URL}/api/users/auth`, {
-        headers: {
-          accessToken: localStorage.getItem("accessToken"),
-        },
-      })
-      .then((response) => {
-        if (response.data.error) {
-          setAuthState({ ...authState, status: false });
-        } else {
-          setAuthState({
-            email: response.data.email,
-            id: response.data.id,
-            role: response.data.role,
-            approval: response.data.approval,
-            status: true,
-          });
-        }
-      });
+    // axios
+    //   .get(`${process.env.REACT_APP_HOST_URL}/api/users/auth`, {
+    //     headers: {
+    //       accessToken: localStorage.getItem("accessToken"),
+    //     },
+    //   })
+    //   .then((response) => {
+    //     if (response.data.error) {
+    //       setAuthState({ ...authState, status: false });
+    //     } else {
+    //       setAuthState({
+    //         email: response.data.email,
+    //         id: response.data.id,
+    //         role: response.data.role,
+    //         approval: response.data.approval,
+    //         status: true,
+    //       });
+    //     }
+    //   });
   }, []);
 
   return (
