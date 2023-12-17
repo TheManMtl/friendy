@@ -6,11 +6,13 @@ import postRoutes from "./routes/posts-routes";
 import profileRoutes from "./routes/profile-routes";
 import session from "express-session";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: ["http://localhost:3000"],
