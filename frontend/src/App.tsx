@@ -18,8 +18,8 @@ function App() {
   return (
     <div className="App">
       <AuthProvider>
-        <Navbar />
         <Router>
+          <Navbar />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

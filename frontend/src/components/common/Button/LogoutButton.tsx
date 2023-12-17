@@ -1,6 +1,7 @@
-import  useAuth  from "../../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 import useAxiosToken from '../../../hooks/useAxiosToken';
 import Button from "./Button";
+
 
 const LogoutButton: React.FC = () => {
 
@@ -19,9 +20,18 @@ const LogoutButton: React.FC = () => {
             //TODO
             console.error("Logout failed:", err);
         }
-      };
+    };
 
-  return  <Button label="Logout" variant="default" onClick={logout} />;
+    return (
+        <>
+            {
+                user ?
+                    <Button label="Logout" variant="default" onClick={logout} />
+                    :
+                    <></>
+            }
+        </>
+    )
 };
 
 export default LogoutButton;

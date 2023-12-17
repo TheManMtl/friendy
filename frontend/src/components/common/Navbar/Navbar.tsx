@@ -1,6 +1,7 @@
 import React from "react";
 import "./Navbar.css";
 import ProfileImage from "../ProfileImage/ProfileImage";
+import LogoutButton from "../Button/LogoutButton";
 
 function Navbar() {
   return (
@@ -31,7 +32,7 @@ function Navbar() {
 
           <div className="middle col-4">
             {/* Menu Toggle */}
-            <div className="menu-wrapper">
+            <div className="menu-wrapper"> 
               <button
                 className="navbar-toggler"
                 type="button"
@@ -94,6 +95,10 @@ function Navbar() {
                       size={"small"}
                     />
                   </a>
+                </li>
+                {/* logout button */}
+                <li className="nav-item align-self-center">
+                  <LogoutButton />
                 </li>
               </ul>
             </div>
