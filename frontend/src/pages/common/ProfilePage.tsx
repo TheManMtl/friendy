@@ -4,12 +4,70 @@ import ProfileImage from "../../components/common/ProfileImage/ProfileImage";
 import PostCard from "../../components/common/PostCard/PostCard";
 import PostInput from "../../components/common/PostInput/PostInput";
 import "bootstrap/dist/js/bootstrap.bundle.min";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-interface Props {
-  // TODO
+interface User {
+  bio?: string;
+  birthday?: Date;
+  coverPostId?: number;
+  createdAt: Date;
+  email: string;
+  id: number;
+  isDeleted: number;
+  location?: string;
+  name: string;
+  password: string;
+  position?: string;
+  profilePostId?: number;
+  school?: string;
+  workplace?: string;
 }
 
-function ProfilePage() {
+interface Post {
+  albumId?: number;
+  authorId: number;
+  commentCount: number;
+  content?: string;
+  id: number;
+  imageId?: number;
+  likeCount: number;
+  postId?: number;
+  profileId?: number;
+}
+
+interface ProfilPageType {
+  userInfo?: User;
+  postsInfo?: Post;
+}
+
+const ProfilePage: React.FC<ProfilPageType> = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [profileUrl, setProfileUrl] = useState<String | null>("");
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_HOST_URL}/api/users/auth`, {
+        headers: {
+          accessToken: localStorage.getItem("accessToken"),
+        },
+      })
+      .then((response) => {
+        if (response.data.error) {
+          setAuthState({ ...authState, status: false });
+        } else {
+          setAuthState({
+            email: response.data.email,
+            id: response.data.id,
+            role: response.data.role,
+            approval: response.data.approval,
+            status: true,
+          });
+        }
+      });
+  }, []);
+
   return (
     <div>
       <div className="coverImage row">
@@ -241,6 +299,6 @@ function ProfilePage() {
       </div>
     </div>
   );
-}
+};
 
 export default ProfilePage;
