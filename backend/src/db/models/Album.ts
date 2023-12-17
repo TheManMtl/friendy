@@ -39,10 +39,9 @@ module.exports = (sequelize: any, DataTypes: any) => {
         foreignKey: "profileId",
       });
 
-      this.belongsToMany(models.Post, {
-        through: "AlbumPost",
+      this.hasMany(models.Post,{
         foreignKey: "albumId",
-      });
+      })
     }
   }
   Album.init(

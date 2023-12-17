@@ -290,7 +290,119 @@ Working on:
 challenges:
     -
 
+Date: Dec 13
 
+
+Alex:
+Finished     - adding refresh token logic to middleware Working on:
+    - finishing adding refresh tokens (look into cookie vs session) - controller     - finish logout 
+    - posts  challenges:     - N/A
+
+Ehsan:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Meredith:
+ Finished: 
+  - 
+ Working On: 
+  - yesterday's todos
+  - conform token logic to back end
+ Challenges: 
+  - 
+
+Nick:
+Finished:
+  - friendsHome
+  - friendsList (all friends)
+  - friendsRequests
+  * hard coded user for now to fetch friends
+ 
+Working on:
+  - add/remove friend
+  - page formatting
+  - basic unit tests
+
+Shiyu:
+Finished:
+-connected to the backend
+-continued with register page
+Working on
+-connect user profile with backend
+-finish register page
+
+
+Xuerun:
+Finished
+    -fixed sharp bug
+    -finished get an image and delete an image backend
+Working on:
+    -continue working on album router and controller
+challenges:
+    -
+
+Date: Dec 14
+
+
+Alex:
+Finished     - added refresh tokens, rewrote auth middleware - more modular, refreshes, sends in custom request Working on:
+    - add accessToken to relevant controllers - multi word search on friends
+- logout 
+    - posts  challenges: - time management re: mini project
+
+
+Ehsan:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Meredith:
+ Finished: 
+  - very little
+ Working On: 
+  - previous todos
+  - like controller
+ Challenges: 
+  - 
+
+Nick:
+Finished
+   -friends page work
+ 
+Working On
+   -turn repetitive elements into components (ex: friend panel)
+   -controller for 'people you may know'
+   -add/remove/confirm etc button events
+ 
+Challenges
+   -hosting (alternative host method in case)
+
+
+Shiyu:
+Finished:
+-finished register page
+-tested backend using postman
+Working on
+-finish post card component
+-create About page in profile
+
+
+Xuerun:
+Finished
+    -created create album controller
+Working on:
+    -remove albumpost table and add a column in post table 'albumId'
+    -work on posts controller
+    -modify album controller
+challenges:
+-
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------

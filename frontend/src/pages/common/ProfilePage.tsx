@@ -5,6 +5,10 @@ import PostCard from "../../components/common/PostCard/PostCard";
 import PostInput from "../../components/common/PostInput/PostInput";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
+interface Props {
+  // TODO
+}
+
 function ProfilePage() {
   return (
     <div>
