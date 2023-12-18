@@ -60,12 +60,12 @@ Verify login, cache tokens
 */
 export const logout = async (req: CustomRequest, res: Response) => {
   try {
-    const jwtSecret = process.env.JWT_SECRET as string;
+    // const jwtSecret = process.env.JWT_SECRET as string;
     let token = req.headers["x-access-token"] as string | undefined;
     let refreshToken = req.cookies["refreshToken"] as string | undefined;
     //const readToken = processTokens(token, refreshToken, jwtSecret);
-    const readToken = verifyToken(token!, jwtSecret);
-
+    //const readToken = verifyToken(token!, jwtSecret);
+    const readToken = (await validateTokens(req, res)) as DecodedToken;
     if (!readToken) {
       return res.status(401).send({
         auth: false,

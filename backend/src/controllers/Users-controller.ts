@@ -203,7 +203,7 @@ export const refresh: RequestHandler<
       role: user.role,
     };
 
-    res.status(200).send(theUser);
+    return res.status(200).send(theUser);
   } catch (error) {
     next(error);
   }

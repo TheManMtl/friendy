@@ -170,7 +170,7 @@ export const findPeople = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    const currentUserId = 101;
+    const currentUserId = 89;
     // const currentUserId = req.id;
     if (!currentUserId) {
       return res
@@ -191,16 +191,15 @@ export const findPeople = async (
     });
 
     const friendIds = friends.reduce((acc: number[], friend: typeof Friend) => {
-      if (friend.RequestedById !== currentUserId) {
+      if (friend.requestedById == currentUserId) {
+        acc.push(friend.requestedToId);
+      } else {
         acc.push(friend.requestedById);
       }
-      if (friend.requestedToId !== currentUserId) {
-        acc.push(friend.requestedToId);
-      }
-      console.log(acc);
+
       return acc;
     }, []);
-
+    console.log(friendIds + " = friend ids\n\n\n");
     if (!paramString) {
       return res.status(400).send({ message: "Please send params" });
     }
@@ -223,6 +222,7 @@ export const findPeople = async (
         isDeleted: false,
       },
       attributes: [
+        "id",
         "name",
         "email",
         "location",
@@ -266,9 +266,12 @@ export const findPeople = async (
         },
       ],
     });
-    console.log(returnedUsers.length + "\n\n\n\n\n");
+
     const searchResults: browsedProfile[] = returnedUsers.map((user: any) => {
+      const isFriend = friendIds.includes(user.id);
+
       return {
+        id: user.id,
         name: user.name,
         userId: user.id,
         thumbnail: user.profileImg?.Image?.thumbnail || null,
@@ -276,7 +279,7 @@ export const findPeople = async (
         location: user.location || null,
         school: user.school || null,
         workplace: user.workplace || null,
-        isFriend: friendIds.includes(user.id),
+        isFriend: isFriend,
       };
     });
     res.status(200).send(searchResults);
@@ -291,7 +294,8 @@ function sanitizeString(str: string) {
 }
 
 const sortSearch = async (
-  searchResults: browsedProfile[]
+  searchResults: browsedProfile[],
+  friends: number[]
 ): Promise<browsedProfile[]> => {
   return searchResults;
 };
