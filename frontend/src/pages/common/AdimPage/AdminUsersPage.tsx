@@ -1,8 +1,16 @@
 import React from 'react'
-
+import AdminNavbarTop from './AdminComponents/AdminNavbarTop'
 function AdminUsersPage() {
   return (
-    <div>AdminUsersPage</div>
+    <>
+      <p>Admin Panel</p>
+      <div className="row">
+
+      </div>
+      <AdminNavbarTop />
+      <div>AdminUsersPage</div>
+
+    </>
   )
 }
 

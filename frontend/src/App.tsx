@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
+  HashRouter,
   Route,
   Routes,
   useNavigate,
@@ -29,8 +30,8 @@ function App() {
   return (
     <div className="App">
       <AuthProvider>
-        <Router>
-          {isAdminRoute ? <AdminNavbarTop /> : <Navbar />}
+        <HashRouter>
+          {isAdminRoute ? <></> : <Navbar />}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -54,7 +55,7 @@ function App() {
               }
             />
           </Routes>
-        </Router>
+        </HashRouter>
         {/* <Footer/> */}
       </AuthProvider>
     </div>
