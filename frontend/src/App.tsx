@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, HashRouter, Route, Routes, useNavigate } from "react-router-dom";
 import HomePage from "./pages/common/HomePage";
 import LoginPage from "./pages/common/LoginPage";
 import RegisterPage from "./pages/common/RegisterPage";
@@ -25,14 +25,14 @@ function App() {
   return (
     <div className="App">
       <AuthProvider>
-        <Router>
-        {isAdminRoute ? <></> : <Navbar />}
+        <HashRouter>
+          {isAdminRoute ? <></> : <Navbar />}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route
-              path="/profile/*"
+              path="/#profile/*"
               element={
                 <ProfilePageProvider>
                   <ProfilePage />
@@ -50,7 +50,7 @@ function App() {
               }
             />
           </Routes>
-        </Router>
+        </HashRouter>
         {/* <Footer/> */}
       </AuthProvider>
     </div>
