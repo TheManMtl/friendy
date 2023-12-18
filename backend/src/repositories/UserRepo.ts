@@ -22,7 +22,7 @@ class UserRepo implements IUserRepo {
       }
     });
   }
-  public async exists(user: User): Promise<boolean> {
+  public async exists(user: any): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
   delete(t: any): Promise<any> {

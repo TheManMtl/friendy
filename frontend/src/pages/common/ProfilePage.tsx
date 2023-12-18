@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from 'react';
+import axios from "axios";
 import "./ProfilePage.css";
 import ProfileImage from "../../components/common/ProfileImage/ProfileImage";
 import PostCard from "../../components/common/PostCard/PostCard";
 import PostInput from "../../components/common/PostInput/PostInput";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { IPost } from '../shared/interface/post.interface';
 
 interface User {
   bio?: string;
@@ -43,11 +43,11 @@ interface ProfilPageType {
 
 const ProfilePage: React.FC<ProfilPageType> = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [posts, setPosts] = useState<Post[] | null>(null);
   const [profileUrl, setProfileUrl] = useState<String | null>("");
+  const [posts, setPosts] = useState<IPost[]>([]);
 
   useEffect(() => {
-    // axios
+        // axios
     //   .get(`${process.env.REACT_APP_HOST_URL}/api/users/auth`, {
     //     headers: {
     //       accessToken: localStorage.getItem("accessToken"),
@@ -66,8 +66,11 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     //       });
     //     }
     //   });
+    // TODO: get current user id from auth
+    axios.get(`${process.env.REACT_APP_HOST_URL}/api/posts/user/1`).then((res) => {
+      setPosts(res.data);
+    });
   }, []);
-
   return (
     <div>
       <div className="coverImage row">
@@ -292,13 +295,21 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
               size={"small"}
             />
           </div>
-          <div className="mt-2">
-            <PostCard />
+          {posts.map((post) => (
+            <div key={`post-${post.id}`}            className="mt-2">
+            <PostCard 
+              profileImageSrc='https://picsum.photos/200' 
+              time={post.createdAt} 
+              username='username' // TODO: get username from auth
+              content={post.content} 
+              thumbnailUrl = {post.thumbnailUrl}/>
           </div>
+          ))}
+          
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default ProfilePage;

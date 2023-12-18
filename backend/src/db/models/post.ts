@@ -10,7 +10,7 @@ enum PostType {
   AlbumImg = "albumImg",
 }
 
-interface PostAttributes {
+export interface PostAttributes {
   //non-nullable
   id: number;
   authorId: number;
@@ -60,8 +60,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         as: "author",
       });
       this.belongsTo(models.Image, {
-        foreignKey: "imageId",
-        as: "image",
+        foreignKey: "imageId"
       });
       //TODO check if this is correct
       this.belongsTo(models.Album, {
@@ -89,6 +88,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
       });
     }
   }
+
   Post.init(
     {
       id: {

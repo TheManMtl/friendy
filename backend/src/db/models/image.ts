@@ -19,10 +19,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
     fileName!: string;
     thumbnail!: string;
 
+    // define association
     static associate(models: any) {
       this.hasOne(models.Post, {
-        foreignKey: "imageId",
-        as: "image",
+        foreignKey: "imageId"
       });
     }
   }
