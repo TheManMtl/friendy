@@ -30,7 +30,7 @@ function App() {
   return (
     <div className="App">
       <AuthProvider>
-        <HashRouter>
+        <Router>
           {isAdminRoute ? <></> : <Navbar />}
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -55,7 +55,7 @@ function App() {
               }
             />
           </Routes>
-        </HashRouter>
+        </Router>
         {/* <Footer/> */}
       </AuthProvider>
     </div>
