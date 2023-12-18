@@ -129,11 +129,10 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
           </div>
         </div>
         <hr />
-        <Router>
         <div className="container-nav">
           <ul className="d-flex nav">
             <li className="nav-item">
-              <a className="nav-link" href="/posts">
+              <a className="nav-link" href="/">
                 Posts
               </a>
             </li>
@@ -148,20 +147,12 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/photos">
+              <a className="nav-link" href="/">
                 Photos
               </a>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/profile/albums">
-                Album
-              </a>
-            </li>
           </ul>
-          {/* Route for the AlbumComponent */}
-        <Route path="/profile/albums" Component={AlbumComponent} />
         </div>
-        </Router>
       </div>
 
       <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
