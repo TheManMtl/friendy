@@ -72,7 +72,6 @@ export const logout = async (req: CustomRequest, res: Response) => {
         message: "Falied to authenticate logout request.",
       });
     }
-
     token = token as string;
     refreshToken = refreshToken as string;
     deadTokens.push(token);
