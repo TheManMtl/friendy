@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
+import axios from "../../../services/api/axios";
 import "./ProfilePage.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { IPost } from "../../shared/interface/post.interface";
@@ -72,7 +72,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     if (authContext?.user != null) {
       try {
         axios
-          .get(`${process.env.REACT_APP_HOST_URL}/api/profile/view/${userId}`, {
+          .get(`/profile/view/${userId}`, {
             headers: {
               accessToken: localStorage.getItem("accessToken"),
             },
@@ -104,7 +104,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     }
 
     axios
-      .get(`${process.env.REACT_APP_HOST_URL}/api/posts/user/1`)
+      .get(`/posts/user/1`)
       .then((res) => {
         setPosts(res.data);
       });

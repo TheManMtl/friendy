@@ -18,10 +18,10 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./assets/global.css";
-import AuthProvider from "./context/AuthProvider";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import AdminNavbarTop from "./pages/common/AdimPage/AdminComponents/AdminNavbarTop";
+import PersistAuth from "./components/PersistAuth";
 
 function App() {
   // Determine if the current route is an admin route
@@ -29,10 +29,10 @@ function App() {
 
   return (
     <div className="App">
-      <AuthProvider>
         <Router>
           {isAdminRoute ? <></> : <Navbar />}
           <Routes>
+            <Route element={<PersistAuth />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -54,10 +54,10 @@ function App() {
                 </FriendsPageProvider>
               }
             />
+            </Route>
           </Routes>
         </Router>
         {/* <Footer/> */}
-      </AuthProvider>
     </div>
   );
 }

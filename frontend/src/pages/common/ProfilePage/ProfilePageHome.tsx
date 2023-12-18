@@ -11,7 +11,7 @@ function ProfilePageHome() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_HOST_URL}/api/posts/user/1`)
+      .get(`/posts/user/1`)
       .then((res) => {
         setPosts(res.data);
       });
