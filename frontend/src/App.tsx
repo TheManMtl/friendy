@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
 import HomePage from "./pages/common/HomePage";
 import LoginPage from "./pages/common/LoginPage";
 import RegisterPage from "./pages/common/RegisterPage";
@@ -14,13 +14,19 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./assets/global.css";
 import AuthProvider from "./context/AuthProvider";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
+import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
+import AdminNavbarTop from "./pages/common/AdimPage/AdminComponents/AdminNavbarTop";
 
 function App() {
+
+  // Determine if the current route is an admin route
+  const isAdminRoute = window.location.pathname.startsWith("/admin");
+
   return (
     <div className="App">
       <AuthProvider>
         <Router>
-          <Navbar />
+        {isAdminRoute ? <AdminNavbarTop /> : <Navbar />}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -33,7 +39,7 @@ function App() {
                 </ProfilePageProvider>
               }
             />
-
+            <Route path="/admin" element={<AdminUsersPage />}></Route>
             {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
             <Route
               path="/friends/*"
