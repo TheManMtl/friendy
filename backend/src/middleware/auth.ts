@@ -10,13 +10,7 @@ export interface DecodedToken {
 export interface CustomRequest extends Request {
   id?: number;
   role?: string;
-  accessToken?: string | undefined;
-}
-
-interface ReadToken {
-  decoded?: DecodedToken | undefined;
-  newToken: boolean;
-  token?: string | undefined;
+  refreshTokem?: string;
 }
 
 /*
@@ -33,72 +27,14 @@ const verifyToken = (token: string, secret: string): DecodedToken | null => {
   }
 };
 
-const createNewToken = (token: string, secret: string): string => {
-  const oldToken = verifyToken(token, secret);
-  return jwt.sign(
-    { id: oldToken!.id, role: oldToken!.role },
-    process.env.JWT_SECRET!,
-    { expiresIn: "1h" }
-  );
-};
-
-const processTokens = (
-  token: string | undefined,
-  refreshToken: string | undefined,
-  secret: string
-): ReadToken => {
-  let newToken = false;
-  if (!token) {
-    return {
-      decoded: undefined,
-      newToken: newToken,
-      token: undefined,
-    };
-  }
-  let decoded = verifyToken(token!, secret);
-  if (!decoded) {
-    if (!refreshToken) {
-      return {
-        decoded: undefined,
-        newToken: newToken,
-        token: undefined,
-      };
-    }
-    token = createNewToken(refreshToken!, secret);
-    decoded = verifyToken(token!, secret);
-    newToken = true;
-  }
-  if (!decoded) {
-    return {
-      decoded: undefined,
-      newToken: newToken,
-      token: undefined,
-    };
-  }
-  const decodedToken = decoded as DecodedToken;
-  return {
-    decoded: decodedToken,
-    newToken: newToken,
-    token: token,
-  };
-};
-
 export const authUser = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-  const jwtSecret = process.env.JWT_SECRET as string;
-  const token = req.headers["x-access-token"] as string | undefined;
-  const refreshToken = req.cookies["refreshToken"] as string | undefined;
-  const readToken = processTokens(token, refreshToken, jwtSecret);
-
-  if (!readToken.decoded) {
-    return res.status(401).send({ auth: false, message: "not authenticated." });
-  }
-  req.id = readToken.decoded!.id;
-  req.role = readToken.decoded!.role;
-  req.accessToken = readToken.newToken ? readToken.token : undefined;
+  const readToken = (await validateTokens(req, res)) as DecodedToken;
+  req.id = readToken!.id;
+  req.role = readToken!.role;
 
   next();
 };
@@ -108,36 +44,13 @@ export const authAdmin = async (
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-  const jwtSecret = process.env.JWT_SECRET as string;
-  const token = req.headers["x-access-token"] as string | undefined;
-  const refreshToken = req.cookies["refreshToken"] as string | undefined;
-  const readToken = processTokens(token, refreshToken, jwtSecret);
-
-  if (!readToken.decoded) {
+  const readToken = (await validateTokens(req, res)) as DecodedToken;
+  if (readToken.role != "Admin") {
     return res.status(401).send({ auth: false, message: "not authenticated." });
   }
-  if (readToken.decoded.role != "Admin") {
-    return res.status(401).send({ auth: false, message: "not authenticated." });
-  }
-  req.id = readToken.decoded!.id;
-  req.role = readToken.decoded!.role;
-  req.accessToken = readToken.newToken ? readToken.token : undefined;
-  next();
-};
+  req.id = readToken!.id;
+  req.role = readToken!.role;
 
-export const decodeUser = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const jwtSecret = process.env.JWT_SECRET as string;
-  const token = req.headers["x-access-token"] as string | undefined;
-  const refreshToken = req.cookies["refreshToken"] as string | undefined;
-  const readToken = processTokens(token, refreshToken, jwtSecret);
-
-  req.id = readToken.decoded?.id || undefined;
-  req.role = readToken.decoded?.role || undefined;
-  req.accessToken = readToken.newToken ? readToken.token : undefined;
   next();
 };
 
@@ -150,15 +63,14 @@ export const logout = async (req: CustomRequest, res: Response) => {
     const jwtSecret = process.env.JWT_SECRET as string;
     let token = req.headers["x-access-token"] as string | undefined;
     let refreshToken = req.cookies["refreshToken"] as string | undefined;
-    const readToken = processTokens(token, refreshToken, jwtSecret);
+    //const readToken = processTokens(token, refreshToken, jwtSecret);
+    const readToken = verifyToken(token!, jwtSecret);
 
-    if (!readToken.decoded) {
-      return res
-        .status(401)
-        .send({
-          auth: false,
-          message: "Falied to authenticate logout request.",
-        });
+    if (!readToken) {
+      return res.status(401).send({
+        auth: false,
+        message: "Falied to authenticate logout request.",
+      });
     }
 
     token = token as string;
@@ -176,14 +88,13 @@ export const logout = async (req: CustomRequest, res: Response) => {
 /*
 Check dead tokens to enforce logout
 */
-export const checkDeadTokens = async (
+export const validateTokens = async (
   req: CustomRequest,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+  res: Response
+): Promise<DecodedToken | Response> => {
   const token = req.headers["x-access-token"] as string;
   const refreshToken = req.cookies["refreshToken"] as string;
-
+  const jwtSecret = process.env.JWT_SECRET as string;
   //check if tokens exist
   if (!token || !refreshToken) {
     return res.status(401).send({ message: "Failed to authenticate request." });
@@ -191,12 +102,38 @@ export const checkDeadTokens = async (
 
   //check if tokens have been invalidated
   if (deadTokens.includes(token) || deadRefreshTokens.includes(refreshToken)) {
-    return res
-      .status(401)
-      .send({
-        message: "You have been logged out. Please log back in to continue.",
-      });
+    return res.status(401).send({
+      message: "You have been logged out. Please log back in to continue.",
+    });
   }
 
-  next();
+  try {
+    return jwt.verify(token, jwtSecret) as DecodedToken;
+  } catch (error) {
+    return res.status(401).send({
+      message: "You are not authenticated",
+    });
+  }
 };
+// export const checkDeadTokens = async (
+//   req: CustomRequest,
+//   res: Response,
+//   next: NextFunction
+// ): Promise<any> => {
+//   const token = req.headers["x-access-token"] as string;
+//   const refreshToken = req.cookies["refreshToken"] as string;
+
+//   //check if tokens exist
+//   if (!token || !refreshToken) {
+//     return res.status(401).send({ message: "Failed to authenticate request." });
+//   }
+
+//   //check if tokens have been invalidated
+//   if (deadTokens.includes(token) || deadRefreshTokens.includes(refreshToken)) {
+//     return res.status(401).send({
+//       message: "You have been logged out. Please log back in to continue.",
+//     });
+//   }
+
+//   next();
+// };

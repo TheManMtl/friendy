@@ -289,3 +289,9 @@ function sanitizeString(str: string) {
   str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim, "");
   return str.trim();
 }
+
+const sortSearch = async (
+  searchResults: browsedProfile[]
+): Promise<browsedProfile[]> => {
+  return searchResults;
+};
