@@ -4,8 +4,8 @@ services:
 
   front:
     image: front
-    ports:
-      - 80:80        
+    expose:
+      - 80
     labels:
       - "traefik.http.routers.front.rule=Host(`front.fullstak.pro`)"
       - "traefik.http.routers.front.tls=true"
