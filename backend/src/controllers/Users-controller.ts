@@ -202,7 +202,8 @@ export const refresh: RequestHandler<
       id: user.id,
       role: user.role,
     };
-
+    req.session.userId = user.id;
+    req.session.name = user.name;
     return res.status(200).send(theUser);
   } catch (error) {
     next(error);

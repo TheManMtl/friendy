@@ -374,7 +374,7 @@ const sortSearch = async (
     const nameArray = user.name!.split(" ");
     for (const name of nameArray) {
       if (queryParams.includes(name.toLowerCase())) {
-        points += 750;
+        points += 1200;
       }
     }
     if (user.location) {
@@ -422,7 +422,7 @@ const sortSearch = async (
     if (user.isFriend) {
       points += 1000;
     }
-    points += user.mutualFriends * 100;
+    points += user.mutualFriends * 75;
 
     const userEvaluated: searchMap = {
       user: user,
