@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, HashRouter, Route, Routes, useNavigate } from "react-router-dom";
 import HomePage from "./pages/common/HomePage";
 import LoginPage from "./pages/common/LoginPage";
 import RegisterPage from "./pages/common/RegisterPage";
@@ -16,7 +16,6 @@ import AuthProvider from "./context/AuthProvider";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import AdminNavbarTop from "./pages/common/AdimPage/AdminComponents/AdminNavbarTop";
-import { HashRouter } from "react-router-dom";
 
 function App() {
 
@@ -24,39 +23,37 @@ function App() {
   const isAdminRoute = window.location.pathname.startsWith("/admin");
 
   return (
-    <HashRouter>
-      <div className="App">
-        <AuthProvider>
-          <Router>
+    <div className="App">
+      <AuthProvider>
+        <HashRouter>
           {isAdminRoute ? <></> : <Navbar />}
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route
-                path="/profile/*"
-                element={
-                  <ProfilePageProvider>
-                    <ProfilePage />
-                  </ProfilePageProvider>
-                }
-              />
-              <Route  path="/admin" element={<AdminUsersPage />}></Route>
-              {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
-              <Route
-                path="/friends/*"
-                element={
-                  <FriendsPageProvider>
-                    <FriendsPage />
-                  </FriendsPageProvider>
-                }
-              />
-            </Routes>
-          </Router>
-          {/* <Footer/> */}
-        </AuthProvider>
-        </div>
-    </HashRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route
+              path="/profile/*"
+              element={
+                <ProfilePageProvider>
+                  <ProfilePage />
+                </ProfilePageProvider>
+              }
+            />
+            <Route path="/admin" element={<AdminUsersPage />}></Route>
+            {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
+            <Route
+              path="/friends/*"
+              element={
+                <FriendsPageProvider>
+                  <FriendsPage />
+                </FriendsPageProvider>
+              }
+            />
+          </Routes>
+        </HashRouter>
+        {/* <Footer/> */}
+      </AuthProvider>
+    </div>
   );
 }
 
