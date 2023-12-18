@@ -16,6 +16,7 @@ import AuthProvider from "./context/AuthProvider";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import AdminNavbarTop from "./pages/common/AdimPage/AdminComponents/AdminNavbarTop";
+import { HashRouter } from "react-router-dom";
 
 function App() {
 
@@ -23,37 +24,39 @@ function App() {
   const isAdminRoute = window.location.pathname.startsWith("/admin");
 
   return (
-    <div className="App">
-      <AuthProvider>
-        <Router>
-        {isAdminRoute ? <></> : <Navbar />}
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route
-              path="/profile/*"
-              element={
-                <ProfilePageProvider>
-                  <ProfilePage />
-                </ProfilePageProvider>
-              }
-            />
-            <Route path="/admin" element={<AdminUsersPage />}></Route>
-            {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
-            <Route
-              path="/friends/*"
-              element={
-                <FriendsPageProvider>
-                  <FriendsPage />
-                </FriendsPageProvider>
-              }
-            />
-          </Routes>
-        </Router>
-        {/* <Footer/> */}
-      </AuthProvider>
-    </div>
+    <HashRouter>
+      <div className="App">
+        <AuthProvider>
+          <Router>
+          {isAdminRoute ? <></> : <Navbar />}
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route
+                path="/profile/*"
+                element={
+                  <ProfilePageProvider>
+                    <ProfilePage />
+                  </ProfilePageProvider>
+                }
+              />
+              <Route  path="/admin" element={<AdminUsersPage />}></Route>
+              {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
+              <Route
+                path="/friends/*"
+                element={
+                  <FriendsPageProvider>
+                    <FriendsPage />
+                  </FriendsPageProvider>
+                }
+              />
+            </Routes>
+          </Router>
+          {/* <Footer/> */}
+        </AuthProvider>
+        </div>
+    </HashRouter>
   );
 }
 
