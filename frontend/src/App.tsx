@@ -26,7 +26,7 @@ function App() {
     <div className="App">
       <AuthProvider>
         <Router>
-        {isAdminRoute ? <AdminNavbarTop /> : <Navbar />}
+        {isAdminRoute ? <></> : <Navbar />}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />

@@ -4,8 +4,8 @@ services:
 
   front:
     image: front
-    expose:
-      - 443        
+    ports:
+      - 80:3000        
     labels:
       - "traefik.http.routers.front.rule=Host(`front.fullstak.pro`)"
       - "traefik.http.routers.front.tls=true"
@@ -14,9 +14,9 @@ services:
       # - "traefik.http.services.front.loadbalancer.server.port=3000"
 
     networks:
-      - friendy
+      - gooya
     restart: always        
 
 networks:
-  friendy:
+  gooya:
     external: true
