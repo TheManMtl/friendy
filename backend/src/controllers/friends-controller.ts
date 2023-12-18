@@ -289,6 +289,7 @@ export const viewAllFriends = async (
       })
     );
     // console.log(processedFriends);
+
     return res.status(200).send(processedFriends);
   } catch (error) {
     next(error);
@@ -301,22 +302,25 @@ export const viewSuggestedFriendsBySchool = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-
     const currentUserId = parseInt(req.params.id, 10);
     if (isNaN(currentUserId)) {
-      return res.status(400).send({ message: 'Invalid user ID in request parameters.' });
+      return res
+        .status(400)
+        .send({ message: "Invalid user ID in request parameters." });
     }
 
     const currentUser = await User.findByPk(currentUserId, {
-      attributes: ['school'],
+      attributes: ["school"],
     });
 
     if (!currentUser) {
-      return res.status(400).send({ message: 'Current user not found.' });
+      return res.status(400).send({ message: "Current user not found." });
     }
 
     if (!currentUser.school) {
-      return res.status(400).send({ message: 'User school information not available.' });
+      return res
+        .status(400)
+        .send({ message: "User school information not available." });
     }
 
     const school = currentUser.school;
@@ -352,26 +356,28 @@ export const viewSuggestedFriendsBySchool = async (
       include: [
         {
           model: Post,
-          as: 'profileImg',
-          attributes: ['id'],
+          as: "profileImg",
+          attributes: ["id"],
           include: [
             {
               model: Image,
-              as: 'Image',
-              attributes: ['id', 'thumbnail'],
+              as: "Image",
+              attributes: ["id", "thumbnail"],
             },
           ],
         },
       ],
     });
 
-    const processedSuggestedFriends = suggestedFriends.map((friend: typeof User) => ({
-      userId: friend.id,
-      name: friend.name,
-      school: friend.school || null,
-      thumbnail: friend.profileImg?.image?.thumbnail || null,
-      profileImgId: friend.profileImg?.id || null,
-    }));
+    const processedSuggestedFriends = suggestedFriends.map(
+      (friend: typeof User) => ({
+        userId: friend.id,
+        name: friend.name,
+        school: friend.school || null,
+        thumbnail: friend.profileImg?.image?.thumbnail || null,
+        profileImgId: friend.profileImg?.id || null,
+      })
+    );
 
     return res.status(200).send(processedSuggestedFriends);
   } catch (error) {
@@ -379,7 +385,3 @@ export const viewSuggestedFriendsBySchool = async (
     next(error);
   }
 };
-
-
-
-
