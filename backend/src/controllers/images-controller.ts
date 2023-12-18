@@ -110,6 +110,14 @@ export const getOne = async (req: any, res: any) => {
     image.thumbnailUrl = thumbnailUrl;
     res.send(image);
 };
+export const getbyUser = async (req: any, res: any) => {
+    const images = await models.Image.findAll({
+        where: {
+            userId: req.params.id
+        }
+    });
+    res.send(images);
+}
 
 export const getbyUser = async (req: any, res: any) => {
     const images = await models.Image.findAll({
