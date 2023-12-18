@@ -1,5 +1,5 @@
 import React from 'react'
-import "../../../pages/common/ProfilePage.css"
+import "../../../pages/common/ProfilePage/ProfilePage.css"
 
 function CoverImage() {
   return (

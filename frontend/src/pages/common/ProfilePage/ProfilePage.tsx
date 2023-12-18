@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import "./ProfilePage.css";
-import ProfileImage from "../../components/common/ProfileImage/ProfileImage";
-import PostCard from "../../components/common/PostCard/PostCard";
-import PostInput from "../../components/common/PostInput/PostInput";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import { IPost } from "../shared/interface/post.interface";
-import { AuthContext } from "../../context/AuthProvider";
+import { IPost } from "../../shared/interface/post.interface";
+import { AuthContext } from "../../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import CoverImage from "../../components/common/CoverImage/CoverImage";
-import ProfileInfoMenu from "../../components/common/ProfileInfoMenu/ProfileInfoMenu";
-import PhotoGallery from "../../components/common/PhotoGallery/PhotoGallery";
-import ProfileIntroCard from "../../components/common/ProfileIntroCard/ProfileIntroCard";
-import { useProfilePageContext } from "../../context/ProfilePageProvider";
+import CoverImage from "../../../components/common/CoverImage/CoverImage";
+import ProfileInfoMenu from "../../../components/common/ProfileInfoMenu/ProfileInfoMenu";
+import { useProfilePageContext } from "../../../context/ProfilePageProvider";
+import ProfilePageHome from "./ProfilePageHome";
+import ProfilePageAbout from "./ProfilePageAbout";
+import ProfilePagePhoto from "./ProfilePagePhoto";
+import ProfilePageFriend from "./ProfilePageFriend";
+import ProfilePageAlbum from "./ProfilePageFriend";
 
 interface User {
   bio?: string;
@@ -50,27 +50,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   // const [user, setUser] = useState<User | null>(null);
   // const [profileUrl, setProfileUrl] = useState<String | null>("");
   const [posts, setPosts] = useState<IPost[]>([]);
-
-  // useEffect(() => {
-  // axios
-  //   .get(`${process.env.REACT_APP_HOST_URL}/api/users/auth`, {
-  //     headers: {
-  //       accessToken: localStorage.getItem("accessToken"),
-  //     },
-  //   })
-  //   .then((response) => {
-  //     if (response.data.error) {
-  //       setAuthState({ ...authState, status: false });
-  //     } else {
-  //       setAuthState({
-  //         email: response.data.email,
-  //         id: response.data.id,
-  //         role: response.data.role,
-  //         approval: response.data.approval,
-  //         status: true,
-  //       });
-  //     }
-  //   });
+  const [userId, setUserId] = useState<number>();
   // TODO: get current user id from auth
 
   const { selectedRoute } = useProfilePageContext();
@@ -79,7 +59,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
 
   const [userProfile, setUserProfile] = useState<User | null>(null);
   // const [posts, setPosts] = useState<Post[] | null>(null);
-  const [profileUrl, setProfileUrl] = useState<String | null>("");
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -88,11 +67,12 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     }
     console.log("ProfilePage - AuthContext:", authContext);
     console.log("ProfilePage - User:", authContext?.user);
+    setUserId(authContext?.user?.id);
     const userId = authContext?.user?.id;
-    if (authContext != null) {
+    if (authContext?.user != null) {
       try {
         axios
-          .get(`${process.env.REACT_APP_HOST_URL}/api/profile/view/103`, {
+          .get(`${process.env.REACT_APP_HOST_URL}/api/profile/view/${userId}`, {
             headers: {
               accessToken: localStorage.getItem("accessToken"),
             },
@@ -129,40 +109,30 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         setPosts(res.data);
       });
   }, []);
+
+  const renderMainPanelContent = () => {
+    console.log("====userId before render====" + userId);
+
+    switch (selectedRoute) {
+      case `/profile/${userId}`:
+        return <ProfilePageHome />;
+      case `/profile/${userId}/about`:
+        return <ProfilePageAbout />;
+      case `/profile/${userId}/friend`:
+        return <ProfilePageFriend />;
+      case `/profile/${userId}/photo`:
+        return <ProfilePagePhoto />;
+      case `/profile/${userId}/album`:
+        return <ProfilePageAlbum />;
+      default:
+        return <ProfilePageHome />;
+    }
+  };
   return (
     <div>
       <CoverImage />
-      <ProfileInfoMenu userName={userProfile?.name} />
-
-      <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
-        <div className="leftContent col-md-4">
-          <ProfileIntroCard />
-          <PhotoGallery />
-        </div>
-        {/* right content */}
-        <div className="rightContent col-md-7">
-          <div className="">
-            <PostInput
-              src={
-                "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
-              }
-              alt={"profile"}
-              size={"small"}
-            />
-          </div>
-          {posts.map((post) => (
-            <div key={`post-${post.id}`} className="mt-2">
-              <PostCard
-                profileImageSrc="https://picsum.photos/200"
-                time={post.createdAt}
-                username="username" // TODO: get username from auth
-                content={post.content}
-                thumbnailUrl={post.thumbnailUrl}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
+      <ProfileInfoMenu userName={userProfile?.name} userId={userId} />
+      <div>{renderMainPanelContent()}</div>
     </div>
   );
 };

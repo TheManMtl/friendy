@@ -1,11 +1,17 @@
 import React from "react";
 import ProfileImage from "../ProfileImage/ProfileImage";
-import "../../../pages/common/ProfilePage.css";
-
+import "../../../pages/common/ProfilePage/ProfilePage.css";
+import { Link } from "react-router-dom";
+import { useProfilePageContext } from "../../../context/ProfilePageProvider";
 interface Props {
   userName: string | undefined;
+  userId: number | undefined;
 }
-const ProfileInfoMenu: React.FC<Props> = ({ userName }) => {
+const ProfileInfoMenu: React.FC<Props> = ({ userName, userId }) => {
+  const { setRoute } = useProfilePageContext();
+  const handleLinkClick = (route: string) => {
+    setRoute(route);
+  };
   return (
     <div>
       <div className="InfoCard card py-4">
@@ -44,24 +50,49 @@ const ProfileInfoMenu: React.FC<Props> = ({ userName }) => {
         <div className="container-nav">
           <ul className="d-flex nav">
             <li className="nav-item">
-              <a className="nav-link" href="/">
-                Posts
-              </a>
+              <Link
+                to={`/profile/${userId}`}
+                className="nav-link"
+                onClick={() => handleLinkClick(`/profile/${userId}`)}
+              >
+                Post
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/">
+              <Link
+                to={`/profile/${userId}/about`}
+                className="nav-link"
+                onClick={() => handleLinkClick(`/profile/${userId}/about`)}
+              >
                 About
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/">
+              <Link
+                to={`/profile/${userId}/friend`}
+                className="nav-link"
+                onClick={() => handleLinkClick(`/profile/${userId}/friend`)}
+              >
                 Friends
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/">
+              <Link
+                to={`/profile/${userId}/photo`}
+                className="nav-link"
+                onClick={() => handleLinkClick(`/profile/${userId}/photo`)}
+              >
                 Photos
-              </a>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to={`/profile/${userId}/album`}
+                className="nav-link"
+                onClick={() => handleLinkClick(`/profile/${userId}/album`)}
+              >
+                Albums
+              </Link>
             </li>
           </ul>
         </div>

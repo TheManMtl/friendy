@@ -1,10 +1,15 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 import HomePage from "./pages/common/HomePage";
 import LoginPage from "./pages/common/LoginPage";
 import RegisterPage from "./pages/common/RegisterPage";
-import ProfilePage from "./pages/common/ProfilePage";
+import ProfilePage from "./pages/common/ProfilePage/ProfilePage";
 import FriendsPage from "./pages/common/FriendsPage/FriendsPage";
 import { FriendsPageProvider } from "./context/FriendsPageContext";
 import Navbar from "./components/common/Navbar/Navbar";
@@ -18,7 +23,6 @@ import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import AdminNavbarTop from "./pages/common/AdimPage/AdminComponents/AdminNavbarTop";
 
 function App() {
-
   // Determine if the current route is an admin route
   const isAdminRoute = window.location.pathname.startsWith("/admin");
 
@@ -26,13 +30,13 @@ function App() {
     <div className="App">
       <AuthProvider>
         <Router>
-        {isAdminRoute ? <AdminNavbarTop /> : <Navbar />}
+          {isAdminRoute ? <AdminNavbarTop /> : <Navbar />}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route
-              path="/profile/*"
+              path="/profile/:id/*"
               element={
                 <ProfilePageProvider>
                   <ProfilePage />
