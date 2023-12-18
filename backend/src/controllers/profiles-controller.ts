@@ -35,6 +35,17 @@ interface userProfile {
   isFriend?: boolean;
 }
 
+interface browsedProfile {
+  name?: string;
+  userId?: number;
+  thumbnail?: string;
+  profilePostId?: number;
+  location?: string;
+  school?: string;
+  workplace?: string;
+  isFriend: boolean;
+}
+
 export const dummyHandler = async (
   req: CustomRequest,
   res: Response,
@@ -152,3 +163,129 @@ export const viewProfile = async (
     next(error);
   }
 };
+
+export const findPeople = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const currentUserId = 101;
+    // const currentUserId = req.id;
+    if (!currentUserId) {
+      return res
+        .status(401)
+        .send({ message: "You are not authorized to browse profiles" });
+    }
+    const paramString: string = req.query.search as string;
+    console.log(paramString + " \n\n\n ABOVE");
+
+    const friends = await Friend.findAll({
+      where: {
+        [Op.or]: [
+          { requestedById: currentUserId },
+          { requestedToId: currentUserId },
+        ],
+        acceptedAt: { [Op.not]: null },
+      },
+    });
+
+    const friendIds = friends.reduce((acc: number[], friend: typeof Friend) => {
+      if (friend.RequestedById !== currentUserId) {
+        acc.push(friend.requestedById);
+      }
+      if (friend.requestedToId !== currentUserId) {
+        acc.push(friend.requestedToId);
+      }
+      console.log(acc);
+      return acc;
+    }, []);
+
+    if (!paramString) {
+      return res.status(400).send({ message: "Please send params" });
+    }
+    const paramArray = paramString!.split(",");
+
+    const searchFor = paramArray.map((str) => {
+      const value: string = "%" + sanitizeString(str) + "%";
+      return { [Op.like]: value };
+    });
+
+    const returnedUsers = await User.findAll({
+      where: {
+        [Op.or]: [
+          { name: { [Op.or]: searchFor } },
+          { email: { [Op.or]: searchFor } },
+          { location: { [Op.or]: searchFor } },
+          { school: { [Op.or]: searchFor } },
+          { workplace: { [Op.or]: searchFor } },
+        ],
+        isDeleted: false,
+      },
+      attributes: [
+        "name",
+        "email",
+        "location",
+        "school",
+        "workplace",
+        "position",
+        "bio",
+        "birthday",
+        "relationshipStatus",
+      ],
+      include: [
+        {
+          model: Post,
+          as: "profileImg",
+          attributes: ["id"],
+          include: [
+            {
+              model: Image,
+              as: "image",
+              attributes: ["id", "thumbnail"],
+            },
+          ],
+        },
+        {
+          //relationshipWith
+          model: Post,
+          as: "coverImg",
+          attributes: ["id"],
+          include: [
+            {
+              model: Image,
+              as: "image",
+              attributes: ["id", "fileName"],
+            },
+          ],
+        },
+        {
+          model: User,
+          as: "relationshipWith",
+          attributes: ["id", "name"],
+        },
+      ],
+    });
+    console.log(returnedUsers.length + "\n\n\n\n\n");
+    const searchResults: browsedProfile[] = returnedUsers.map((user: any) => {
+      return {
+        name: user.name,
+        userId: user.id,
+        thumbnail: user.profileImg?.image?.thumbnail || null,
+        profilePostId: user.profileImg?.id || null,
+        location: user.location || null,
+        school: user.school || null,
+        workplace: user.workplace || null,
+        isFriend: friendIds.includes(user.id),
+      };
+    });
+    res.status(200).send(searchResults);
+  } catch (error) {
+    next(error);
+  }
+};
+
+function sanitizeString(str: string) {
+  str = str.replace(/[^a-z0-9áéíóúñü \.,_-]/gim, "");
+  return str.trim();
+}

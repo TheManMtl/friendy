@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+//import { read } from "fs";
 import jwt from "jsonwebtoken";
 
 export interface DecodedToken {
@@ -21,8 +22,8 @@ interface ReadToken {
 /*
  Cache for tokens after logout
  */
- const deadTokens: string[] = [];
- const deadRefreshTokens: string[] = [];
+const deadTokens: string[] = [];
+const deadRefreshTokens: string[] = [];
 
 const verifyToken = (token: string, secret: string): DecodedToken | null => {
   try {
@@ -111,7 +112,7 @@ export const authAdmin = async (
   const token = req.headers["x-access-token"] as string | undefined;
   const refreshToken = req.cookies["refreshToken"] as string | undefined;
   const readToken = processTokens(token, refreshToken, jwtSecret);
-  
+
   if (!readToken.decoded) {
     return res.status(401).send({ auth: false, message: "not authenticated." });
   }
@@ -140,25 +141,24 @@ export const decodeUser = async (
   next();
 };
 
-
 /*
 Logout
 Verify login, cache tokens
 */
-export const logout = async (  
-  req: CustomRequest,
-  res: Response
-  ) =>  {
-
+export const logout = async (req: CustomRequest, res: Response) => {
   try {
-
     const jwtSecret = process.env.JWT_SECRET as string;
     let token = req.headers["x-access-token"] as string | undefined;
     let refreshToken = req.cookies["refreshToken"] as string | undefined;
     const readToken = processTokens(token, refreshToken, jwtSecret);
 
     if (!readToken.decoded) {
-      return res.status(401).send({ auth: false, message: "Falied to authenticate logout request." });
+      return res
+        .status(401)
+        .send({
+          auth: false,
+          message: "Falied to authenticate logout request.",
+        });
     }
 
     token = token as string;
@@ -168,9 +168,8 @@ export const logout = async (
     console.log("deadtokens " + deadTokens[0]);
 
     return res.status(200).json("Successfully logged out");
-
   } catch (err) {
-      return res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };
 
@@ -182,18 +181,21 @@ export const checkDeadTokens = async (
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-
   const token = req.headers["x-access-token"] as string;
   const refreshToken = req.cookies["refreshToken"] as string;
 
   //check if tokens exist
   if (!token || !refreshToken) {
-    return res.status(401).send({ message: "Failed to authenticate request." })
+    return res.status(401).send({ message: "Failed to authenticate request." });
   }
 
   //check if tokens have been invalidated
   if (deadTokens.includes(token) || deadRefreshTokens.includes(refreshToken)) {
-    return res.status(401).send({ message: "You have been logged out. Please log back in to continue." })
+    return res
+      .status(401)
+      .send({
+        message: "You have been logged out. Please log back in to continue.",
+      });
   }
 
   next();
