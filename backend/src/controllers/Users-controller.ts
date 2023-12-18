@@ -22,6 +22,20 @@ interface LoginBody {
   password?: string;
 }
 
+interface ReturnedUser {
+  token: string;
+  name: string;
+  email: string;
+  id: number;
+  role: string;
+}
+
+// token: accessToken,
+// name: user.name,
+// email: user.email,
+// id: user.id,
+// role: user.role,
+
 export const signUp: RequestHandler<
   unknown,
   unknown,
@@ -139,20 +153,18 @@ export const login: RequestHandler<
     });
     req.session.userId = user.id;
     req.session.name = user.name;
-
-    return res
-      .status(200)
-      .json({
-        token: accessToken,
-        name: user.name,
-        email: user.email,
-        id: user.id,
-        role: user.role,
-      })
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        sameSite: "strict",
-      });
+    // ReturnedUser
+    const theUser: ReturnedUser = {
+      token: accessToken,
+      name: user.name,
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
+    return res.status(200).send(theUser).cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+    });
   } catch (error) {
     next(error);
   }
@@ -178,7 +190,20 @@ export const refresh: RequestHandler<
       { expiresIn: "1h" }
     );
 
-    res.status(200).send(accessToken);
+    const user = await User.findByPk(decodedToken.id);
+    if (!user) {
+      return res.status(403).send({ message: "No such user" });
+    }
+
+    const theUser: ReturnedUser = {
+      token: accessToken,
+      name: user.name,
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
+
+    res.status(200).send(theUser);
   } catch (error) {
     next(error);
   }
