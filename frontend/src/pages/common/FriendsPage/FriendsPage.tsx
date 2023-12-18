@@ -1,6 +1,5 @@
 import React from 'react';
 import "./FriendsPage.css";
-import { Button } from '../../../components/common';
 import FriendsPageHome from './FriendsPageHome';
 import FriendsPageLeftMenu from './FriendsPageLeftMenu';
 import FriendsPageRequests from './FriendsPageRequests';

@@ -158,7 +158,7 @@ export const findAllRequests = async (
         (direction === "received" ? item.RequestedBy : item.RequestedTo)
           ?.profileImg?.id || null,
     }));
-
+    console.log(requests);
     return res.status(200).json(requests);
   } catch (error) {
     next(error);
@@ -172,7 +172,7 @@ export const acceptRequest = async (
 ): Promise<any> => {
   try {
     // const requesterId = req.id;
-    const requestedId = 101;
+    const requestedId = 6;
     const requesterId = req.body.id;
     const request = await Friend.findOne({
       where: {
@@ -375,7 +375,7 @@ export const viewSuggestedFriendsBySchool = async (
 
     return res.status(200).send(processedSuggestedFriends);
   } catch (error) {
-    console.error(error); // Log the error for debugging
+    console.error(error);
     next(error);
   }
 };

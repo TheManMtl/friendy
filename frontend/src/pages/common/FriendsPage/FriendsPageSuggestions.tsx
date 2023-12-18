@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '../../../components/common';
+import React, { useEffect, useState } from 'react';
+import axios from "axios";
+import FriendPanel from '../../../components/common/FriendPanel/FriendPanel';
 
 type SuggestedFriend = {
   userId: number;
@@ -14,31 +15,18 @@ function FriendsPageSuggestions() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = '1'; // Still testing hard coded - this is per school right now!
-        const suggestionsResponse = await fetch(`http://localhost:8080/api/friends/suggested/${userId}`);
-        const suggestionsData = await suggestionsResponse.json();
-        setSuggestedFriends(suggestionsData);
+        const userId = '5';
+        const response = await axios.get(`http://localhost:8080/api/friends/suggested/${userId}`);
+        setSuggestedFriends(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Could not retrieve suggested friends:', error);
       }
     };
 
     fetchData();
   }, []);
 
-  const friendPanels = suggestedFriends.map((friend, index) => (
-    <div key={index} className="panel justify-content-center align-items-center" style={{ backgroundImage: `url('https://picsum.photos/200/200?random=${index}')` }}>
-      <br></br><br></br><br></br><br></br><br></br><br></br>
-      <div className="friendName">
-        <h5 className="mb-4">{friend.name}</h5>
-        <Button
-          label="Add Friend"
-          variant="default"
-          onClick={() => console.log(`Add Friend ${friend.name}`)}
-        />
-      </div>
-    </div>
-  ));
+
 
   return (
     <div>
@@ -47,7 +35,14 @@ function FriendsPageSuggestions() {
           <h4>Suggested Friends (by school)</h4>
         </div>
         <div className="panel-grid">
-          {friendPanels}
+          {suggestedFriends.map((friend, index) => (
+            <FriendPanel
+              key={index}
+              friend={friend}
+              buttonText="Add Friend"
+              onClick={() => console.log(`Add Friend ${friend.name}`)}
+            />
+          ))}
         </div>
       </div>
     </div>
