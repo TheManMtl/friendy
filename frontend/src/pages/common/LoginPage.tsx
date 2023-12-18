@@ -1,6 +1,6 @@
 import React from "react";
 import "./LoginPage.css";
-import { useFormik, ErrorMessage, Formik, Form, Field } from "formik";
+import { ErrorMessage, Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useState, useContext } from "react";
 import axios from "axios";
@@ -15,8 +15,6 @@ interface loginInfo {
 function LoginPage() {
   //Access authentication context
   const authContext = useContext(AuthContext);
-  //use the user and setUser from the context
-  const { setUser } = authContext || {};
 
   let navigate = useNavigate();
 
@@ -32,32 +30,33 @@ function LoginPage() {
 
   const onSubmit = (data: loginInfo) => {
     console.log("====onSubmit=====");
-    axios
-      .post(`${process.env.REACT_APP_HOST_URL}/api/users/login`, data)
-      .then((response) => {
-        if (response.data.error) {
-          alert(response.data.error);
-        } else {
-          localStorage.setItem("accessToken", response.data.token);
-          if (setUser) {
-            setUser({
+    try {
+      axios
+        .post(`${process.env.REACT_APP_HOST_URL}/api/users/login`, data)
+        .then((response) => {
+          if (response.data.error) {
+            alert(response.data.error);
+          } else {
+            localStorage.setItem("accessToken", response.data.token);
+
+            authContext?.setUser({
               id: response.data.id,
               name: response.data.name,
               email: response.data.email,
               role: response.data.role,
               token: response.data.token,
             });
-          } else {
-            console.error("setUser is not defined");
+            if (response.data.role !== "Admin") {
+              navigate("/profile");
+            } else {
+              navigate("/admin");
+            }
           }
-
-          if (response.data.role !== "Admin") {
-            navigate("/");
-          } else {
-            navigate("/admin");
-          }
-        }
-      });
+        });
+    } catch (error: any) {
+      console.error("Error during login:", error.message);
+      alert("An error occurred during login. Please try again.");
+    }
   };
 
   return (
@@ -85,7 +84,7 @@ function LoginPage() {
                 >
                   {(formikProps) => (
                     <Form className="formContainer">
-                      {/* Your form fields */}
+                      {/* form fields */}
                       <div className="form-group my-4">
                         <Field
                           type="email"

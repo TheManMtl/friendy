@@ -13,6 +13,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./assets/global.css";
 import AuthProvider from "./context/AuthProvider";
+import { ProfilePageProvider } from "./context/ProfilePageProvider";
 
 function App() {
   return (
@@ -24,7 +25,14 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route
+              path="/profile/*"
+              element={
+                <ProfilePageProvider>
+                  <ProfilePage />
+                </ProfilePageProvider>
+              }
+            />
 
             {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
             <Route

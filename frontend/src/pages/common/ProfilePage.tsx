@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import "./ProfilePage.css";
 import ProfileImage from "../../components/common/ProfileImage/ProfileImage";
 import PostCard from "../../components/common/PostCard/PostCard";
 import PostInput from "../../components/common/PostInput/PostInput";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import { IPost } from '../shared/interface/post.interface';
+import { IPost } from "../shared/interface/post.interface";
+import { AuthContext } from "../../context/AuthProvider";
+import { useNavigate } from "react-router-dom";
+import CoverImage from "../../components/common/CoverImage/CoverImage";
+import ProfileInfoMenu from "../../components/common/ProfileInfoMenu/ProfileInfoMenu";
+import PhotoGallery from "../../components/common/PhotoGallery/PhotoGallery";
+import ProfileIntroCard from "../../components/common/ProfileIntroCard/ProfileIntroCard";
+import { useProfilePageContext } from "../../context/ProfilePageProvider";
 
 interface User {
   bio?: string;
@@ -13,8 +20,6 @@ interface User {
   coverPostId?: number;
   createdAt: Date;
   email: string;
-  id: number;
-  isDeleted: number;
   location?: string;
   name: string;
   password: string;
@@ -42,247 +47,97 @@ interface ProfilPageType {
 }
 
 const ProfilePage: React.FC<ProfilPageType> = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [profileUrl, setProfileUrl] = useState<String | null>("");
+  // const [user, setUser] = useState<User | null>(null);
+  // const [profileUrl, setProfileUrl] = useState<String | null>("");
   const [posts, setPosts] = useState<IPost[]>([]);
 
+  // useEffect(() => {
+  // axios
+  //   .get(`${process.env.REACT_APP_HOST_URL}/api/users/auth`, {
+  //     headers: {
+  //       accessToken: localStorage.getItem("accessToken"),
+  //     },
+  //   })
+  //   .then((response) => {
+  //     if (response.data.error) {
+  //       setAuthState({ ...authState, status: false });
+  //     } else {
+  //       setAuthState({
+  //         email: response.data.email,
+  //         id: response.data.id,
+  //         role: response.data.role,
+  //         approval: response.data.approval,
+  //         status: true,
+  //       });
+  //     }
+  //   });
+  // TODO: get current user id from auth
+
+  const { selectedRoute } = useProfilePageContext();
+
+  const authContext = useContext(AuthContext);
+
+  const [userProfile, setUserProfile] = useState<User | null>(null);
+  // const [posts, setPosts] = useState<Post[] | null>(null);
+  const [profileUrl, setProfileUrl] = useState<String | null>("");
+  let navigate = useNavigate();
+
   useEffect(() => {
-        // axios
-    //   .get(`${process.env.REACT_APP_HOST_URL}/api/users/auth`, {
-    //     headers: {
-    //       accessToken: localStorage.getItem("accessToken"),
-    //     },
-    //   })
-    //   .then((response) => {
-    //     if (response.data.error) {
-    //       setAuthState({ ...authState, status: false });
-    //     } else {
-    //       setAuthState({
-    //         email: response.data.email,
-    //         id: response.data.id,
-    //         role: response.data.role,
-    //         approval: response.data.approval,
-    //         status: true,
-    //       });
-    //     }
-    //   });
-    // TODO: get current user id from auth
-    axios.get(`${process.env.REACT_APP_HOST_URL}/api/posts/user/1`).then((res) => {
-      setPosts(res.data);
-    });
+    if (authContext?.user == null) {
+      navigate("/login");
+    }
+    console.log("ProfilePage - AuthContext:", authContext);
+    console.log("ProfilePage - User:", authContext?.user);
+    const userId = authContext?.user?.id;
+    if (authContext != null) {
+      try {
+        axios
+          .get(`${process.env.REACT_APP_HOST_URL}/api/profile/view/103`, {
+            headers: {
+              accessToken: localStorage.getItem("accessToken"),
+            },
+          })
+          .then((response) => {
+            if (response.data.error) {
+              console.log("====Error receiving response.data=====");
+            } else {
+              const user = response.data.profileInfo;
+              setUserProfile({
+                bio: user.bio,
+                birthday: user.birthday,
+                coverPostId: user.coverPostId,
+                createdAt: user.createdAt,
+                email: user.email,
+                location: user.location,
+                name: user.name,
+                password: user.password,
+                position: user.position,
+                profilePostId: user.profilePostId,
+                school: user.school,
+                workplace: user.workplace,
+              });
+            }
+          });
+      } catch (error: any) {
+        console.log("error message");
+      }
+    }
+
+    axios
+      .get(`${process.env.REACT_APP_HOST_URL}/api/posts/user/1`)
+      .then((res) => {
+        setPosts(res.data);
+      });
   }, []);
   return (
     <div>
-      <div className="coverImage row">
-        <div className="col-12">
-          <div className="cover-image-container">
-            <div
-              className="cover-image"
-              style={{ position: "relative", overflow: "hidden" }}
-            >
-              <img
-                className="inner-image"
-                src="https://images.pexels.com/photos/580151/pexels-photo-580151.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                alt="cover"
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  display: "block",
-                }}
-              />
-            </div>
-            <button className="btn-cover-image">Edit cover image</button>
-          </div>
-        </div>
-      </div>
-
-      <div className="InfoCard card py-4">
-        <div className="basicInfo row">
-          <div className="leftInfo col-md-6">
-            <div className="profileName px-5">
-              <div className="row">
-                <div
-                  className="col-4 d-flex justify-content-end"
-                  style={{ position: "relative" }}
-                >
-                  <div style={{ position: "absolute", bottom: "2rem" }}>
-                    <ProfileImage
-                      src={
-                        "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
-                      }
-                      alt={"profile"}
-                      size={"medium"}
-                    />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <h3 className="d-flex justify-contnet-start">Profile Name</h3>
-                  <p className="d-flex justify-contnet-start">Profile Bio</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="rightInfo col-md-6 d-flex justify-content-end">
-            <div className="px-5">
-              <button className="btn btn-secondary">Edit Profile</button>
-            </div>
-          </div>
-        </div>
-        <hr />
-        <div className="container-nav">
-          <ul className="d-flex nav">
-            <li className="nav-item">
-              <a className="nav-link" href="/">
-                Posts
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/">
-                About
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/">
-                Friends
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/">
-                Photos
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <CoverImage />
+      <ProfileInfoMenu userName={userProfile?.name} />
 
       <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
         <div className="leftContent col-md-4">
-          <div className="IntroCard card py-4">
-            <div className="d-flex justify-content-start offset-1">
-              <h4>Intro</h4>
-            </div>
-            <div className="d-flex justify-content-center">
-              <p>Self intro</p>
-            </div>
-            <div>
-              <button className="btn btn-secondary col-10">Edit bio</button>
-            </div>
-
-            <div className="details my-5">
-              <div className="d-flex justify-content-start">
-                <i className="bi bi-mortarboard-fill icon"></i>
-                <p>
-                  Studied at <a href="/">University of Moratuwa</a>
-                </p>
-              </div>
-
-              <div className="d-flex justify-content-start">
-                <i className="bi bi-house-heart icon"></i>
-                <p className="mx-1">
-                  Lives in <a href="/">Montreal, QC</a>
-                </p>
-              </div>
-
-              <div className="d-flex justify-content-start ">
-                <i className="bi bi-geo-alt-fill icon"></i>
-                <p>
-                  From <a href="/">Colombo, Sri Lanka</a>
-                </p>
-              </div>
-              <div>
-                <button className="btn btn-secondary col-10">
-                  Edit details
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="photosCard card mt-3 py-4">
-            <div className="d-flex mb-2 justify-content-start offset-1">
-              <h4>Photos</h4>
-            </div>
-
-            <div className="row justify-content-center">
-              <div className="col-md-8">
-                <div className="row">
-                  <a
-                    href="https://unsplash.it/1200/768.jpg?image=251"
-                    data-toggle="lightbox"
-                    data-gallery="example-gallery"
-                    className="col-sm-4"
-                  >
-                    <img
-                      src="https://unsplash.it/600.jpg?image=251"
-                      className="img-fluid"
-                      alt="gallery"
-                    />
-                  </a>
-                  <a
-                    href="https://unsplash.it/1200/768.jpg?image=252"
-                    data-toggle="lightbox"
-                    data-gallery="example-gallery"
-                    className="col-sm-4"
-                  >
-                    <img
-                      src="https://unsplash.it/600.jpg?image=252"
-                      className="img-fluid"
-                      alt="gallery"
-                    />
-                  </a>
-                  <a
-                    href="https://unsplash.it/1200/768.jpg?image=253"
-                    data-toggle="lightbox"
-                    data-gallery="example-gallery"
-                    className="col-sm-4"
-                  >
-                    <img
-                      src="https://unsplash.it/600.jpg?image=253"
-                      className="img-fluid"
-                      alt="gallery"
-                    />
-                  </a>
-                </div>
-                <div className="row">
-                  <a
-                    href="https://unsplash.it/1200/768.jpg?image=254"
-                    data-toggle="lightbox"
-                    data-gallery="example-gallery"
-                    className="col-sm-4"
-                  >
-                    <img
-                      src="https://unsplash.it/600.jpg?image=254"
-                      className="img-fluid"
-                      alt="gallery"
-                    />
-                  </a>
-                  <a
-                    href="https://unsplash.it/1200/768.jpg?image=255"
-                    data-toggle="lightbox"
-                    data-gallery="example-gallery"
-                    className="col-sm-4"
-                  >
-                    <img
-                      src="https://unsplash.it/600.jpg?image=255"
-                      className="img-fluid"
-                      alt="gallery"
-                    />
-                  </a>
-                  <a
-                    href="https://unsplash.it/1200/768.jpg?image=256"
-                    data-toggle="lightbox"
-                    data-gallery="example-gallery"
-                    className="col-sm-4"
-                  >
-                    <img
-                      src="https://unsplash.it/600.jpg?image=256"
-                      className="img-fluid"
-                      alt="gallery"
-                    />
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ProfileIntroCard />
+          <PhotoGallery />
         </div>
         {/* right content */}
         <div className="rightContent col-md-7">
@@ -296,20 +151,19 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
             />
           </div>
           {posts.map((post) => (
-            <div key={`post-${post.id}`}            className="mt-2">
-            <PostCard 
-              profileImageSrc='https://picsum.photos/200' 
-              time={post.createdAt} 
-              username='username' // TODO: get username from auth
-              content={post.content} 
-              thumbnailUrl = {post.thumbnailUrl}/>
-          </div>
+            <div key={`post-${post.id}`} className="mt-2">
+              <PostCard
+                profileImageSrc="https://picsum.photos/200"
+                time={post.createdAt}
+                username="username" // TODO: get username from auth
+                content={post.content}
+                thumbnailUrl={post.thumbnailUrl}
+              />
+            </div>
           ))}
-          
         </div>
       </div>
     </div>
   );
-}
-
+};
 export default ProfilePage;
