@@ -15,6 +15,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./assets/global.css";
 import PhotoPage from './pages/common/PhotoPage';
+import AlbumList from './components/common/AlbumDisplay/AlbumList';
 
 
 function App() {
@@ -28,7 +29,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/album" element={<AlbumPage />} />
+          
+          
           <Route path="/photos" element={<PhotoPage />} />
           <Route path="/posts" element={<PostPage />} />
 

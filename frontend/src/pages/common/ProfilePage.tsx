@@ -4,14 +4,14 @@ import ProfileImage from "../../components/common/ProfileImage/ProfileImage";
 import PostCard from "../../components/common/PostCard/PostCard";
 import PostInput from "../../components/common/PostInput/PostInput";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import{BrowserRouter as Router, Route}from "react-router-dom";
+import{BrowserRouter as Router, Routes, Route}from "react-router-dom";
 import AlbumComponent from "../../components/common/AlbumDisplay/AlbumList";
 interface Props {
   // TODO
 }
 
 function ProfilePage() {
-  return (
+  return (   
     <div>
       <div className="coverImage row">
         <div className="col-12">
@@ -69,7 +69,7 @@ function ProfilePage() {
           </div>
         </div>
         <hr />
-        <Router>
+        {/* <Router> */}
         <div className="container-nav">
           <ul className="d-flex nav">
             <li className="nav-item">
@@ -99,9 +99,11 @@ function ProfilePage() {
             </li>
           </ul>
           {/* Route for the AlbumComponent */}
-        <Route path="/profile/albums" Component={AlbumComponent} />
+          <Routes>
+
+        <Route path="/albums" element={<AlbumComponent/>} />
+        </Routes>
         </div>
-        </Router>
       </div>
 
       <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
