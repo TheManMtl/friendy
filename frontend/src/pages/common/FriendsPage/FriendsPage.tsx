@@ -4,6 +4,7 @@ import { Button } from '../../../components/common';
 import FriendsPageHome from './FriendsPageHome';
 import FriendsPageLeftMenu from './FriendsPageLeftMenu';
 import FriendsPageRequests from './FriendsPageRequests';
+import FriendsPageSuggestions from './FriendsPageSuggestions';
 import { useFriendsPageContext } from '../../../context/FriendsPageContext';
 import FriendsPageList from './FriendsPageList';
 
@@ -16,6 +17,8 @@ function FriendsPage() {
                 return <FriendsPageHome />;
             case '/friends/requests':
                 return <FriendsPageRequests />;
+            case '/friends/suggestions':
+                return <FriendsPageSuggestions />;
             case '/friends/list':
                 return <FriendsPageList />;
             default:

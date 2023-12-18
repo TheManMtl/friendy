@@ -15,9 +15,10 @@ function FriendsPageList() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const userId = '101';
+                const userId = '1';
                 const friendsResponse = await fetch(`http://localhost:8080/api/friends/all/${userId}`);
                 const friendsData = await friendsResponse.json();
+                console.log(friendsData);
                 setFriends(friendsData);
             } catch (error) {
                 console.error('Error fetching data:', error);

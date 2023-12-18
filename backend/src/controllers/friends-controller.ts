@@ -131,7 +131,7 @@ export const findAllRequests = async (
               include: [
                 {
                   model: Image,
-                  as: "image",
+                  as: "Image",
                   attributes: ["id", "thumbnail"],
                 },
               ],
@@ -271,7 +271,7 @@ export const viewAllFriends = async (
               include: [
                 {
                   model: Image,
-                  as: "image",
+                  as: "Image",
                   attributes: ["id", "fileName"],
                 },
               ],
@@ -294,3 +294,92 @@ export const viewAllFriends = async (
     next(error);
   }
 };
+
+export const viewSuggestedFriendsBySchool = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+
+    const currentUserId = parseInt(req.params.id, 10);
+    if (isNaN(currentUserId)) {
+      return res.status(400).send({ message: 'Invalid user ID in request parameters.' });
+    }
+
+    const currentUser = await User.findByPk(currentUserId, {
+      attributes: ['school'],
+    });
+
+    if (!currentUser) {
+      return res.status(400).send({ message: 'Current user not found.' });
+    }
+
+    if (!currentUser.school) {
+      return res.status(400).send({ message: 'User school information not available.' });
+    }
+
+    const school = currentUser.school;
+
+    const primaryUserFriends = await Friend.findAll({
+      where: {
+        [Op.or]: [
+          { requestedById: currentUserId },
+          { requestedToId: currentUserId },
+        ],
+        acceptedAt: { [Op.not]: null },
+      },
+    });
+
+    const primaryUserFriendIdsSet = new Set<number>();
+    primaryUserFriends.forEach((friend: typeof Friend) => {
+      if (friend.requestedById == currentUserId) {
+        primaryUserFriendIdsSet.add(friend.requestedToId);
+      } else {
+        primaryUserFriendIdsSet.add(friend.requestedById);
+      }
+    });
+
+    const primaryUserFriendIds = Array.from(primaryUserFriendIdsSet);
+
+    const suggestedFriends = await User.findAll({
+      where: {
+        id: {
+          [Op.not]: [...primaryUserFriendIds, currentUserId],
+        },
+        school: school,
+      },
+      include: [
+        {
+          model: Post,
+          as: 'profileImg',
+          attributes: ['id'],
+          include: [
+            {
+              model: Image,
+              as: 'Image',
+              attributes: ['id', 'thumbnail'],
+            },
+          ],
+        },
+      ],
+    });
+
+    const processedSuggestedFriends = suggestedFriends.map((friend: typeof User) => ({
+      userId: friend.id,
+      name: friend.name,
+      school: friend.school || null,
+      thumbnail: friend.profileImg?.image?.thumbnail || null,
+      profileImgId: friend.profileImg?.id || null,
+    }));
+
+    return res.status(200).send(processedSuggestedFriends);
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    next(error);
+  }
+};
+
+
+
+

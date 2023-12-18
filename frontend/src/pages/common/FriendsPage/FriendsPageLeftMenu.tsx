@@ -27,7 +27,7 @@ function FriendsPageLeftMenu() {
                         </Link>
                     </li>
                     <li className="nav-item leftMenu-option d-flex justify-content-between">
-                        <Link to="/friends" className="nav-link" onClick={() => handleLinkClick('/friends')}>
+                        <Link to="/friends/suggestions" className="nav-link" onClick={() => handleLinkClick('/friends/suggestions')}>
                             <i className="bi bi-person-fill-add icon"></i> Suggestions
                             <i className="bi bi-chevron-right icon"></i>
                         </Link>
