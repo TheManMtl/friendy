@@ -112,7 +112,7 @@ export const viewProfile = async (
           include: [
             {
               model: Image,
-              as: "image",
+              as: "Image",
               attributes: ["id", "thumbnail"],
             },
           ],
@@ -125,7 +125,7 @@ export const viewProfile = async (
           include: [
             {
               model: Image,
-              as: "image",
+              as: "Image",
               attributes: ["id", "fileName"],
             },
           ],
@@ -151,9 +151,9 @@ export const viewProfile = async (
       birthday: profile.birthday || null,
       relationshipStatus: profile.relationshipStatus || null,
       profileImgId: profile.profileImg?.id || null,
-      profileImgThumbnail: profile.profileImg?.image?.thumbnail || null,
+      profileImgThumbnail: profile.profileImg?.Image?.thumbnail || null,
       coverImgId: profile.coverImg?.id || null,
-      coverImgFileName: profile.coverImg?.image?.fileName || null,
+      coverImgFileName: profile.coverImg?.Image?.fileName || null,
       relationId: profile.relationshipWith?.id || null,
       relationName: profile.relationshipWith?.name || null,
       isFriend: isFriend,
@@ -241,7 +241,7 @@ export const findPeople = async (
           include: [
             {
               model: Image,
-              as: "image",
+              as: "Image",
               attributes: ["id", "thumbnail"],
             },
           ],
@@ -254,7 +254,7 @@ export const findPeople = async (
           include: [
             {
               model: Image,
-              as: "image",
+              as: "Image",
               attributes: ["id", "fileName"],
             },
           ],
@@ -271,7 +271,7 @@ export const findPeople = async (
       return {
         name: user.name,
         userId: user.id,
-        thumbnail: user.profileImg?.image?.thumbnail || null,
+        thumbnail: user.profileImg?.Image?.thumbnail || null,
         profilePostId: user.profileImg?.id || null,
         location: user.location || null,
         school: user.school || null,

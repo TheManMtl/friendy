@@ -403,6 +403,81 @@ Working on:
     -modify album controller
 challenges:
 -
+
+Date: Dec 18
+
+
+Alex:
+Alex:
+Finished
+      - search algorithm
+      - auth middleware
+Working on
+      - back: fix auth middleware, add tokens to response
+    - back: add sorting algorithm for friend search
+    - front: search result components
+    - front: right hand panel - home page 
+Challenges
+      - N/A
+
+Ehsan:
+Finished
+      N/A
+Working on:
+- Hosting
+- Admin panel
+Challenges
+      - N/A
+
+Meredith:
+ Finished: 
+  - registration + logout in front
+  - logout and auth helpers in back
+  - likes controller
+ Working On: 
+  - post card component
+  - hook for persisting user data
+  - modify response handlers after tokens updated in back
+  - comment controller
+ Challenges: 
+  - 
+
+Nick:
+Finished
+     -components for friends page
+     -suggested friends controller
+
+Working on
+      -hosting
+      -edit details
+
+Challenges
+      -authentication for friend page
+
+Shiyu:
+Finished:
+-added login logic using authContext
+-added profile page logic 
+-separated components on profile page
+Working on
+-try to modify the profile to include private and public views
+-create post UI and logic 
+-create About page
+
+Xuerun:
+Finished
+    -created photo front end page
+    -added dropdown menu to a specific image
+    - post router and image router refactor
+    -image controller and helper function: get, create, delete image to/from S3 bucket
+    -post controller: getOne, getAll, deleteOne Post and subsequently get/delete image to/from S3
+    - front-end: profile page display all posts with image for the current user
+Working on:
+    -connect album front end page with photo page
+    -create 'create album' and 'edit album' page
+    -
+challenges:
+-
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------
