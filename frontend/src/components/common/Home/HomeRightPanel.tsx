@@ -13,7 +13,7 @@ const HomeRightPanel: React.FC<HomeRightPanelProps> = ({}) => (
           <HomeFriendRequest id={"hello"} />
         </div>
         <div className="col-12">
-          <HomeFriendList id={"hello"} />
+          <HomeFriendList />
         </div>
       </div>
     </div>
