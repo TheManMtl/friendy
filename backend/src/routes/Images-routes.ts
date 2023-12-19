@@ -9,5 +9,5 @@ const router = express.Router();
 router.post("/", multer.uploadTwoImages, s3Middleware.attachS3Info, images.add);
 router.get("/:id", images.getOne);
 router.get("/userphotos/:id", images.getbyUser)
-router.delete("/:id", images.remove);
+// router.delete("/:id", images.remove);
 export default router;

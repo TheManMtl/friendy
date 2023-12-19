@@ -1,10 +1,7 @@
 import { RequestHandler } from "express";
-//import {User} from "../db/models";
-//const {User} = require("../db/models")
 import models from "../db/models";
 import bcrypt from "bcrypt";
 import validator from "validator";
-// import session from "express-session";
 import jwt from "jsonwebtoken";
 import { DecodedToken } from "../middleware/auth";
 
@@ -21,6 +18,20 @@ interface LoginBody {
   email?: string;
   password?: string;
 }
+
+interface ReturnedUser {
+  token: string;
+  name: string;
+  email: string;
+  id: number;
+  role: string;
+}
+
+// token: accessToken,
+// name: user.name,
+// email: user.email,
+// id: user.id,
+// role: user.role,
 
 export const signUp: RequestHandler<
   unknown,
@@ -40,7 +51,7 @@ export const signUp: RequestHandler<
       return res.status(400).send({ message: "passwords do not match" });
     }
     if (name!.length < 4 || name!.length > 25) {
-      res
+      return res
         .status(400)
         .send({ message: "name must be between 4 and 25 characters" });
     }
@@ -62,7 +73,7 @@ export const signUp: RequestHandler<
     }
 
     if (!validator.isLength(passwordRaw, { min: 6, max: 100 })) {
-      res.status(400).send({
+      return res.status(400).send({
         message: "Password must be between 6 and 100 characters long.",
       });
     }
@@ -139,20 +150,20 @@ export const login: RequestHandler<
     });
     req.session.userId = user.id;
     req.session.name = user.name;
-
-    return res
-      .status(200)
-      .json({
-        token: accessToken,
-        name: user.name,
-        email: user.email,
-        id: user.id,
-        role: user.role,
-      })
-      .cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        sameSite: "strict",
-      });
+    // ReturnedUser
+    const theUser: ReturnedUser = {
+      token: accessToken,
+      name: user.name,
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
+    return res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      //sameSite: "strict",
+    })
+    .status(200)
+    .send(theUser);
   } catch (error) {
     next(error);
   }
@@ -178,7 +189,21 @@ export const refresh: RequestHandler<
       { expiresIn: "1h" }
     );
 
-    res.status(200).send(accessToken);
+    const user = await User.findByPk(decodedToken.id);
+    if (!user) {
+      return res.status(403).send({ message: "No such user" });
+    }
+
+    const theUser: ReturnedUser = {
+      token: accessToken,
+      name: user.name,
+      email: user.email,
+      id: user.id,
+      role: user.role,
+    };
+    req.session.userId = user.id;
+    req.session.name = user.name;
+    return res.status(200).send(theUser);
   } catch (error) {
     next(error);
   }

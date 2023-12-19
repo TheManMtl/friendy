@@ -1,45 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '../../../components/common';
+import axios from "axios";
+import FriendPanel from '../../../components/common/FriendPanel/FriendPanel';
 
-type Friend = {
+type FriendList = {
     friendId: number;
     name: string;
     userId: number;
     friendsSince: Date;
+    profileImgId: number | null;
 }
 
 function FriendsPageList() {
     const [user, setUser] = useState(null);
-    const [friends, setFriends] = useState<Friend[]>([]);
+    const [friends, setFriends] = useState<FriendList[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const userId = '101';
-                const friendsResponse = await fetch(`http://localhost:8080/api/friends/all/${userId}`);
-                const friendsData = await friendsResponse.json();
-                setFriends(friendsData);
+                const userId = '5';
+                const response = await axios.get(`http://localhost:8080/api/friends/all/${userId}`);
+                setFriends(response.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Could not retrieve friends list:', error);
             }
         };
 
         fetchData();
     }, []);
-
-    const friendPanels = friends.map((friend, index) => (
-        <div key={index} className="panel justify-content-center align-items-center" style={{ backgroundImage: `url('https://picsum.photos/200/200?random=${index}')` }}>
-            <br></br><br></br><br></br><br></br><br></br><br></br>
-            <div className="friendName">
-                <h5 className="mb-4">{friend.name}</h5>
-                <Button
-                    label="Remove Friend"
-                    variant="default"
-                    onClick={() => console.log(`Add Friend ${friend.name}`)}
-                />
-            </div>
-        </div>
-    ));
 
     return (
         <div>
@@ -48,7 +35,14 @@ function FriendsPageList() {
                     <h4>Your friends</h4>
                 </div>
                 <div className="panel-grid">
-                    {friendPanels}
+                    {friends.map((friend, index) => (
+                        <FriendPanel
+                            key={index}
+                            friend={friend}
+                            buttonText="Add Friend"
+                            onClick={() => console.log(`Add Friend ${friend.name}`)}
+                        />
+                    ))}
                 </div>
             </div>
         </div>

@@ -6,11 +6,14 @@ import postRoutes from "./routes/posts-routes";
 import profileRoutes from "./routes/profile-routes";
 import session from "express-session";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(
   cors({
     origin: ["http://localhost:3000"],
@@ -18,6 +21,7 @@ app.use(
     credentials: true,
   })
 );
+// app.use(cors());
 app.use(
   session({
     name: "id",
@@ -44,7 +48,7 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   console.error(error);
   let errorMessage = "An unknown error occurred";
   if (error instanceof Error) errorMessage = error.message;
-  res.status(500).json({ error: errorMessage });
+  return res.status(500).json({ error: errorMessage });
 });
 
 app.use((req, res, next) => {

@@ -31,6 +31,8 @@ export const createAlbum = async (req: any, res: any) => {
             // })));
         }
         res.status(201).json(album);
+    } catch (err) {
+        console.log("Error", err);
     }
 }
 export const addToAlbum = async (req: any, res: any) => {

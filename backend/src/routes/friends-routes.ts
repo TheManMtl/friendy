@@ -11,6 +11,7 @@ router.post("/request", friends.createRequest);
 router.get("/active-requests/", friends.findAllRequests);
 
 router.get("/all/:id", friends.viewAllFriends);
+router.get("/suggested/:id", friends.viewSuggestedFriendsBySchool);
 router.put("/accept-request", friends.acceptRequest);
 router.delete("/decline-request", friends.deleteFriend);
 router.delete("/remove", friends.deleteFriend);

@@ -4,7 +4,8 @@ import axios from "axios";
 import {Constants} from "../../data/constants"
 
 export default axios.create({
-    baseURL: Constants.BASE_URL
+    baseURL: Constants.BASE_URL,
+    withCredentials: true,
 });
 
 export const axiosToken = axios.create({

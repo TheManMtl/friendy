@@ -1,106 +1,125 @@
+import express, { Express, Request, Response } from "express";
 import models from '../db/models';
+import { PostAttributes } from '../db/models/post';
+import * as imageController from './images-controller';
+
 const Post = models.Post;
 const User = models.User;
 const Image = models.Image;
-import express, { Express, Request, Response } from "express";
+
+interface PostWithUrl extends PostAttributes {
+    imageUrl: string | null;
+    thumbnailUrl: string | null;
+}
 
 
-// create new post
-// NOT IMPLEMENTED
-export const createPost = async (req: Request, res: Response) => {
-     const{image}=req.body;
-    try{
+// create new post (only one image allowed)
+export const createPost = async (req: any, res: Response) => {
+    const imageFile = req.file;
+    let image = null;
+    try {
+        if (imageFile) {
+            image = await imageController.addOne(req);
+        }
         const post = await Post.create({
-            authorId: req.params.authorId,
+            authorId: req.id,
             profileId: req.body.profileId,
             type: req.body.type,
-            text: req.body.text,
-           
-        });
-        if(image){
-            const {fileName}=image;
-            const existingImage=await Image.findOne({
-                where:{
-                    fileName:fileName
-                }
-            });
-            if(existingImage){
-                await existingImage.update({
-                    postId:post.id
-                })
-            }else{
-                const newImage=await Image.create({
-                    fileName:fileName,
-                    thumbnail:fileName+"-resized",
-                });
-                await newImage.update({
-                    postId:post.id
-                });
-            }
-    }
-    return res.status(201).json({ success: true, post });
-  } catch (error) {
-    console.error('Error creating post:', error);
-    // Handle errors and send an appropriate response
-    return res.status(500).json({ success: false, error: 'Internal Server Error' });
-  }
+            content: req.body.text,
+            imageId: image ? image.id : null,
 
+        });
+        return res.status(201).json({ success: true, post });
+    } catch (error) {
+        console.error('Error creating post:', error);
+        // Handle errors and send an appropriate response
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
 };
 
 // retrieve single post
-export const getPost = async (req: Request, res: Response) => {
+export const getPost = async (req: any, res: Response) => {
     try {
-
-        const post = await Post.findOne(
+        let post = await Post.findOne(
             {
                 where: {
-
                     id: req.params.id,
                     isDeleted: false
+                },
+                include: {
+                    model: Image
                 }
             });
 
         if (!post) {
-
             return res.status(404).json({ message: "Post not found" })
         }
 
-        res.json(post);
+        let url = null;
+        let thumbnailUrl = null;
 
-    } catch (err) {
+        if (post.Image) {
+            url = await imageController.getPicUrlFromS3(req, post.Image.fileName);
+            thumbnailUrl = await imageController.getPicUrlFromS3(req, post.Image.thumbnail);
+        }
 
-        res.status(500).json({ message: "Something went wrong" });
+        const resData: PostWithUrl = {
+            ...post.toJSON(),
+            imageUrl: url,
+            thumbnailUrl: thumbnailUrl
+        }
+
+        res.json(resData);
+    } catch (err: any) {
+        res.status(500).json({ message: err.message });
     }
 };
 
 // retrieve posts by author on own timeline
 // note: using req.params--for retrieving any profile, not only current user
-export const getTimeline = async (req: Request, res: Response) => {
-
+export const getTimeline = async (req: any, res: Response) => {
     try {
-
-        const timeline = await Post.findAll({
-
+        let posts = await Post.findAll({
             where: {
-
                 authorId: req.params.id,
                 profileId: null, //excludes posts on other user timelines
                 type: 'timeline',
                 isDeleted: false
-
+            },
+            include: {
+                model: Image,
+                attributes: ['id', 'fileName', 'thumbnail']
             }
         });
 
-        if (!timeline) {
+        if (!posts) {
             return res.status(404).json("No posts found");
         }
 
-        res.json(timeline);
-       
+        let resData: PostWithUrl[] = [];
 
-    } catch (err) {
+        // get signed urls for images
+        for (let i = 0; i < posts.length; i++) {
+            let url = null;
+            let thumbnailUrl = null;
 
-        res.status(500).json({ message: "Something went wrong" });
+            if (posts[i].Image) {
+                url = await imageController.getPicUrlFromS3(req, posts[i].Image.fileName);
+                thumbnailUrl = await imageController.getPicUrlFromS3(req, posts[i].Image.thumbnail);
+            }
+
+            const resPost: PostWithUrl = {
+                ...posts[i].toJSON(),
+                imageUrl: url,
+                thumbnailUrl: thumbnailUrl
+            }
+
+            resData.push(resPost);
+        }
+
+        res.json(resData);
+    } catch (err: any) {
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -111,27 +130,23 @@ export const updatePost = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Not yet implemented!" });
 };
 
-export const deletePost = async (req: Request, res: Response) => {
-
+export const deletePost = async (req: any, res: Response) => {
     try {
-
         let post = await Post.findOne(
             {
                 where: {
-
                     id: req.params.id,
-                    //authorId: req.user.id,  //FIXME ADD AUTH MIDDLEWARE & REQ PROP
+                    //authorId: req.user.id,  //TODO: FIXME ADD AUTH MIDDLEWARE & REQ PROP
                     isDeleted: false
                 }
             });
 
         if (!post) {
-
             return res.status(404).json({ message: "Post not found" })
         }
 
         // else update by id
-        post = await Post.update(
+        await Post.update(
             {
                 isDeleted: true
             },
@@ -141,10 +156,17 @@ export const deletePost = async (req: Request, res: Response) => {
                 }
             });
 
+        if (post.imageId) {
+            // delete image from database and s3 bucket
+            const success = await imageController.remove(req, post.imageId);
+            if (!success) {
+                return res.status(500).json({ message: "Something went wrong" });
+            }
+        }
+
         res.status(200).json({ message: "Successfully deleted post" });
 
     } catch {
-
         res.status(500).json({ message: "Something went wrong" });
     }
 };

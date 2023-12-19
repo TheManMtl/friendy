@@ -1,57 +1,80 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '../../../components/common';
+import axios from "axios";
+import FriendPanel from '../../../components/common/FriendPanel/FriendPanel';
 
-type Friend = {
+
+type FriendRequest = {
   friendId: number;
   name: string;
   userId: number;
 }
 
+//TODO - switch out of hard coded user
 function FriendsPageRequests() {
   const [user, setUser] = useState(null);
-  const [friendRequests, setFriendRequests] = useState<Friend[]>([]);
+  const [friendRequestsSent, setFriendRequestsSent] = useState<FriendRequest[]>([]);
+  const [friendRequestsReceived, setFriendRequestsReceived] = useState<FriendRequest[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = '101';
-        const friendsResponse = await fetch(`http://localhost:8080/api/friends/active-requests`);
-        const friendsData = await friendsResponse.json();
-        setFriendRequests(friendsData);
+        const response = await axios.get(`http://localhost:8080/api/friends/active-requests?direction=receieved`);
+        setFriendRequestsReceived(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Could not find active friend requests:', error);
       }
     };
 
     fetchData();
   }, []);
 
-  const friendPanels = friendRequests.map((friend, index) => (
-    <div key={index} className="panel justify-content-center align-items-center" style={{ backgroundImage: `url('https://picsum.photos/200/200?random=${index}')` }}>
-      <br></br><br></br><br></br><br></br><br></br><br></br>
-      <div className="friendName">
-        <h5 className="mb-4">{friend.name}</h5>
-        <Button
-          label="Request Pending"
-          variant="default"
-          onClick={() => console.log(`Add Friend ${friend.name}`)}
-        />
-      </div>
-    </div>
-  ));
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/friends/active-requests?direction=sent`);
+        setFriendRequestsSent(response.data);
+      } catch (error) {
+        console.error('Could not find active friend requests:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
 
   return (
     <div>
       <div>
         <div className="d-flex justify-content-between align-items-center p-2 m-2">
-          <h4>Your friend requests</h4>
+          <h4>Requests Sent</h4>
         </div>
         <div className="panel-grid">
-          {friendPanels}
+          {friendRequestsSent.map((friend, index) => (
+            <FriendPanel
+              key={index}
+              friend={friend}
+              buttonText="Undo Request"
+              onClick={() => console.log(`Undo Request ${friend.name}`)}
+            />
+          ))}
         </div>
       </div>
+      <div className="d-flex justify-content-between align-items-center p-2 m-2">
+        <h4>Requests Recieved</h4>
+      </div>
+      <div className="panel-grid">
+        {friendRequestsReceived.map((friend, index) => (
+          <FriendPanel
+            key={index}
+            friend={friend}
+            buttonText="Accept Request"
+            onClick={() => console.log(`Accept Request ${friend.name}`)}
+          />
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
 export default FriendsPageRequests
