@@ -30,10 +30,10 @@ function getColorByRole(role: string): string {
 function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
 
-  const baseUrl = "http://localhost:8080/api/";
+  const baseUrl = "/api/";
   useEffect(() => {
     // Fetch users 
-    axios.get(baseUrl + "users/admin")
+    axios.get(baseUrl +"users/admin")
       .then(response => setUsers(response.data))
       .catch(error => console.error('Error fetching users:', error));
   }, []);
