@@ -30,7 +30,7 @@ function App() {
   return (
     <div className="App">
       {/* <AuthProvider> */}
-      <Router>
+      <HashRouter>
         {/* <HashRouter> */}
         {isAdminRoute ? <></> : <Navbar />}
         <Routes>
@@ -49,7 +49,7 @@ function App() {
             <Route path="/admin" element={<AdminUsersPage />}></Route>
             {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
             <Route
-              path="/friends/*"
+              path="/`#`friends/*"
               element={
                 <FriendsPageProvider>
                   <FriendsPage />
@@ -59,7 +59,7 @@ function App() {
           </Route>
         </Routes>
         {/* </HashRouter> */}
-      </Router>
+      </HashRouter>
       {/* <Footer/> */}
       {/* </AuthProvider> */}
     </div>

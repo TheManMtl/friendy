@@ -30,10 +30,10 @@ function getColorByRole(role: string): string {
 function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
 
-  const baseUrl = "http://localhost:8080/api/";
+  const baseUrl = "/api/";
   useEffect(() => {
     // Fetch users 
-    axios.get(baseUrl + "users/admin")
+    axios.get(baseUrl +"users/admin")
       .then(response => setUsers(response.data))
       .catch(error => console.error('Error fetching users:', error));
   }, []);
@@ -46,7 +46,7 @@ function AdminUsersPage() {
       <AdminNavbarTop />
 
       <div className="container mt-3">
-        <h2>Users List</h2>
+        <h2>Users List Updated</h2>
         <div className="row">
         <div className="col-md-2">
             <div className="color-box" style={{ backgroundColor: getColorByRole('admin') }}></div>

@@ -38,7 +38,7 @@ function ProfilePageHome() {
               <PostCard
                 profileImageSrc="https://picsum.photos/200"
                 time={post.createdAt}
-                username="username" // TODO: get username from auth
+                username={post.author.name}
                 content={post.content}
                 thumbnailUrl={post.thumbnailUrl}
               />

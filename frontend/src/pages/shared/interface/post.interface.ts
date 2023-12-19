@@ -14,4 +14,13 @@ export interface IPost {
     Image: IImage;
     imageUrls?: string;
     thumbnailUrl?: string;
+    author: IPostAuthor;
+}
+
+interface IPostAuthor {
+
+    id: number;
+    name: string;
+    profileImg?: IPost;
+
 }
