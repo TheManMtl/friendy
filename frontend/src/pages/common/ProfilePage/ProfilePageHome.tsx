@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import PhotoGallery from "../../../components/common/PhotoGallery/PhotoGallery";
-import ProfileIntroCard from "../../../components/common/ProfileIntroCard/ProfileIntroCard";
+import PhotoGallery from "../../../components/common/ProfilePage/PhotoGallery";
+import ProfileIntroCard from "../../../components/common/ProfilePage/ProfileIntroCard";
 import PostInput from "../../../components/common/PostInput/PostInput";
 import { IPost } from "../../shared/interface/post.interface";
 import PostCard from "../../../components/common/PostCard/PostCard";
