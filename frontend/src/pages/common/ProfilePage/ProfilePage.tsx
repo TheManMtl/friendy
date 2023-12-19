@@ -1,7 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-// import { axiosToken } from "../../../services/api/axios";
-import axios from "axios";
-import { axiosToken } from "../../../services/api/axios";
 import "./ProfilePage.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { AuthContext } from "../../../context/AuthProvider";
@@ -15,6 +12,7 @@ import ProfilePagePhoto from "./ProfilePagePhoto";
 import ProfilePageFriend from "./ProfilePageFriend";
 import ProfilePageAlbum from "./ProfilePageFriend";
 import { useParams } from "react-router-dom";
+import useAxiosToken from "../../../hooks/useAxiosToken";
 
 interface User {
   bio?: string;
@@ -55,7 +53,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const [isPrivateProfile, setIsPrivateProfile] = useState<boolean>(false);
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
   const authContext = useContext(AuthContext);
-
+  const axiosToken = useAxiosToken();
   const [userProfile, setUserProfile] = useState<User | null>(null);
   // const [posts, setPosts] = useState<Post[] | null>(null);
   let navigate = useNavigate();
