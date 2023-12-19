@@ -9,13 +9,14 @@ type SuggestedFriend = {
   profileImgId: number | null;
 };
 
-function FriendsPageSuggestions() {
+function FriendsPageSuggestions({ userId }: { userId: number | undefined }) {
   const [suggestedFriends, setSuggestedFriends] = useState<SuggestedFriend[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = '5';
+        // TODO: Also make sure the currently logged-in user's ID is being passed
+        console.log("Authenticated User Id: " + userId);
         const response = await axios.get(`http://localhost:8080/api/friends/suggested/${userId}`);
         setSuggestedFriends(response.data);
       } catch (error) {
