@@ -29,6 +29,11 @@
   height: 3rem;
 }
 
+.small-med {
+  width: 6rem;
+  height: 6rem;
+}
+
 .medium {
   width: 10rem;
   height: 10rem;

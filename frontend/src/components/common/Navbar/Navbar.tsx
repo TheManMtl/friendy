@@ -2,8 +2,12 @@ import React from "react";
 import "./Navbar.css";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import LogoutButton from "../Button/LogoutButton";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthProvider";
 
 function Navbar() {
+  const authContext = useContext(AuthContext);
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg nav-custom py-3">
@@ -32,7 +36,7 @@ function Navbar() {
 
           <div className="middle col-4">
             {/* Menu Toggle */}
-            <div className="menu-wrapper"> 
+            <div className="menu-wrapper">
               <button
                 className="navbar-toggler"
                 type="button"
@@ -88,7 +92,10 @@ function Navbar() {
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="/profile">
+                  <a
+                    className="nav-link"
+                    href={`/profile/${authContext?.user?.id}`}
+                  >
                     <ProfileImage
                       src={"https://www.w3schools.com/howto/img_avatar.png"}
                       alt={"profile"}

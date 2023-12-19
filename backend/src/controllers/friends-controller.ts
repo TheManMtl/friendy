@@ -2,6 +2,7 @@ import { NextFunction, Response } from "express";
 import { CustomRequest } from "../middleware/auth";
 import models from "../db/models";
 import { Op, Sequelize } from "sequelize";
+import { getPicUrlFromS3 } from "./images-controller";
 
 const User = models.User;
 const Friend = models.Friend;
@@ -278,12 +279,23 @@ export const viewAllFriends = async (
             },
           ],
         });
+        let thumbnail: string;
+
+        if (theFriends.profileImg != null) {
+          thumbnail =
+            (await getPicUrlFromS3(
+              req,
+              theFriends.profileImg.Image.thumbnail
+            )) || "";
+        } else {
+          thumbnail = (await getPicUrlFromS3(req, "default.jpg")) || "";
+        }
         return {
           friendId: friend.id,
           name: theFriends.name,
           userId: userId,
           friendsSince: friend.acceptedAt,
-          thumbnail: theFriends.profileImg?.image?.thumbnail || null,
+          thumbnail: thumbnail,
           profilePostId: theFriends.profileImg?.id || null,
         };
       })

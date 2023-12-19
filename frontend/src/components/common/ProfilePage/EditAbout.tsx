@@ -4,21 +4,31 @@ import axios from "../../../services/api/axios";
 
 function EditAbout() {
   return (
-    <div>
-      {" "}
+    <div className="d-flex justify-content-center row ">
       {/* School panel */}
-      <div className="school d-flex justify-content-start row">
-        <div className="col-1 icon d-flex justify-content-start">
+      <div className="school d-flex justify-content-start row mt-3">
+        <div className="col-3 icon d-flex justify-content-end">
           <i className="bi bi-mortarboard-fill icon"></i>
         </div>
-        <div className="col-6 d-flex justify-content-start">
+        <div className="col-5 d-flex justify-content-start">
           <p>Studied at University of Moratuwa</p>
         </div>
-        <div className="col-2 d-flex justify-content-end">
+        <div className="col-2 d-flex justify-content-start">
           <button className="btn btn-secondary">edit</button>
         </div>
       </div>
-      {/* School panel */}
+      {/* Work panel */}
+      <div className="school d-flex justify-content-start row mt-3">
+        <div className="col-3 icon d-flex justify-content-end">
+          <i className="bi bi-mortarboard-fill icon"></i>
+        </div>
+        <div className="col-5 d-flex justify-content-start">
+          <p>Studied at University of Moratuwa</p>
+        </div>
+        <div className="col-2 d-flex justify-content-start">
+          <button className="btn btn-secondary">edit</button>
+        </div>
+      </div>
     </div>
   );
 }
