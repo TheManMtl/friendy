@@ -1,8 +1,11 @@
 import express from "express";
 import * as UserController from "../controllers/Users-controller";
 import * as auth from "../middleware/auth";
+import cookieParser from "cookie-parser";
 
 const router = express.Router();
+router.use(cookieParser());
+
 
 router.post("/signup", UserController.signUp);
 router.post("/login", UserController.login);

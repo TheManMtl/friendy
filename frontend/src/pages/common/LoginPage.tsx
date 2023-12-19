@@ -3,7 +3,7 @@ import "./LoginPage.css";
 import { ErrorMessage, Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useState, useContext } from "react";
-import axios from "axios";
+import axios from "../../services/api/axios";
 import { AuthContext } from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
@@ -32,7 +32,7 @@ function LoginPage() {
     console.log("====onSubmit=====");
     try {
       axios
-        .post(`${process.env.REACT_APP_HOST_URL}/api/users/login`, data)
+        .post(`/users/login`, data)
         .then((response) => {
           if (response.data.error) {
             alert(response.data.error);

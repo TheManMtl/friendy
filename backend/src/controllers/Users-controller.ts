@@ -1,10 +1,7 @@
 import { RequestHandler } from "express";
-//import {User} from "../db/models";
-//const {User} = require("../db/models")
 import models from "../db/models";
 import bcrypt from "bcrypt";
 import validator from "validator";
-//import session from "express-session";
 import jwt from "jsonwebtoken";
 import { DecodedToken } from "../middleware/auth";
 
@@ -54,7 +51,7 @@ export const signUp: RequestHandler<
       return res.status(400).send({ message: "passwords do not match" });
     }
     if (name!.length < 4 || name!.length > 25) {
-      res
+      return res
         .status(400)
         .send({ message: "name must be between 4 and 25 characters" });
     }
@@ -76,7 +73,7 @@ export const signUp: RequestHandler<
     }
 
     if (!validator.isLength(passwordRaw, { min: 6, max: 100 })) {
-      res.status(400).send({
+      return res.status(400).send({
         message: "Password must be between 6 and 100 characters long.",
       });
     }
@@ -161,10 +158,12 @@ export const login: RequestHandler<
       id: user.id,
       role: user.role,
     };
-    return res.status(200).send(theUser).cookie("refreshToken", refreshToken, {
+    return res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
-    });
+      //sameSite: "strict",
+    })
+    .status(200)
+    .send(theUser);
   } catch (error) {
     next(error);
   }

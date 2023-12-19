@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import PhotoGallery from "../../../components/common/PhotoGallery/PhotoGallery";
-import ProfileIntroCard from "../../../components/common/ProfileIntroCard/ProfileIntroCard";
+import PhotoGallery from "../../../components/common/ProfilePage/PhotoGallery";
+import ProfileIntroCard from "../../../components/common/ProfilePage/ProfileIntroCard";
 import PostInput from "../../../components/common/PostInput/PostInput";
 import { IPost } from "../../shared/interface/post.interface";
 import PostCard from "../../../components/common/PostCard/PostCard";
@@ -10,11 +10,9 @@ function ProfilePageHome() {
   const [posts, setPosts] = useState<IPost[]>([]);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_HOST_URL}/api/posts/user/1`)
-      .then((res) => {
-        setPosts(res.data);
-      });
+    axios.get(`/posts/user/1`).then((res) => {
+      setPosts(res.data);
+    });
   }, []);
 
   return (

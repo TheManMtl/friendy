@@ -1,7 +1,12 @@
-import React from 'react'
-import "../../../pages/common/ProfilePage/ProfilePage.css"
+import React from "react";
+import "../../../pages/common/ProfilePage/ProfilePage.css";
 
-function CoverImage() {
+interface coverImageProps {
+  src: string;
+  isPrivateProfile: boolean;
+}
+
+const CoverImage: React.FC<coverImageProps> = ({ src, isPrivateProfile }) => {
   return (
     <div>
       <div className="coverImage row">
@@ -22,12 +27,14 @@ function CoverImage() {
                 }}
               />
             </div>
-            <button className="btn-cover-image">Edit cover image</button>
+            {isPrivateProfile ? (
+              <button className="btn-cover-image">Edit cover image</button>
+            ) : null}
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CoverImage
+export default CoverImage;
