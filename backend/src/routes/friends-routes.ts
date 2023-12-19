@@ -9,7 +9,7 @@ router.post("/request", friends.createRequest);
 // TWO directions - query params sent/received
 // active-requests?direction=sent - friend requests you've made
 //active-requests?direction=received - friend requests you've received - defaults to this.
-router.get("/active-requests/", friends.findAllRequests);
+router.get("/active-requests/", attachS3Info, friends.findAllRequests);
 
 router.get("/all/:id", attachS3Info, friends.viewAllFriends);
 router.get("/suggested/:id", friends.viewSuggestedFriendsBySchool);

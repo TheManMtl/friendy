@@ -1,0 +1,22 @@
+.btn-false {
+    background-color: #e4e6e9!important;
+}
+.btn-false:hover {
+    background-color: #c0c2c7 !important;
+
+}
+.btn-true {
+background-color: #d973b9!important;
+}
+
+.btn-true:hover {
+    background-color: #a8528c !important;
+
+}
+
+.btn {
+    width: 90%;
+    border-radius: 15px;
+    font-weight: 600!important;
+    font-size: 1.2em;
+}
