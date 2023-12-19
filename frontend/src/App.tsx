@@ -49,7 +49,7 @@ function App() {
             <Route path="/`#`admin" element={<AdminUsersPage />}></Route>
             {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
             <Route
-              path="/friends/*"
+              path="/`#`friends/*"
               element={
                 <FriendsPageProvider>
                   <FriendsPage />
