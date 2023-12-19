@@ -18,7 +18,7 @@ COPY ./frontend/package*.json ./
 # Install Node.js and npm
 RUN apk add --update nodejs npm
 # Install project dependencies
-RUN npm install
+#RUN npm install
 # Copy the rest of the application code
 COPY ./frontend .
 # Run npm run build to build the React app
