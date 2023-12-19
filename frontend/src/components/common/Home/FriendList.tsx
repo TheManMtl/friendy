@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { FriendsForList } from "../../../models/FriendsForList";
-import axios from "axios";
 import HomeSingleFriend from "./SingleFriend";
+import useAxiosToken from "../../../hooks/useAxiosToken";
 
 type HomeFriendListProps = {};
 
 const HomeFriendList: React.FC<HomeFriendListProps> = ({}) => {
   const [friends, setFriends] = useState<FriendsForList[]>([]);
   // router.get("/all/:id", friends.viewAllFriends);
+  const axios = useAxiosToken();
 
   useEffect(() => {
     try {
       axios
-        .get(`${process.env.REACT_APP_HOST_URL}/api/friends/all/89`)
+        .get(`/friends/all/89`)
         .then((response: any) => {
           console.log(
             JSON.stringify(response.data, null, 2) + "friendsresp -> \n\n\n\n"

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { axiosToken } from '../../../services/api/axios'; 
 import { Constants } from '../../../data/constants';
 import FriendPanel from '../../../components/common/FriendPanel/FriendPanel';
 import useAxiosToken from '../../../hooks/useAxiosToken';
