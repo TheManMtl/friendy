@@ -3,6 +3,7 @@ import axios from "../../../services/api/axios";
 import "./ProfilePage.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { IPost } from "../../shared/interface/post.interface";
+import { IUser } from "../../shared/interface/user.interface";
 import { AuthContext } from "../../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import CoverImage from "../../../components/common/CoverImage/CoverImage";
@@ -14,36 +15,9 @@ import ProfilePagePhoto from "./ProfilePagePhoto";
 import ProfilePageFriend from "./ProfilePageFriend";
 import ProfilePageAlbum from "./ProfilePageFriend";
 
-interface User {
-  bio?: string;
-  birthday?: Date;
-  coverPostId?: number;
-  createdAt: Date;
-  email: string;
-  location?: string;
-  name: string;
-  password: string;
-  position?: string;
-  profilePostId?: number;
-  school?: string;
-  workplace?: string;
-}
-
-interface Post {
-  albumId?: number;
-  authorId: number;
-  commentCount: number;
-  content?: string;
-  id: number;
-  imageId?: number;
-  likeCount: number;
-  postId?: number;
-  profileId?: number;
-}
-
 interface ProfilPageType {
-  userInfo?: User;
-  postsInfo?: Post;
+  userInfo?: IUser;
+  postsInfo?: IPost;
 }
 
 const ProfilePage: React.FC<ProfilPageType> = () => {
@@ -57,7 +31,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
 
   const authContext = useContext(AuthContext);
 
-  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<IUser | null>(null);
   // const [posts, setPosts] = useState<Post[] | null>(null);
   let navigate = useNavigate();
 
@@ -104,7 +78,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     }
 
     axios
-      .get(`/posts/user/1`)
+      .get(`/posts/user/${userId}`)
       .then((res) => {
         setPosts(res.data);
       });

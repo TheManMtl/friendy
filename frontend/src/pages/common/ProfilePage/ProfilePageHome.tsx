@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PhotoGallery from "../../../components/common/PhotoGallery/PhotoGallery";
 import ProfileIntroCard from "../../../components/common/ProfileIntroCard/ProfileIntroCard";
 import PostInput from "../../../components/common/PostInput/PostInput";
 import { IPost } from "../../shared/interface/post.interface";
 import PostCard from "../../../components/common/PostCard/PostCard";
 import axios from "../../../services/api/axios";
+import { AuthContext } from "../../../context/AuthProvider";
 
 function ProfilePageHome() {
   const [posts, setPosts] = useState<IPost[]>([]);
+  const authContext = useContext(AuthContext);
+  
 
   useEffect(() => {
+    const userId = authContext?.user?.id;
     axios
-      .get(`/posts/user/1`)
+      .get(`/posts/user/${userId}`) // TODO: get user id from auth
       .then((res) => {
         setPosts(res.data);
       });
