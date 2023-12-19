@@ -7,7 +7,7 @@ interface Props {
   size?: string;
 }
 
-//size: small, medium, large
+//size: small, medium
 const ProfileImage: React.FC<Props> = ({ src, alt, size }) => {
   return (
     <div>

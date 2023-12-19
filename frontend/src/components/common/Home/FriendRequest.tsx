@@ -5,7 +5,7 @@ type HomeFriendRequestProps = {
 };
 
 const HomeFriendRequest: React.FC<HomeFriendRequestProps> = ({ id }) => (
-  <div>hello</div>
+  <div></div>
 );
 
 export default HomeFriendRequest;

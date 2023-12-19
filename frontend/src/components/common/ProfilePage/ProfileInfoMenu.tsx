@@ -5,9 +5,14 @@ import { Link } from "react-router-dom";
 import { useProfilePageContext } from "../../../context/ProfilePageProvider";
 interface Props {
   userName: string | undefined;
-  userId: number | undefined;
+  userId: string | undefined;
+  isPrivateProfile: boolean | undefined;
 }
-const ProfileInfoMenu: React.FC<Props> = ({ userName, userId }) => {
+const ProfileInfoMenu: React.FC<Props> = ({
+  userName,
+  userId,
+  isPrivateProfile,
+}) => {
   const { setRoute } = useProfilePageContext();
   const handleLinkClick = (route: string) => {
     setRoute(route);
@@ -40,11 +45,13 @@ const ProfileInfoMenu: React.FC<Props> = ({ userName, userId }) => {
               </div>
             </div>
           </div>
-          <div className="rightInfo col-md-6 d-flex justify-content-end">
-            <div className="px-5">
-              <button className="btn btn-secondary">Edit Profile</button>
+          {isPrivateProfile ? (
+            <div className="rightInfo col-md-6 d-flex justify-content-end">
+              <div className="px-5">
+                <button className="btn btn-secondary">Edit Profile</button>
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
         <hr />
         <div className="container-nav">

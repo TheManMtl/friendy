@@ -1,14 +1,15 @@
 import React from "react";
 import HomeFriendRequest from "../../components/common/Home/FriendRequest";
-
+import HomeRightPanel from "../../components/common/Home/HomeRightPanel";
+import "./HomePage.css";
 function HomePage() {
   return (
-    <div className="container px-0 mx-0">
+    <div className="container-fluid px-0 mx-0">
       <div className="row">
-        <div className="col-3">leftpanel</div>
-        <div className="col-6">timeline</div>
-        <div className="col-3">
-          <HomeFriendRequest id={"hello"} />
+        <div className="col-lg-3 d-none d-lg-block ">leftpanel</div>
+        <div className="col-6 ">timeline</div>
+        <div className="col-lg-3 d-none d-lg-block ">
+          <HomeRightPanel />
         </div>
       </div>
     </div>

@@ -1,14 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import "./FriendsPage.css";
+
 import FriendsPageHome from './FriendsPageHome';
 import FriendsPageLeftMenu from './FriendsPageLeftMenu';
 import FriendsPageRequests from './FriendsPageRequests';
 import FriendsPageSuggestions from './FriendsPageSuggestions';
-import { useFriendsPageContext } from '../../../context/FriendsPageContext';
 import FriendsPageList from './FriendsPageList';
+import { AuthContext } from "../../../context/AuthProvider";
+import { useFriendsPageContext } from '../../../context/FriendsPageContext';
 
 function FriendsPage() {
+
+    // TODO: make sure this isn't royally f'd up.
     const { selectedRoute } = useFriendsPageContext();
+    const authContext = useContext(AuthContext);
+    const user = authContext && authContext.user;
+    console.log('Authenticated User:', user);
 
     const renderMainPanelContent = () => {
         switch (selectedRoute) {
@@ -17,7 +24,7 @@ function FriendsPage() {
             case '/friends/requests':
                 return <FriendsPageRequests />;
             case '/friends/suggestions':
-                return <FriendsPageSuggestions />;
+                return <FriendsPageSuggestions userId={user?.id} />;
             case '/friends/list':
                 return <FriendsPageList />;
             default:

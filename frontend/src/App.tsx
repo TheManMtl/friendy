@@ -29,10 +29,12 @@ function App() {
 
   return (
     <div className="App">
-        <Router>
-          {isAdminRoute ? <></> : <Navbar />}
-          <Routes>
-            <Route element={<PersistAuth />}>
+      {/* <AuthProvider> */}
+      <Router>
+        {/* <HashRouter> */}
+        {isAdminRoute ? <></> : <Navbar />}
+        <Routes>
+          <Route element={<PersistAuth />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -54,10 +56,12 @@ function App() {
                 </FriendsPageProvider>
               }
             />
-            </Route>
-          </Routes>
-        </Router>
-        {/* <Footer/> */}
+          </Route>
+        </Routes>
+        {/* </HashRouter> */}
+      </Router>
+      {/* <Footer/> */}
+      {/* </AuthProvider> */}
     </div>
   );
 }

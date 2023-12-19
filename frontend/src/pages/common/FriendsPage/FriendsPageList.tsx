@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
+import { Constants } from '../../../data/constants';
 import FriendPanel from '../../../components/common/FriendPanel/FriendPanel';
 
 type FriendList = {

@@ -16,7 +16,8 @@ const PostInput: React.FC<Props> = ({ src, alt, size }) => {
             <ProfileImage src={src} alt={alt} size={size} />
           </div>
           <div className="col-11">
-            <a href="/profile">
+            {/* TODO: use modal to open post window */}
+            <a href="/">
               <button className="col-11 btn-input mt-1">
                 What's on your mind?
               </button>
