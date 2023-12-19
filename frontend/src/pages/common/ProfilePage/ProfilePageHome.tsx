@@ -10,11 +10,9 @@ function ProfilePageHome() {
   const [posts, setPosts] = useState<IPost[]>([]);
 
   useEffect(() => {
-    axios
-      .get(`/posts/user/1`)
-      .then((res) => {
-        setPosts(res.data);
-      });
+    axios.get(`/posts/user/1`).then((res) => {
+      setPosts(res.data);
+    });
   }, []);
 
   return (
