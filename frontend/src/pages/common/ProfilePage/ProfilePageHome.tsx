@@ -5,9 +5,24 @@ import PostInput from "../../../components/common/PostInput/PostInput";
 import { IPost } from "../../shared/interface/post.interface";
 import PostCard from "../../../components/common/PostCard/PostCard";
 import axios from "../../../services/api/axios";
+import PostModal from "../../../components/common/PostInput/PostModal";
+import { User } from "../../../types/common";
 
-function ProfilePageHome() {
+interface ProfileHomeProps {
+  userProfile: User | null;
+}
+
+const ProfilePageHome: React.FC<ProfileHomeProps> = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
+
+  //start Post modal section
+  const [showPostModal, setShowPostModal] = useState<boolean>(false);
+  const closePost = () => {
+    setShowPostModal(false);
+  };
+  const openPost = () => setShowPostModal(true);
+
+  //end Modal section
 
   useEffect(() => {
     axios.get(`/posts/user/1`).then((res) => {
@@ -31,6 +46,7 @@ function ProfilePageHome() {
               }
               alt={"profile"}
               size={"small"}
+              openPost={openPost}
             />
           </div>
           {posts.map((post) => (
@@ -46,8 +62,11 @@ function ProfilePageHome() {
           ))}
         </div>
       </div>
+
+      {/* Post Modal - This modal is opened by the button in PostInput component*/}
+      <PostModal showPostModal={showPostModal} closePost={closePost} />
     </div>
   );
-}
+};
 
 export default ProfilePageHome;

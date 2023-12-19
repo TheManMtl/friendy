@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { axiosToken } from "../../../services/api/axios";
 import "./ProfilePage.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { AuthContext } from "../../../context/AuthProvider";
@@ -12,34 +13,10 @@ import ProfilePagePhoto from "./ProfilePagePhoto";
 import ProfilePageFriend from "./ProfilePageFriend";
 import ProfilePageAlbum from "./ProfilePageFriend";
 import { useParams } from "react-router-dom";
+
 import useAxiosToken from "../../../hooks/useAxiosToken";
 
-interface User {
-  bio?: string;
-  birthday?: Date;
-  coverPostId?: number;
-  createdAt: Date;
-  email: string;
-  location?: string;
-  name: string;
-  password: string;
-  position?: string;
-  profilePostId?: number;
-  school?: string;
-  workplace?: string;
-}
-
-interface Post {
-  albumId?: number;
-  authorId: number;
-  commentCount: number;
-  content?: string;
-  id: number;
-  imageId?: number;
-  likeCount: number;
-  postId?: number;
-  profileId?: number;
-}
+import { User, Post } from "../../../types/common";
 
 interface ProfilPageType {
   userInfo?: User;
@@ -54,6 +31,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
   const authContext = useContext(AuthContext);
   const axiosToken = useAxiosToken();
+
   const [userProfile, setUserProfile] = useState<User | null>(null);
   // const [posts, setPosts] = useState<Post[] | null>(null);
   let navigate = useNavigate();
@@ -106,7 +84,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const renderMainPanelContent = () => {
     switch (selectedRoute) {
       case `/profile/${id}`:
-        return <ProfilePageHome />;
+        return <ProfilePageHome userProfile={userProfile} />;
       case `/profile/${id}/about`:
         return <ProfilePageAbout />;
       case `/profile/${id}/friend`:
@@ -116,7 +94,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
       case `/profile/${id}/album`:
         return <ProfilePageAlbum />;
       default:
-        return <ProfilePageHome />;
+        return <ProfilePageHome userProfile={userProfile} />;
     }
   };
   return (
