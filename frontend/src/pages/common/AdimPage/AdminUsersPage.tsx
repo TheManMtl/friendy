@@ -46,7 +46,7 @@ function AdminUsersPage() {
       <AdminNavbarTop />
 
       <div className="container mt-3">
-        <h2>Users List</h2>
+        <h2>Users List Updated</h2>
         <div className="row">
         <div className="col-md-2">
             <div className="color-box" style={{ backgroundColor: getColorByRole('admin') }}></div>
