@@ -5,3 +5,10 @@
 .bg-pink{
     background-color: #FBEAEB; 
 }
+
+.bguser > td{
+    background-color: rgba(198, 197, 197, 0.284);
+}
+.bgadmin > td{
+    background-color: rgb(73, 217, 250);
+}

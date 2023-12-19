@@ -7,15 +7,33 @@ interface User {
   id: number;
   name: string;
   email: string;
-  // Add more properties as needed
+  location: string;
+  birthday: Date;
+  isActive: boolean;
+  role: string;
+}
+
+//define colors for role
+function getColorByRole(role: string): string {
+
+  console.log("Role:", role);
+  switch (role) {
+    case 'admin':
+      return 'bgadmin';
+    case 'User':
+      return 'bguser';
+    default:
+      return 'white';
+  }
 }
 
 function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
 
+  const baseUrl = "http://localhost:8080/api/";
   useEffect(() => {
-    // Fetch users from your backend API using axios
-    axios.get("http://localhost:8080/api/users/admin")
+    // Fetch users 
+    axios.get(baseUrl + "users/admin")
       .then(response => setUsers(response.data))
       .catch(error => console.error('Error fetching users:', error));
   }, []);
@@ -29,22 +47,38 @@ function AdminUsersPage() {
 
       <div className="container mt-3">
         <h2>Users List</h2>
+        <div className="row">
+        <div className="col-md-2">
+            <div className="color-box" style={{ backgroundColor: getColorByRole('admin') }}></div>
+            <p className="text-center">Admin</p>
+          </div>
+          <div className="col-md-2">
+            <div className="color-box" style={{ backgroundColor: getColorByRole('User') }}></div>
+            <p className="text-center">User</p>
+          </div>
+        </div>
         <table className="table">
           <thead>
             <tr>
               <th>ID</th>
               <th>Name</th>
               <th>Email</th>
-              {/* Add more columns as needed */}
+              <th>Location</th>
+              <th>DOB</th>
+              <th>role</th>
             </tr>
           </thead>
           <tbody>
             {users.map(user => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
+              <tr key={user.id} className={ getColorByRole(user.role) }>
+                <td >{user.id}</td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
-                {/* Add more columns as needed */}
+                <td>{user.location}</td>
+                <td>{new Date(user.birthday).toLocaleDateString()}</td>
+                <td>
+                  {user.role}
+                </td>
               </tr>
             ))}
           </tbody>

@@ -11,6 +11,6 @@ router.post("/signup", UserController.signUp);
 router.post("/login", UserController.login);
 router.delete("/logout", auth.authUser, auth.logout);
 router.get("/refresh", UserController.refresh);
-router.get("/admin/users", UserController.all);
+router.get("/admin", UserController.all);
 
 export default router;
