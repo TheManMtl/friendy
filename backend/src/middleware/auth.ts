@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 //import { read } from "fs";
 import jwt from "jsonwebtoken";
+import { s3 } from "./S3Middleware";
 
 export interface DecodedToken {
   id?: number;
@@ -11,6 +12,8 @@ export interface CustomRequest extends Request {
   id?: number;
   role?: string;
   refreshTokem?: string;
+  s3?: typeof s3;
+  bucketName?: string;
 }
 
 /*
@@ -32,33 +35,30 @@ export const authUser = async (
   res: Response,
   next: NextFunction
 ): Promise<any> => {
+  const token = req.headers["x-access-token"] as string;
+  const refreshToken = req.cookies["refreshToken"] as string;
+  const jwtSecret = process.env.JWT_SECRET as string;
+  //check if tokens exist
+  if (!token || !refreshToken) {
+    return res.status(401).send({ message: "Failed to authenticate request." });
+  }
 
-    const token = req.headers["x-access-token"] as string;
-    const refreshToken = req.cookies["refreshToken"] as string;
-    const jwtSecret = process.env.JWT_SECRET as string;
-    //check if tokens exist
-    if (!token || !refreshToken) {
-      return res.status(401).send({ message: "Failed to authenticate request." });
-    }
-  
-    //check if tokens have been invalidated
-    if (deadTokens.includes(token) || deadRefreshTokens.includes(refreshToken)) {
-      return res.status(401).send({
-        message: "You have been logged out. Please log back in to continue.",
-      });
-    }
-  
-    try {
+  //check if tokens have been invalidated
+  if (deadTokens.includes(token) || deadRefreshTokens.includes(refreshToken)) {
+    return res.status(401).send({
+      message: "You have been logged out. Please log back in to continue.",
+    });
+  }
 
-      const readToken = jwt.verify(token, jwtSecret) as DecodedToken;
-      req.id = readToken!.id;
-      req.role = readToken!.role;
-
-    } catch (error) {
-      return res.status(401).send({
-        message: "You are not authenticated",
-      });
-    }
+  try {
+    const readToken = jwt.verify(token, jwtSecret) as DecodedToken;
+    req.id = readToken!.id;
+    req.role = readToken!.role;
+  } catch (error) {
+    return res.status(401).send({
+      message: "You are not authenticated",
+    });
+  }
 
   next();
 };
@@ -88,8 +88,8 @@ export const logout = async (req: CustomRequest, res: Response) => {
     deadRefreshTokens.push(refreshToken);
     console.log("deadtokens " + deadTokens[0]);
     //clear cookies
-    res.clearCookie('refreshToken', {httpOnly: true, sameSite: "strict"});
-    return res.status(200).json({message: "Successfully logged out" });
+    res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict" });
+    return res.status(200).json({ message: "Successfully logged out" });
   } catch (err) {
     return res.status(500).json({ message: "Something went wrong" });
   }

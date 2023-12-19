@@ -1,6 +1,6 @@
 import React from "react";
-import HomeFriendRequest from "../../components/common/Home/FriendRequest";
-import HomeRightPanel from "../../components/common/Home/HomeRightPanel";
+import HomeFriendRequest from "../../components/Home/FriendRequest";
+import HomeRightPanel from "../../components/Home/HomeRightPanel";
 import "./HomePage.css";
 function HomePage() {
   return (
