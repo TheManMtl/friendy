@@ -20,7 +20,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./assets/global.css";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
-import AdminNavbarTop from "./pages/common/AdimPage/AdminComponents/AdminNavbarTop";
 import PersistAuth from "./components/PersistAuth";
 
 function App() {
@@ -30,8 +29,8 @@ function App() {
   return (
     <div className="App">
       {/* <AuthProvider> */}
-      <HashRouter>
-        {/* <HashRouter> */}
+      
+        <HashRouter>
         {isAdminRoute ? <></> : <Navbar />}
         <Routes>
           <Route element={<PersistAuth />}>
@@ -49,7 +48,7 @@ function App() {
             <Route path="/admin" element={<AdminUsersPage />}></Route>
             {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
             <Route
-              path="/`#`friends/*"
+              path="/friends/*"
               element={
                 <FriendsPageProvider>
                   <FriendsPage />
@@ -58,8 +57,8 @@ function App() {
             />
           </Route>
         </Routes>
-        {/* </HashRouter> */}
-      </HashRouter>
+        </HashRouter>
+     
       {/* <Footer/> */}
       {/* </AuthProvider> */}
     </div>

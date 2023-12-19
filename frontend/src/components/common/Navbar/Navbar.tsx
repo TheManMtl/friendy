@@ -59,7 +59,7 @@ function Navbar() {
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="/friends">
+                    <a className="nav-link" href="/#/friends">
                       <i className="bi bi-people-fill icon"></i>
                     </a>
                   </li>
@@ -71,6 +71,13 @@ function Navbar() {
                   <li className="nav-item">
                     <a className="nav-link" href="/">
                       <i className="bi bi-controller icon"></i>
+                    </a>
+                  </li>
+
+
+                  <li className="nav-item">
+                    <a className="nav-link " aria-current="page" href="/login">
+                      <i className="">login</i>
                     </a>
                   </li>
                 </ul>
