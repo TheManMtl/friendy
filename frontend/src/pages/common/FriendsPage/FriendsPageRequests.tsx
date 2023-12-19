@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
+import useAxiosToken from '../../../hooks/useAxiosToken';
 import FriendPanel from '../../../components/common/FriendPanel/FriendPanel';
 
 
@@ -14,11 +14,12 @@ function FriendsPageRequests() {
   const [user, setUser] = useState(null);
   const [friendRequestsSent, setFriendRequestsSent] = useState<FriendRequest[]>([]);
   const [friendRequestsReceived, setFriendRequestsReceived] = useState<FriendRequest[]>([]);
+  const axios = useAxiosToken();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/friends/active-requests?direction=receieved`);
+        const response = await axios.get(`/friends/active-requests?direction=receieved`);
         setFriendRequestsReceived(response.data);
       } catch (error) {
         console.error('Could not find active friend requests:', error);
@@ -31,7 +32,7 @@ function FriendsPageRequests() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/friends/active-requests?direction=sent`);
+        const response = await axios.get(`/friends/active-requests?direction=sent`);
         setFriendRequestsSent(response.data);
       } catch (error) {
         console.error('Could not find active friend requests:', error);
