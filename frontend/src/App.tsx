@@ -46,7 +46,7 @@ function App() {
                 </ProfilePageProvider>
               }
             />
-            <Route path="/`#`admin" element={<AdminUsersPage />}></Route>
+            <Route path="/admin" element={<AdminUsersPage />}></Route>
             {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
             <Route
               path="/`#`friends/*"
