@@ -6,19 +6,23 @@ import LogoutButton from "../Button/LogoutButton";
 import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthProvider";
 import { SearchModel } from "../../../models/SearchModel";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SearchModel>();
 
-  async function onSubmit(input: SearchModel, event: any) {
+  function onSubmit(input: SearchModel, event: any) {
     event.preventDefault();
-    const urlParams = input.searchTerms;
+    const urlParams = input.searchTerms.trim();
     console.log(urlParams);
+    const params = encodeURIComponent(urlParams);
+    navigate(`/search?search=${params}`);
   }
   return (
     <div>
@@ -45,6 +49,7 @@ function Navbar() {
                 aria-label="Search"
                 {...register("searchTerms")}
               />
+
               <button className=" btn-nav searchBtn" type="submit">
                 Search
               </button>
@@ -90,7 +95,6 @@ function Navbar() {
                       <i className="bi bi-controller icon"></i>
                     </a>
                   </li>
-
 
                   <li className="nav-item">
                     <a className="nav-link " aria-current="page" href="/login">
