@@ -29,8 +29,8 @@ function App() {
   return (
     <div className="App">
       {/* <AuthProvider> */}
-      
-        <HashRouter>
+
+      <HashRouter>
         {isAdminRoute ? <></> : <Navbar />}
         <Routes>
           <Route element={<PersistAuth />}>
@@ -57,8 +57,8 @@ function App() {
             />
           </Route>
         </Routes>
-        </HashRouter>
-     
+      </HashRouter>
+
       {/* <Footer/> */}
       {/* </AuthProvider> */}
     </div>
