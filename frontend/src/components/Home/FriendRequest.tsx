@@ -4,7 +4,7 @@ import ProfileImage from "../common/ProfileImage/ProfileImage";
 import FriendRequestBtn from "../common/FriendRequestBtn/FriendRequestBtn";
 import { RequestProfile } from "../../models/RequestProfile";
 import SingleFriendRequest from "./SingleFriendRequest";
-import axios from "axios";
+import useAxiosToken from "../../hooks/useAxiosToken";
 
 type HomeFriendRequestProps = {
   id: string;
@@ -19,10 +19,11 @@ const HomeFriendRequest: React.FC<HomeFriendRequestProps> = ({
 }) => {
   const [friendRequests, setFriendRequests] = useState<RequestProfile[]>([]);
   const [rerender, setRerender] = useState<boolean>(true);
+  const axiosToken = useAxiosToken();
   useEffect(() => {
     console.log("REQUEST RERENDRED");
     try {
-      axios
+      axiosToken
 
         .get(
           `${process.env.REACT_APP_HOST_URL}/friends/active-requests?direction=received`

@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import PhotoGallery from "../../../components/common/ProfilePage/PhotoGallery";
 import ProfileIntroCard from "../../../components/common/ProfilePage/ProfileIntroCard";
 import PostInput from "../../../components/common/PostInput/PostInput";
 import { IPost } from "../../shared/interface/post.interface";
 import PostCard from "../../../components/common/PostCard/PostCard";
-import axios from "../../../services/api/axios";
+import { useParams } from "react-router-dom";
+import useAxiosToken from "../../../hooks/useAxiosToken";
 import PostModal from "../../../components/common/PostInput/PostModal";
 import { User } from "../../../types/common";
-import { AuthContext } from "../../../context/AuthProvider";
 
 interface ProfileHomeProps {
   userProfile: User | null;
 }
 
-const ProfilePageHome: React.FC<ProfileHomeProps> = () => {
+const ProfilePageHome: React.FC<ProfileHomeProps> = (props) => {
   const [posts, setPosts] = useState<IPost[]>([]);
-  const authContext = useContext(AuthContext);
+  const axiosToken = useAxiosToken();
 
   //start Post modal section
   const [showPostModal, setShowPostModal] = useState<boolean>(false);
@@ -26,14 +26,70 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = () => {
 
   //end Modal section
 
+  const {id} = useParams();
   useEffect(() => {
-    const userId = authContext?.user?.id;
-    axios
-      .get(`/posts/user/${userId}`)
-      .then((res) => {
-        setPosts(res.data);
-      });
-  }, []);
+
+    console.log("line 33!!");
+    getPosts();
+    console.log("line 35!!");
+
+  }, [id]);
+
+  const getPosts = async () => {
+   // if (props.userProfile) { //FIXME
+      console.log("line 41!!");
+      try {
+        const response = await axiosToken.get(`/posts/user/${id}`);
+        console.log("should have fetched posts");
+        const list = response.data as IPost[];
+  
+        if (list[0]) {
+          const updatedList = await Promise.all(
+          list.map(async (post) => {
+          
+            if (post.author.profileImg ) {
+
+              const url = await getImgUrl(post.author.profileImg!.Image.thumbnail);
+              console.log("profile img url: " + url);
+
+                if (url) {
+                  post.author.profileImg!.Image.thumbnail = url;
+                }
+              }
+              if (post.Image) {
+                const url = await getImgUrl(post.Image.fileName);
+                console.log("post img url: " + url);
+
+                if (url) {
+                  post.thumbnailUrl = url;
+                }            
+              }
+              return post;
+            })
+           
+              );
+              setPosts(updatedList);
+          }
+  
+      } catch (error) {
+        //TODO
+        console.log(error);
+      }
+   // }
+
+  }
+
+  const getImgUrl = async (fileName: string) => {
+    try {
+      const response = await axiosToken.get(`/images/${fileName}`);
+      console.log(response.data);
+
+      return response.data;
+    } catch (error) {
+      //TODO handle
+      console.log('Error fetching image URL:', error);
+    }
+  };
 
   return (
     <div>
@@ -54,17 +110,26 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = () => {
               openPost={openPost}
             />
           </div>
-          {posts.map((post) => (
+          {
+             posts[0] ?
+             (
+          posts.map((post) => (
             <div key={`post-${post.id}`} className="mt-2">
               <PostCard
-                profileImageSrc="https://picsum.photos/200"
+                id={post.id}
+                profileImageSrc={post.author.profileImg?.Image?.thumbnail as string}
                 time={post.createdAt}
                 username={post.author.name}
                 content={post.content}
                 thumbnailUrl={post.thumbnailUrl}
+                likeCount={post.likeCount}
+                commentCount={post.commentCount}
+                comments={post.comments}
               />
             </div>
-          ))}
+          ))
+             ) : <></>
+          }
         </div>
       </div>
 

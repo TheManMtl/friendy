@@ -4,6 +4,8 @@ import userRoutes from "./routes/Users-routes";
 import friendRoutes from "./routes/friends-routes";
 import postRoutes from "./routes/posts-routes";
 import profileRoutes from "./routes/profile-routes";
+import imgRoutes from "./routes/Images-routes";
+import commentRoutes from "./routes/comment-routes"
 import session from "express-session";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -16,7 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: [
+      "http://localhost:3000",
+    ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTION"],
     credentials: true,
   })
@@ -43,6 +47,10 @@ app.use("/api/users", userRoutes);
 app.use("/api/friends", friendRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/images", imgRoutes);
+app.use("/api/comments", commentRoutes);
+
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   console.error(error);

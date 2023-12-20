@@ -8,6 +8,7 @@ interface CommentAttributes {
   postId: number;
   body: string;
   likeCount: number;
+  childCount: number;
   isDeleted: boolean;
 
   //nullable
@@ -28,6 +29,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
     postId!: number;
     body!: string;
     likeCount!: number;
+    childCount!: number;
     isDeleted!: boolean;
 
     //nullable
@@ -86,6 +88,12 @@ module.exports = (sequelize: any, DataTypes: any) => {
       },
 
       likeCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+      },
+
+      childCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
         allowNull: false,
