@@ -1,12 +1,15 @@
-import express, { Express, Request, Response } from "express";
+import  { Request, Response } from "express";
 import models from '../db/models';
 import { PostAttributes } from '../db/models/post';
 import * as imageController from './images-controller';
 import { Op } from "sequelize";
+import { CustomRequest } from "../middleware/auth";
 
 const Post = models.Post;
 const User = models.User;
 const Image = models.Image;
+const Comment = models.Comment;
+const Like = models.Like;
 
 interface PostWithUrl extends PostAttributes {
     imageUrl: string | null;
@@ -88,15 +91,15 @@ export const getTimeline = async (req: any, res: Response) => {
                             {
                                 authorId: req.params.id
                             },
-                            { 
+                            {
                                 profileId: null
                             }
                         ],
-                      },
-                      {
-                            profileId: req.params.id
-                      },
-                  ],
+                    },
+                    {
+                        profileId: req.params.id
+                    },
+                ],
                 type: 'timeline',
                 isDeleted: false
             },
@@ -104,25 +107,56 @@ export const getTimeline = async (req: any, res: Response) => {
                 model: Image,
                 attributes: ['id', 'fileName', 'thumbnail']
             },
-        {
-            model: User,
-            as: "author",
-            attributes: ['id', 'name'],
-            include: [
+            {
+                model: User,
+                as: "author",
+                attributes: ['id', 'name'],
+                include: [
+                    {
+                        model: Post,
+                        as: "profileImg",
+                        attributes: ["id"],
+                        include: [
+                            {
+                                model: Image,
+                                as: "Image",
+                                attributes: ["id", "thumbnail"],
+                            },
+                        ],
+                    },
+                ]
+            },
+            {
+                model: Comment,
+                as: 'Comments',
+                include: [
+                    {
+                    model: Comment,
+                    as: 'parentComment'
+                },
                 {
-                    model: Post,
-                    as: "profileImg",
-                    attributes: ["id"],
+                    model: User,
+                    attributes: ['id', 'name'],
                     include: [
-                      {
-                        model: Image,
-                        as: "Image",
-                        attributes: ["id", "thumbnail"],
-                      },
-                    ],
-                  },
+                        {
+                            model: Post,
+                            as: "profileImg",
+                            attributes: ["id"],
+                            include: [
+                                {
+                                    model: Image,
+                                    as: "Image",
+                                    attributes: ["id", "thumbnail"],
+                                },
+                            ],
+                        },
+                    ]
+                },
+                {
+                    model: Like,
+                },
             ]
-        }]
+            }]
         });
 
         if (!posts) {
@@ -163,13 +197,13 @@ export const updatePost = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Not yet implemented!" });
 };
 
-export const deletePost = async (req: any, res: Response) => {
+export const deletePost = async (req: CustomRequest, res: Response) => {
     try {
         const post = await Post.findOne(
             {
                 where: {
                     id: req.params.id,
-                    //authorId: req.user.id,  //TODO: FIXME ADD AUTH MIDDLEWARE & REQ PROP
+                    authorId: req.id,
                     isDeleted: false
                 }
             });

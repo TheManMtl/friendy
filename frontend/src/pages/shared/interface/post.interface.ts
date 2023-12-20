@@ -1,4 +1,5 @@
 import { IImage } from './image.interface';
+import { Comment } from '../../../types/common';
 
 export interface IPost {
     id: number;
@@ -15,6 +16,7 @@ export interface IPost {
     imageUrls?: string;
     thumbnailUrl?: string;
     author: IPostAuthor;
+    comments: Comment[]
 }
 
 interface IPostAuthor {

@@ -1,6 +1,6 @@
 import express from "express";
 import * as likes from "../controllers/likes-controller";
-import { decodeUser } from "../middleware/auth";
+import { authUser } from "../middleware/auth";
 
 const router = express.Router();
 /*
@@ -8,11 +8,11 @@ const router = express.Router();
 */
 
 //like
-router.post("/post/:id([0-9]+)", decodeUser, likes.likePostToggle);
-router.post("/comment/:id([0-9]+)", decodeUser, likes.likeCommentToggle);
+router.post("/post/:id([0-9]+)", authUser, likes.likePostToggle);
+router.post("/comment/:id([0-9]+)", authUser, likes.likeCommentToggle);
 
 //unlike
-router.delete("/post/:id([0-9]+)", decodeUser, likes.likePostToggle);
-router.delete("/comment/:id([0-9]+)", decodeUser, likes.likeCommentToggle);
+router.delete("/post/:id([0-9]+)", authUser, likes.likePostToggle);
+router.delete("/comment/:id([0-9]+)", authUser, likes.likeCommentToggle);
 
 export default router;
