@@ -28,7 +28,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const { selectedRoute } = useProfilePageContext();
   const [isPrivateProfile, setIsPrivateProfile] = useState<boolean>(false);
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
-  const {user, setUser} = useAuth();
+  const { user, setUser } = useAuth();
   const axiosToken = useAxiosToken();
 
   const [userProfile, setUserProfile] = useState<User | null>(null);
@@ -77,12 +77,17 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         console.log("error message");
       }
     }
-  }, [user, id, navigate, axiosToken, userId]);
+  }, [axiosToken, id, navigate, user, userId]);
 
   const renderMainPanelContent = () => {
     switch (selectedRoute) {
       case `/profile/${id}`:
-        return <ProfilePageHome userProfile={userProfile} />;
+        return (
+          <ProfilePageHome
+            userProfile={userProfile}
+            isPrivateProfile={isPrivateProfile}
+          />
+        );
       case `/profile/${id}/about`:
         return <ProfilePageAbout />;
       case `/profile/${id}/friend`:
@@ -92,7 +97,12 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
       case `/profile/${id}/album`:
         return <ProfilePageAlbum />;
       default:
-        return <ProfilePageHome userProfile={userProfile} />;
+        return (
+          <ProfilePageHome
+            userProfile={userProfile}
+            isPrivateProfile={isPrivateProfile}
+          />
+        );
     }
   };
   return (

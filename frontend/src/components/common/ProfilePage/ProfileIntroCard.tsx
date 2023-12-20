@@ -4,8 +4,12 @@ import { IUser } from "../../../pages/shared/interface/user.interface";
 
 interface IntroCardProps {
   userProfile: IUser | null;
+  isPrivateProfile: boolean;
 }
-const ProfileIntroCard: React.FC<IntroCardProps> = ({ userProfile }) => {
+const ProfileIntroCard: React.FC<IntroCardProps> = ({
+  userProfile,
+  isPrivateProfile,
+}) => {
   return (
     <div>
       <div className="IntroCard card py-4">
@@ -15,9 +19,11 @@ const ProfileIntroCard: React.FC<IntroCardProps> = ({ userProfile }) => {
         <div className="d-flex justify-content-center">
           <p>{userProfile?.bio}</p>
         </div>
-        <div>
-          <button className="btn btn-secondary col-10">Edit bio</button>
-        </div>
+        {isPrivateProfile ? (
+          <div>
+            <button className="btn btn-secondary col-10">Edit bio</button>
+          </div>
+        ) : null}
 
         <div className="details my-5">
           <div className="d-flex justify-content-start">
@@ -40,9 +46,11 @@ const ProfileIntroCard: React.FC<IntroCardProps> = ({ userProfile }) => {
               Work at <a href="/">{userProfile?.workplace}</a>
             </p>
           </div>
-          <div>
-            <button className="btn btn-secondary col-10">Edit details</button>
-          </div>
+          {isPrivateProfile ? (
+            <div>
+              <button className="btn btn-secondary col-10">Edit details</button>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
