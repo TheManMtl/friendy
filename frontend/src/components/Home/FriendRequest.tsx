@@ -73,6 +73,7 @@ const HomeFriendRequest: React.FC<HomeFriendRequestProps> = ({
           />
         )}
       </div>
+      <hr />
     </div>
   );
 };

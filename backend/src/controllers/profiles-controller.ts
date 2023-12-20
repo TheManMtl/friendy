@@ -286,7 +286,7 @@ export const findPeople = async (
           const isFriend = friendIds.includes(user.id);
           let thumbnail: string;
 
-          if (user.profileImg.Image.thumbnail) {
+          if (user.profileImg) {
             thumbnail =
               (await getPicUrlFromS3(req, user.profileImg.Image.thumbnail)) ||
               "";

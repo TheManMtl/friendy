@@ -21,6 +21,7 @@ import "./assets/global.css";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import PersistAuth from "./components/PersistAuth";
+import SearchPage from "./pages/common/Search/SearchPage";
 
 function App() {
   // Determine if the current route is an admin route
@@ -34,6 +35,7 @@ function App() {
         {isAdminRoute ? <></> : <Navbar />}
         <Routes>
           <Route element={<PersistAuth />}>
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
