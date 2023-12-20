@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
+import { AuthContext } from "../../../context/AuthProvider";
+import { useFriendsPageContext } from '../../../context/FriendsPageContext';
 import "./FriendsPage.css";
-
-import FriendsPageHome from './FriendsPageHome';
 import FriendsPageLeftMenu from './FriendsPageLeftMenu';
+import FriendsPageHome from './FriendsPageHome';
 import FriendsPageRequests from './FriendsPageRequests';
 import FriendsPageSuggestions from './FriendsPageSuggestions';
 import FriendsPageList from './FriendsPageList';
-import { AuthContext } from "../../../context/AuthProvider";
-import { useFriendsPageContext } from '../../../context/FriendsPageContext';
+
 
 function FriendsPage() {
 
@@ -20,15 +20,15 @@ function FriendsPage() {
     const renderMainPanelContent = () => {
         switch (selectedRoute) {
             case '/friends':
-                return <FriendsPageHome />;
+                return <FriendsPageHome userId={user?.id}/>;
             case '/friends/requests':
-                return <FriendsPageRequests />;
+                return <FriendsPageRequests userId={user?.id}/>;
             case '/friends/suggestions':
-                return <FriendsPageSuggestions userId={user?.id} />;
+                return  <FriendsPageSuggestions userId={user?.id ?? 0} />;
             case '/friends/list':
-                return <FriendsPageList />;
+                return <FriendsPageList userId={user?.id}/>;
             default:
-                return <FriendsPageHome />;
+                return <FriendsPageHome userId={user?.id}/>;
         }
     };
 
