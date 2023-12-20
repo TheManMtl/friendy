@@ -1,0 +1,15 @@
+.container-nav {
+    padding: 0px 110px;
+    height: 80px;
+    background-color: white;
+    align-items: center;
+  }
+  .nav {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .container{
+    padding-top: 80px;
+  }

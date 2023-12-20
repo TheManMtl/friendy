@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PhotoGallery from "../../../components/common/ProfilePage/PhotoGallery";
 import ProfileIntroCard from "../../../components/common/ProfilePage/ProfileIntroCard";
 import PostInput from "../../../components/common/PostInput/PostInput";
@@ -7,6 +7,7 @@ import PostCard from "../../../components/common/PostCard/PostCard";
 import axios from "../../../services/api/axios";
 import PostModal from "../../../components/common/PostInput/PostModal";
 import { User } from "../../../types/common";
+import { AuthContext } from "../../../context/AuthProvider";
 
 interface ProfileHomeProps {
   userProfile: User | null;
@@ -14,6 +15,7 @@ interface ProfileHomeProps {
 
 const ProfilePageHome: React.FC<ProfileHomeProps> = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
+  const authContext = useContext(AuthContext);
 
   //start Post modal section
   const [showPostModal, setShowPostModal] = useState<boolean>(false);
@@ -25,9 +27,12 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = () => {
   //end Modal section
 
   useEffect(() => {
-    axios.get(`/posts/user/1`).then((res) => {
-      setPosts(res.data);
-    });
+    const userId = authContext?.user?.id;
+    axios
+      .get(`/posts/user/${userId}`)
+      .then((res) => {
+        setPosts(res.data);
+      });
   }, []);
 
   return (

@@ -21,6 +21,8 @@ import "./assets/global.css";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import PersistAuth from "./components/PersistAuth";
+import AlbumList from './components/common/AlbumDisplay/AlbumList';
+
 import SearchPage from "./pages/common/Search/SearchPage";
 
 function App() {
@@ -39,6 +41,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            {/* <Route path="/photos" element={<PhotoPage />} />
+           <Route path="/posts" element={<PostPage />} /> */}
             <Route
               path="/profile/:id/*"
               element={
