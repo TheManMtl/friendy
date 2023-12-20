@@ -28,6 +28,9 @@ const FriendRequestBtn: React.FC<FriendRequestBtnProps> = ({
           .put(`${process.env.REACT_APP_HOST_URL}/friends/accept-request`, body)
           .then((response: any) => {
             returnNewFriend(null);
+          })
+          .catch((error: any) => {
+            console.log(error);
           });
       } catch (error: any) {
         console.error("Error during login:", error.message);

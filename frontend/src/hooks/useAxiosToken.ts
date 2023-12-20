@@ -2,7 +2,6 @@ import { axiosToken } from "../services/api/axios";
 import { useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 import useRefresh from "./useRefresh";
-import { AxiosInstance } from "axios";
 
 const useAxiosToken = () => {
   const { user, setUser } = useAuth();
@@ -53,8 +52,7 @@ const useAxiosToken = () => {
     };
   }, [refresh, user, setUser]);
 
-  return axiosToken as AxiosInstance;
+  return axiosToken;
 };
 
 export default useAxiosToken;
-export { axiosToken };
