@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { axiosToken } from "../../../services/api/axios";
 import "./ProfilePage.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
+import { IPost } from "../../shared/interface/post.interface";
+import { IUser } from "../../shared/interface/user.interface";
 import { AuthContext } from "../../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import CoverImage from "../../../components/common/ProfilePage/CoverImage";
@@ -19,8 +21,8 @@ import useAxiosToken from "../../../hooks/useAxiosToken";
 import { User, Post } from "../../../types/common";
 
 interface ProfilPageType {
-  userInfo?: User;
-  postsInfo?: Post;
+  userInfo?: IUser;
+  postsInfo?: IPost;
 }
 
 const ProfilePage: React.FC<ProfilPageType> = () => {
@@ -32,7 +34,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const authContext = useContext(AuthContext);
   const axiosToken = useAxiosToken();
 
-  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<IUser | null>(null);
   // const [posts, setPosts] = useState<Post[] | null>(null);
   let navigate = useNavigate();
   const { id } = useParams();
