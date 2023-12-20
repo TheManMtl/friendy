@@ -13,14 +13,21 @@ export interface User {
   workplace?: string;
 }
 
+export enum PostType {
+  timeline = "timeline",
+  profilePic = "profilePic",
+  coverPhoto = "coverPhoto",
+  albumImg = "albumImg",
+}
 export interface Post {
   albumId?: number;
-  authorId: number;
-  commentCount: number;
+  type: PostType;
+  authorId: number | undefined;
+  commentCount?: number;
   content?: string;
-  id: number;
-  imageId?: number;
-  likeCount: number;
+  id?: number;
+  imageId?: number | null;
+  likeCount?: number;
   postId?: number;
   profileId?: number;
 }

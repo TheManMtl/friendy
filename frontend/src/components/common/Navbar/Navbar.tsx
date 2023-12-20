@@ -122,7 +122,7 @@ function Navbar() {
                 <li className="nav-item">
                   <a
                     className="nav-link"
-                    href={`/profile/${authContext?.user?.id}`}
+                    href={`/#profile/${authContext?.user?.id}`}
                   >
                     <ProfileImage
                       src={"https://www.w3schools.com/howto/img_avatar.png"}

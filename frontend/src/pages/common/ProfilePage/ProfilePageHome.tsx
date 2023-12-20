@@ -7,13 +7,14 @@ import PostCard from "../../../components/common/PostCard/PostCard";
 import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import PostModal from "../../../components/common/PostInput/PostModal";
-import { User } from "../../../types/common";
+import { IUser } from "../../shared/interface/user.interface";
+import { AuthContext } from "../../../context/AuthProvider";
 
 interface ProfileHomeProps {
-  userProfile: User | null;
+  userProfile: IUser | null;
 }
 
-const ProfilePageHome: React.FC<ProfileHomeProps> = (props) => {
+const ProfilePageHome: React.FC<ProfileHomeProps> = ({ userProfile }) => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const axiosToken = useAxiosToken();
 
@@ -26,58 +27,53 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = (props) => {
 
   //end Modal section
 
-  const {id} = useParams();
+  const { id } = useParams();
   useEffect(() => {
-
     console.log("line 33!!");
     getPosts();
     console.log("line 35!!");
-
   }, [id]);
 
   const getPosts = async () => {
-   // if (props.userProfile) { //FIXME
-      console.log("line 41!!");
-      try {
-        const response = await axiosToken.get(`/posts/user/${id}`);
-        console.log("should have fetched posts");
-        const list = response.data as IPost[];
-  
-        if (list[0]) {
-          const updatedList = await Promise.all(
-          list.map(async (post) => {
-          
-            if (post.author.profileImg ) {
+    // if (props.userProfile) { //FIXME
+    console.log("line 41!!");
+    try {
+      const response = await axiosToken.get(`/posts/user/${id}`);
+      console.log("should have fetched posts");
+      const list = response.data as IPost[];
 
-              const url = await getImgUrl(post.author.profileImg!.Image.thumbnail);
+      if (list[0]) {
+        const updatedList = await Promise.all(
+          list.map(async (post) => {
+            if (post.author.profileImg) {
+              const url = await getImgUrl(
+                post.author.profileImg!.Image.thumbnail
+              );
               console.log("profile img url: " + url);
 
-                if (url) {
-                  post.author.profileImg!.Image.thumbnail = url;
-                }
+              if (url) {
+                post.author.profileImg!.Image.thumbnail = url;
               }
-              if (post.Image) {
-                const url = await getImgUrl(post.Image.fileName);
-                console.log("post img url: " + url);
+            }
+            if (post.Image) {
+              const url = await getImgUrl(post.Image.fileName);
+              console.log("post img url: " + url);
 
-                if (url) {
-                  post.thumbnailUrl = url;
-                }            
+              if (url) {
+                post.thumbnailUrl = url;
               }
-              return post;
-            })
-           
-              );
-              setPosts(updatedList);
-          }
-  
-      } catch (error) {
-        //TODO
-        console.log(error);
+            }
+            return post;
+          })
+        );
+        setPosts(updatedList);
       }
-   // }
-
-  }
+    } catch (error) {
+      //TODO
+      console.log(error);
+    }
+    // }
+  };
 
   const getImgUrl = async (fileName: string) => {
     try {
@@ -87,7 +83,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = (props) => {
       return response.data;
     } catch (error) {
       //TODO handle
-      console.log('Error fetching image URL:', error);
+      console.log("Error fetching image URL:", error);
     }
   };
 
@@ -95,7 +91,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = (props) => {
     <div>
       <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
         <div className="leftContent col-md-4">
-          <ProfileIntroCard />
+          <ProfileIntroCard userProfile={userProfile} />
           <PhotoGallery />
         </div>
         {/* right content */}
@@ -110,26 +106,27 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = (props) => {
               openPost={openPost}
             />
           </div>
-          {
-             posts[0] ?
-             (
-          posts.map((post) => (
-            <div key={`post-${post.id}`} className="mt-2">
-              <PostCard
-                id={post.id}
-                profileImageSrc={post.author.profileImg?.Image?.thumbnail as string}
-                time={post.createdAt}
-                username={post.author.name}
-                content={post.content}
-                thumbnailUrl={post.thumbnailUrl}
-                likeCount={post.likeCount}
-                commentCount={post.commentCount}
-                comments={post.comments}
-              />
-            </div>
-          ))
-             ) : <></>
-          }
+          {posts[0] ? (
+            posts.map((post) => (
+              <div key={`post-${post.id}`} className="mt-2">
+                <PostCard
+                  id={post.id}
+                  profileImageSrc={
+                    post.author.profileImg?.Image?.thumbnail as string
+                  }
+                  time={post.createdAt}
+                  username={post.author.name}
+                  content={post.content}
+                  thumbnailUrl={post.thumbnailUrl}
+                  likeCount={post.likeCount}
+                  commentCount={post.commentCount}
+                  comments={post.comments}
+                />
+              </div>
+            ))
+          ) : (
+            <></>
+          )}
         </div>
       </div>
 
