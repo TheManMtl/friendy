@@ -548,6 +548,71 @@ Xuerun:
   - 
  Challenges: 
   - 
+
+Date: Dec 20
+
+
+Alex 
+Finished:
+-created and implemented search page
+-create handle friend request button with logic 
+-right home page functionality done
+-rendering images
+Working on
+-finish rendering images in back end where applicable 
+-adding button functionality in search 
+-image post page (pseudo modal) 
+Challenges
+- auth and axios hook
+
+Ehsan:
+ Finished:
+	- Jenkins build automatically
+ Working On: 
+	- routing issue in hosted version
+	- loading css 
+ Challenges: 
+	-
+
+Meredith:
+ Finished: 
+  - partial comment controller
+  - post card: like count, comment count, date format, author details
+  - added auth to api routes
+  - partial comment form
+ Working On: 
+  - continue comments and likes
+  - debug dates, default images
+ Challenges: 
+  - 
+
+Nick:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Shiyu:
+Finished:
+-implemented post logic
+-hidden the buttons for public view
+-created post entry for text post
+-created change profile modal
+Working on
+-implement uploading image logic
+-continue implementing changing profile image
+-allow user upload cover image
+
+Xuerun:
+ Finished: 
+  - implemented delete photo function
+  -add controllers to album controller: can add and remove image to album, delete album
+  -implemented display photo list in profile page 
+ Working On: 
+  - add createalbum controller
+  -fix photo display bug
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------
