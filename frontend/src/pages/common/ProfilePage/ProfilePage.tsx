@@ -77,7 +77,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         console.log("error message");
       }
     }
-  }, [user, id, navigate, axiosToken, userId]);
+  }, [axiosToken, id, navigate, user, userId]);
 
   const renderMainPanelContent = () => {
     switch (selectedRoute) {
