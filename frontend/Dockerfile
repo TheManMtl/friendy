@@ -1,8 +1,8 @@
  FROM nginx:alpine
 
 #E
- #RUN rm -rf /etc/nginx/conf.d
- #COPY ./frontend/conf /etc/nginx
+ RUN rm -rf /etc/nginx/conf.d
+ COPY ./frontend/conf /etc/nginx
  COPY ./frontend/build /usr/share/nginx/html
 
 
