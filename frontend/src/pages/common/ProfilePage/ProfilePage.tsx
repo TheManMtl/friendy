@@ -23,7 +23,6 @@ interface ProfilPageType {
 const ProfilePage: React.FC<ProfilPageType> = () => {
   // const [user, setUser] = useState<User | null>(null);
   // const [profileUrl, setProfileUrl] = useState<String | null>("");
-  const [posts, setPosts] = useState<IPost[]>([]);
   const [userId, setUserId] = useState<number>();
   // TODO: get current user id from auth
 
@@ -46,7 +45,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     if (authContext?.user != null) {
       try {
         axios
-          .get(`/profile/view/${userId}`, {
+          .get(`${process.env.REACT_APP_HOST_URL}/profile/view/${userId}`, {
             headers: {
               accessToken: localStorage.getItem("accessToken"),
             },
@@ -76,12 +75,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         console.log("error message");
       }
     }
-
-    axios
-      .get(`/posts/user/${userId}`)
-      .then((res) => {
-        setPosts(res.data);
-      });
   }, []);
 
   const renderMainPanelContent = () => {

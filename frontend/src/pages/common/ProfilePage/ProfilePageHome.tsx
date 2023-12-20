@@ -15,7 +15,7 @@ function ProfilePageHome() {
   useEffect(() => {
     const userId = authContext?.user?.id;
     axios
-      .get(`/posts/user/${userId}`) // TODO: get user id from auth
+      .get(`/posts/user/${userId}`)
       .then((res) => {
         setPosts(res.data);
       });

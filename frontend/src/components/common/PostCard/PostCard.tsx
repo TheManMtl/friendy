@@ -25,7 +25,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             </div>
             <div className="col-11 ">
               <div className="d-flex justify-content-start">
-                <h5>props.username</h5>
+                <h5>{props.username}</h5>
               </div>
               <div className="d-flex justify-content-start">
                 <p className="smallText">{props.time}</p>
