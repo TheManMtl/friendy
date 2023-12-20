@@ -28,7 +28,7 @@ export const commentOnPost = async (
             return res.status(404).send({ message: "Comment body cannot be null." });
         }
 
-        if (req.body.body.length() > 1500) {
+        if ((req.body.body as string).length > 1500) {
             return res.status(404).send({ message: "Comment body cannot exceed 1500 characters." });
         }
 
@@ -37,32 +37,32 @@ export const commentOnPost = async (
 
         try {
 
-            await Comment.create({
-                userId: user.id,
-                postId: post.id,
-                body: req.body.body
-            }, { transaction: t });
-
             await Post.increment(
                 'commentCount',
                 {
                     where: {
-                        id: post.id
+                        id: req.params.id
                     }
                 }, { transaction: t });
+
+            await Comment.create({
+                userId: req.id,
+                postId: req.params.id,
+                body: req.body.body
+            }, { transaction: t });
 
             await t.commit();
 
         } catch (error) {
             await t.rollback();
-            return res.status(500).send({ message: "Something went wrong" });
+            return res.status(500).send({ message: "Something went wrong in transaction: " + error });
         }
 
         return res.status(201).send({ message: "Comment successfully posted" });
 
     } catch (error) {
 
-        return res.status(500).send({ message: "Something went wrong" });
+        return res.status(500).send({ message: "Something went wrong: " + error });
     }
 };
 
@@ -88,7 +88,7 @@ export const commentOnComment = async (
             return res.status(404).send({ message: "Comment body cannot be null." });
         }
 
-        if (req.body.body.length() > 1500) {
+        if (req.body.body.length > 1500) {
             return res.status(404).send({ message: "Comment body cannot exceed 1500 characters." });
         }
 
@@ -96,13 +96,6 @@ export const commentOnComment = async (
         const t = await sequelize.transaction();
 
         try {
-
-            await Comment.create({
-                userId: user.id,
-                postId: parent.post.id,
-                parent: parent.id,
-                body: req.body.body
-            }, { transaction: t });
 
             await Comment.increment(
                 'childCount',
@@ -121,6 +114,13 @@ export const commentOnComment = async (
                 }, { transaction: t });
 
             await t.commit();
+
+            await Comment.create({
+                userId: user.id,
+                postId: parent.post.id,
+                parent: parent.id,
+                body: req.body.body
+            }, { transaction: t });
 
         } catch (error) {
             await t.rollback();

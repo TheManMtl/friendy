@@ -20,7 +20,6 @@ type PostCardProps = {
 }
 
 interface input {
-  id: number;
   body: string;
 }
 
@@ -33,19 +32,20 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     body: Yup.string().max(1500).required("Comment body must be between 1 and 1500 characters."),
   });
   const initialValues = {
-    id: props.id,
     body: ""
   };
 
-  const handleCommentOnPost = (data: input) => {
+  const handleCommentOnPost = async (data: input) => {
     try {
       console.log("will it work?");
-      axiosToken.post(`/comments/post/${data.id}`, data.body);
+      await axiosToken.post(`/comments/post/${props.id}`, data);
       setSuccess(true);
       //TODO
       console.log("did it work?");
     } catch (error) {
       //TODO
+      console.log("did it work? no :( ");
+
       console.log(error);
     }
   };
@@ -206,13 +206,14 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                     <Field
                       as="textarea"
                       id={props.id + "CommentInput"}
-                      name={props.id + "CommentInput"}
+                      name="body"
                       placeholder="Write a comment..."
                     />
                   </div>
                   <div>
                   </div>
-                  <Button type="submit" variant="color" label="Post comment"></Button>
+                  {/* <Button type="submit" variant="color" label="Post comment"></Button> */}
+                  <button className="btn-block btn-color" type="submit">Post comment</button>
 
                 </Form>
               )}
