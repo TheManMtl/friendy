@@ -8,15 +8,16 @@ import { AuthContext } from "../../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import PostImage from "../../../components/common/PostImage/PostImage";
 import axios from "../../../services/api/axios";
+import useAxiosToken from "../../../hooks/useAxiosToken";
 
 function ProfilePagePhoto() {
   const [posts, setPosts] = useState<IPost[]>([]);
   const authContext = useContext(AuthContext);
-
+ const axiosToken = useAxiosToken();
 
   useEffect(() => {
     const userId = authContext?.user?.id;
-    axios
+    axiosToken
       .get(`/posts/user/${userId}`) // TODO: get user id from auth
       .then((res) => {
         setPosts(res.data);
