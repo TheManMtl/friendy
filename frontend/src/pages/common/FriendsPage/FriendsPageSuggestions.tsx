@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
+import useAxiosToken from '../../../hooks/useAxiosToken';
 import FriendPanel from '../../../components/common/FriendPanel/FriendPanel';
 
 type SuggestedFriend = {
@@ -9,14 +9,16 @@ type SuggestedFriend = {
   profileImgId: number | null;
 };
 
-function FriendsPageSuggestions() {
+function FriendsPageSuggestions({ userId }: { userId: number | undefined }) {
   const [suggestedFriends, setSuggestedFriends] = useState<SuggestedFriend[]>([]);
+  const axios = useAxiosToken();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = '5';
-        const response = await axios.get(`http://localhost:8080/api/friends/suggested/${userId}`);
+        // TODO: Also make sure the currently logged-in user's ID is being passed
+        console.log("Authenticated User Id: " + userId);
+        const response = await axios.get(`/friends/suggested/${userId}`);
         setSuggestedFriends(response.data);
       } catch (error) {
         console.error('Could not retrieve suggested friends:', error);

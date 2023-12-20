@@ -2,6 +2,7 @@ import { NextFunction, Response } from "express";
 import { CustomRequest } from "../middleware/auth";
 import models from "../db/models";
 import { Op } from "sequelize";
+import { getPicUrlFromS3 } from "./images-controller";
 
 const User = models.User;
 const Friend = models.Friend;
@@ -279,22 +280,40 @@ export const findPeople = async (
       ],
     });
 
-    const searchResults: browsedProfile[] = returnedUsers.map((user: any) => {
-      const isFriend = friendIds.includes(user.id);
+    const searchResults: browsedProfile[] = await Promise.all(
+      returnedUsers.map(async (user: any) => {
+        try {
+          const isFriend = friendIds.includes(user.id);
+          let thumbnail: string;
 
-      return {
-        id: user.id,
-        name: user.name,
-        userId: user.id,
-        thumbnail: user.profileImg?.Image?.thumbnail || null,
-        profilePostId: user.profileImg?.id || null,
-        location: user.location || null,
-        school: user.school || null,
-        workplace: user.workplace || null,
-        isFriend: isFriend,
-        mutualFriends: 0,
-      };
-    });
+          if (user.profileImg) {
+            thumbnail =
+              (await getPicUrlFromS3(req, user.profileImg.Image.thumbnail)) ||
+              "";
+          } else {
+            thumbnail = (await getPicUrlFromS3(req, "default.jpg")) || "";
+          }
+
+          return {
+            id: user.id,
+            name: user.name,
+            userId: user.id,
+            thumbnail: thumbnail,
+            profilePostId: user.profileImg?.id || null,
+            location: user.location || null,
+            school: user.school || null,
+            workplace: user.workplace || null,
+            isFriend: isFriend,
+            mutualFriends: 0,
+          };
+        } catch (error) {
+          // Handle errors here if needed
+          console.error("Error processing user:", user.id, error);
+          return null; // Return null or handle the error in a different way
+        }
+      })
+    );
+
     const result = await sortSearch(
       searchResults,
       friendIds,

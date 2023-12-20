@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import models from '../db/models';
 import { PostAttributes } from '../db/models/post';
 import * as imageController from './images-controller';
+import { Op } from "sequelize";
 
 const Post = models.Post;
 const User = models.User;
@@ -40,7 +41,7 @@ export const createPost = async (req: any, res: Response) => {
 // retrieve single post
 export const getPost = async (req: any, res: Response) => {
     try {
-        let post = await Post.findOne(
+        const post = await Post.findOne(
             {
                 where: {
                     id: req.params.id,
@@ -79,24 +80,56 @@ export const getPost = async (req: any, res: Response) => {
 // note: using req.params--for retrieving any profile, not only current user
 export const getTimeline = async (req: any, res: Response) => {
     try {
-        let posts = await Post.findAll({
+        const posts = await Post.findAll({
             where: {
-                authorId: req.params.id,
-                profileId: null, //excludes posts on other user timelines
+                [Op.or]: [
+                    {
+                        [Op.and]: [
+                            {
+                                authorId: req.params.id
+                            },
+                            { 
+                                profileId: null
+                            }
+                        ],
+                      },
+                      {
+                            profileId: req.params.id
+                      },
+                  ],
                 type: 'timeline',
                 isDeleted: false
             },
-            include: {
+            include: [{
                 model: Image,
                 attributes: ['id', 'fileName', 'thumbnail']
-            }
+            },
+        {
+            model: User,
+            as: "author",
+            attributes: ['id', 'name'],
+            include: [
+                {
+                    model: Post,
+                    as: "profileImg",
+                    attributes: ["id"],
+                    include: [
+                      {
+                        model: Image,
+                        as: "Image",
+                        attributes: ["id", "thumbnail"],
+                      },
+                    ],
+                  },
+            ]
+        }]
         });
 
         if (!posts) {
             return res.status(404).json("No posts found");
         }
 
-        let resData: PostWithUrl[] = [];
+        const resData: PostWithUrl[] = [];
 
         // get signed urls for images
         for (let i = 0; i < posts.length; i++) {
@@ -132,7 +165,7 @@ export const updatePost = async (req: Request, res: Response) => {
 
 export const deletePost = async (req: any, res: Response) => {
     try {
-        let post = await Post.findOne(
+        const post = await Post.findOne(
             {
                 where: {
                     id: req.params.id,

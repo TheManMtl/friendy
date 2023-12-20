@@ -33,3 +33,8 @@ h5 {
 .smallText {
   font-size: 1.2rem;
 }
+
+.custom-modal-body {
+  width: 400px; /* Adjust the width as needed */
+  margin: 0 auto; /* Center the modal body horizontally */
+}

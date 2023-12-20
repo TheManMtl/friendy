@@ -1,0 +1,10 @@
+.friend-container:hover {
+background-color: #e4e6e9;
+
+}
+
+.friend-container {
+    display: flex;
+    padding: 10px 10px;
+    border-radius: 15px;
+}

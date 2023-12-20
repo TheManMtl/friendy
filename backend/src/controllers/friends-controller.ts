@@ -2,6 +2,7 @@ import { NextFunction, Response } from "express";
 import { CustomRequest } from "../middleware/auth";
 import models from "../db/models";
 import { Op, Sequelize } from "sequelize";
+import { getPicUrlFromS3 } from "./images-controller";
 
 const User = models.User;
 const Friend = models.Friend;
@@ -15,6 +16,7 @@ interface requestProfile {
   requestedAt?: Date;
   thumbnail?: string;
   profilePostId: number;
+  mutualFriends?: number;
 }
 
 interface friendProfile {
@@ -35,7 +37,7 @@ export const createRequest = async (
     console.log("friend request");
     // hard coded user 101 prior to token creation and use of auth middleware
     // const requesterId = req.id;
-    const requesterId = 12;
+    const requesterId = 85;
     const requestedId = req.body.id;
 
     const userExists = await User.findOne({
@@ -142,22 +144,41 @@ export const findAllRequests = async (
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const requests: requestProfile[] = allRequests.map((item: any) => ({
-      id: item.id,
-      name:
-        direction === "received"
-          ? item.RequestedBy.name
-          : item.RequestedTo.name,
-      userId:
-        direction === "received" ? item.RequestedBy.id : item.RequestedTo.id,
-      requestedAt: item.requestedAt,
-      thumbnail:
-        (direction === "received" ? item.RequestedBy : item.RequestedTo)
-          ?.profileImg?.image?.thumbnail || null,
-      profilePostId:
-        (direction === "received" ? item.RequestedBy : item.RequestedTo)
-          ?.profileImg?.id || null,
-    }));
+    const requests: requestProfile[] = await Promise.all(
+      allRequests.map(async (item: any) => {
+        const mutuals: number = await findMutualFriends(userId, item.id);
+        let thumbnail: string =
+          (direction === "received" ? item.RequestedBy : item.RequestedTo)
+            ?.profileImg?.image?.thumbnail || null;
+        const doesExist: any = (
+          direction === "received" ? item.RequestedBy : item.RequestedTo
+        ).profileImg;
+
+        if (doesExist != null) {
+          thumbnail = (await getPicUrlFromS3(req, thumbnail)) || "";
+        } else {
+          thumbnail = (await getPicUrlFromS3(req, "default.jpg")) || "";
+        }
+        return {
+          id: item.id,
+          name:
+            direction === "received"
+              ? item.RequestedBy.name
+              : item.RequestedTo.name,
+          userId:
+            direction === "received"
+              ? item.RequestedBy.id
+              : item.RequestedTo.id,
+          requestedAt: item.requestedAt,
+          thumbnail: thumbnail || null,
+          profilePostId:
+            (direction === "received" ? item.RequestedBy : item.RequestedTo)
+              ?.profileImg?.id || null,
+          mutualFriends: mutuals,
+        };
+      })
+    );
+
     console.log(requests);
     return res.status(200).json(requests);
   } catch (error) {
@@ -172,7 +193,7 @@ export const acceptRequest = async (
 ): Promise<any> => {
   try {
     // const requesterId = req.id;
-    const requestedId = 6;
+    const requestedId = 101;
     const requesterId = req.body.id;
     const request = await Friend.findOne({
       where: {
@@ -201,7 +222,7 @@ export const deleteFriend = async (
 ): Promise<any> => {
   try {
     // const userA = req.id;
-    const userA = 61;
+    const userA = 101;
     const userB = req.body.id;
 
     let friendship = await Friend.findOne({
@@ -278,12 +299,23 @@ export const viewAllFriends = async (
             },
           ],
         });
+        let thumbnail: string;
+
+        if (theFriends.profileImg != null) {
+          thumbnail =
+            (await getPicUrlFromS3(
+              req,
+              theFriends.profileImg.Image.thumbnail
+            )) || "";
+        } else {
+          thumbnail = (await getPicUrlFromS3(req, "default.jpg")) || "";
+        }
         return {
           friendId: friend.id,
           name: theFriends.name,
           userId: userId,
           friendsSince: friend.acceptedAt,
-          thumbnail: theFriends.profileImg?.image?.thumbnail || null,
+          thumbnail: thumbnail,
           profilePostId: theFriends.profileImg?.id || null,
         };
       })
@@ -383,5 +415,64 @@ export const viewSuggestedFriendsBySchool = async (
   } catch (error) {
     console.error(error);
     next(error);
+  }
+};
+
+export const findMutualFriends = async (
+  user1id: number,
+  user2id: number
+): Promise<number> => {
+  try {
+    const user1friends = await Friend.findAll({
+      where: {
+        [Op.or]: [{ requestedById: user1id }, { requestedToId: user1id }],
+        acceptedAt: { [Op.not]: null },
+      },
+      attributes: ["requestedToId", "requestedById"],
+    });
+
+    const user1friendIds = user1friends.map(
+      (user: { requestedById: number; requestedToId: any }) => {
+        if (user.requestedById == user1id) {
+          return user.requestedToId;
+        } else {
+          return user.requestedById;
+          return null;
+        }
+      }
+    );
+
+    for (const friend of user1friendIds) {
+      console.log(friend);
+    }
+
+    const mutuals = await Friend.findAll({
+      where: {
+        [Op.or]: [
+          {
+            [Op.and]: [
+              { requestedById: user2id },
+              {
+                requestedToId: { [Op.in]: user1friendIds },
+              },
+            ],
+          },
+          {
+            [Op.and]: [
+              { requestedToId: user2id },
+              {
+                requestedById: { [Op.in]: user1friendIds },
+              },
+            ],
+          },
+        ],
+        acceptedAt: { [Op.not]: null },
+      },
+    });
+    console.log("MUTUAAAAAAALZ" + mutuals.length);
+    return mutuals.length;
+  } catch (error) {
+    console.error("Error finding mutual friends:", error);
+    throw error;
   }
 };

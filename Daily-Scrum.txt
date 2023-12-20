@@ -478,6 +478,76 @@ Working on:
     -
 challenges:
 -
+
+Date: Dec 19
+
+
+Alex:
+ Finished:
+ - fix auth middleware
+ - finished search algorithm
+ - implemented friend view
+ Working On: 
+ - implemented front-end search  
+ - fix back end - adding images, return friend from friend request
+- implement friend request on front page
+ - implement add/delete friend request buttons.
+ Challenges: 
+ -
+
+Ehsan:
+ Finished:
+	- admin panel -> view users
+ Working On: 
+	- routing issue in hosted version
+	- automating deployment
+ Challenges: 
+	-
+
+Meredith:
+ Finished: 
+  - persistent login, debug auth in front and back
+Not done:
+  - post card, comment controller
+ Working On: 
+  - post card (dates, view comments and likes)
+  - protected routes
+  - comments back end
+  - likes front end
+ Challenges: 
+  - 
+
+Nick:
+Finished
+-unit tests w/ Jest
+-friends page authentication
+-fetch suggested friends for auth'd user
+
+Didn't Finish:
+-edit profile info modal
+
+Working On:
+-CI/CI GitHub Jenkins
+-add/remove friend
+
+Shiyu:
+Finished:
+-modified the profile to include private and public views
+-added About page 
+-added profilePageContext
+Working on
+-implement post logic
+-make the buttons hidden for public view
+-allow user upload cover image 
+-allow user upload profile image
+
+Xuerun:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------

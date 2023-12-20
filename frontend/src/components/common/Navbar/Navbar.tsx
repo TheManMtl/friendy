@@ -1,9 +1,25 @@
 import React from "react";
 import "./Navbar.css";
+import { useForm } from "react-hook-form";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import LogoutButton from "../Button/LogoutButton";
+import { useContext } from "react";
+import { AuthContext } from "../../../context/AuthProvider";
+import { SearchModel } from "../../../models/SearchModel";
 
 function Navbar() {
+  const authContext = useContext(AuthContext);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SearchModel>();
+
+  async function onSubmit(input: SearchModel, event: any) {
+    event.preventDefault();
+    const urlParams = input.searchTerms;
+    console.log(urlParams);
+  }
   return (
     <div>
       <nav className="navbar navbar-expand-lg nav-custom py-3">
@@ -17,12 +33,17 @@ function Navbar() {
             <a className="navbar-brand" href="/">
               Friendy
             </a>
-            <form className="d-flex searchInput" role="search">
+            <form
+              className="d-flex searchInput"
+              role="search"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <input
                 className="form-control me-2 searchInput"
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
+                {...register("searchTerms")}
               />
               <button className=" btn-nav searchBtn" type="submit">
                 Search
@@ -32,7 +53,7 @@ function Navbar() {
 
           <div className="middle col-4">
             {/* Menu Toggle */}
-            <div className="menu-wrapper"> 
+            <div className="menu-wrapper">
               <button
                 className="navbar-toggler"
                 type="button"
@@ -55,7 +76,7 @@ function Navbar() {
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="/friends">
+                    <a className="nav-link" href="/#/friends">
                       <i className="bi bi-people-fill icon"></i>
                     </a>
                   </li>
@@ -67,6 +88,13 @@ function Navbar() {
                   <li className="nav-item">
                     <a className="nav-link" href="/">
                       <i className="bi bi-controller icon"></i>
+                    </a>
+                  </li>
+
+
+                  <li className="nav-item">
+                    <a className="nav-link " aria-current="page" href="/login">
+                      <i className="">login</i>
                     </a>
                   </li>
                 </ul>
@@ -88,7 +116,10 @@ function Navbar() {
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="/profile">
+                  <a
+                    className="nav-link"
+                    href={`/profile/${authContext?.user?.id}`}
+                  >
                     <ProfileImage
                       src={"https://www.w3schools.com/howto/img_avatar.png"}
                       alt={"profile"}

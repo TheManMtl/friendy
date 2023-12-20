@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
+import { Constants } from '../../../data/constants';
 import FriendPanel from '../../../components/common/FriendPanel/FriendPanel';
+import useAxiosToken from '../../../hooks/useAxiosToken';
 
 type FriendList = {
     friendId: number;
@@ -13,12 +14,13 @@ type FriendList = {
 function FriendsPageList() {
     const [user, setUser] = useState(null);
     const [friends, setFriends] = useState<FriendList[]>([]);
+    const axios = useAxiosToken();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const userId = '5';
-                const response = await axios.get(`http://localhost:8080/api/friends/all/${userId}`);
+                const response = await axios.get(`/friends/all/${userId}`);
                 setFriends(response.data);
             } catch (error) {
                 console.error('Could not retrieve friends list:', error);

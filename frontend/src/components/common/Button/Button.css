@@ -1,37 +1,68 @@
 /* This is all temp styling, I'm ballparking based on different buttons I saw on FB */
 
 .button {
-    border: none;
-    border-radius: 5px;
-    color: black;
+  border: none;
+  border-radius: 5px;
+  color: black;
 }
 
 /* button variants 
 TODO: match color palette */
 .btn-default {
-    width: 100%;
-    padding: 0.5em;
-    font-size: 0.8em;
-    background-color: #e0e2e8;
+  width: 100%;
+  padding: 0.5em;
+  font-size: 0.8em;
+  background-color: #e0e2e8;
 }
 
 .btn-blue {
-    width: 100%;
-    padding: 0.5em;
-    font-size: 0.8em;
-    background-color: #e6f0fd;
-    color: #3560ec;
+  width: 100%;
+  padding: 0.5em;
+  font-size: 0.8em;
+  background-color: #e6f0fd;
+  color: #3560ec;
 }
 
 .btn-blue:hover {
-    background-color: #d7e8fd;
+  background-color: #d7e8fd;
 }
 
 .btn-round {
-    border-radius: 100%;
-    background-color: #e0e2e8;
+  border-radius: 100%;
+  background-color: #e0e2e8;
 }
 
 .btn-transparent {
-    background-color: hsla(225, 15%, 89%, 0.445);
+  background-color: hsla(225, 15%, 89%, 0.445);
+}
+
+.btn-color {
+  border-radius: 10px;
+  color: #fff;
+  background-image: linear-gradient(to right, #ffd54f, #d500f9);
+  padding: 0.5em;
+  cursor: pointer;
+  border: none !important;
+  margin-top: 40px;
+  font-size: medium;
+  font-weight: 600;
+}
+
+.btn-color:hover {
+  color: #fff;
+  background-image: linear-gradient(to right, #d500f9, #ffd54f);
+}
+
+.btn-white {
+  border-radius: 50px;
+  color: #d500f9;
+  background-color: #fff;
+  padding: 8px 40px;
+  cursor: pointer;
+  border: 2px solid #d500f9 !important;
+}
+
+.btn-white:hover {
+  color: #fff;
+  background-image: linear-gradient(to right, #ffd54f, #d500f9);
 }

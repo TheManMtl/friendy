@@ -208,3 +208,17 @@ export const refresh: RequestHandler<
     next(error);
   }
 };
+
+export const all: RequestHandler = async (req, res, next) => {
+  try {
+    // Fetch all users
+    const users = await User.findAll({
+      attributes: { exclude: ['password'] }, // Exclude the password field from the response
+    });
+
+    // Return the list of users
+    return res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};

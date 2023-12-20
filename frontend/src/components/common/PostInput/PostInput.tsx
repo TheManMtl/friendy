@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import "./PostInput.css";
 
@@ -6,8 +6,9 @@ interface Props {
   src: string;
   alt: string;
   size?: string;
+  openPost: () => void;
 }
-const PostInput: React.FC<Props> = ({ src, alt, size }) => {
+const PostInput: React.FC<Props> = ({ src, alt, size, openPost }) => {
   return (
     <div className="card">
       <div className="card-body">
@@ -16,11 +17,10 @@ const PostInput: React.FC<Props> = ({ src, alt, size }) => {
             <ProfileImage src={src} alt={alt} size={size} />
           </div>
           <div className="col-11">
-            <a href="/profile">
-              <button className="col-11 btn-input mt-1">
-                What's on your mind?
-              </button>
-            </a>
+            {/* TODO: use modal to open post window */}
+            <button className="col-11 btn-input mt-1" onClick={openPost}>
+              What's on your mind?
+            </button>
           </div>
         </div>
         <hr />

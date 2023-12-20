@@ -1,16 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
-import PhotoGallery from "../../../components/common/PhotoGallery/PhotoGallery";
-import ProfileIntroCard from "../../../components/common/ProfileIntroCard/ProfileIntroCard";
+import PhotoGallery from "../../../components/common/ProfilePage/PhotoGallery";
+import ProfileIntroCard from "../../../components/common/ProfilePage/ProfileIntroCard";
 import PostInput from "../../../components/common/PostInput/PostInput";
 import { IPost } from "../../shared/interface/post.interface";
 import PostCard from "../../../components/common/PostCard/PostCard";
 import axios from "../../../services/api/axios";
+import PostModal from "../../../components/common/PostInput/PostModal";
+import { User } from "../../../types/common";
 import { AuthContext } from "../../../context/AuthProvider";
 
-function ProfilePageHome() {
+interface ProfileHomeProps {
+  userProfile: User | null;
+}
+
+const ProfilePageHome: React.FC<ProfileHomeProps> = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const authContext = useContext(AuthContext);
-  
+
+  //start Post modal section
+  const [showPostModal, setShowPostModal] = useState<boolean>(false);
+  const closePost = () => {
+    setShowPostModal(false);
+  };
+  const openPost = () => setShowPostModal(true);
+
+  //end Modal section
 
   useEffect(() => {
     const userId = authContext?.user?.id;
@@ -37,6 +51,7 @@ function ProfilePageHome() {
               }
               alt={"profile"}
               size={"small"}
+              openPost={openPost}
             />
           </div>
           {posts.map((post) => (
@@ -44,7 +59,7 @@ function ProfilePageHome() {
               <PostCard
                 profileImageSrc="https://picsum.photos/200"
                 time={post.createdAt}
-                username="username" // TODO: get username from auth
+                username={post.author.name}
                 content={post.content}
                 thumbnailUrl={post.thumbnailUrl}
               />
@@ -52,8 +67,11 @@ function ProfilePageHome() {
           ))}
         </div>
       </div>
+
+      {/* Post Modal - This modal is opened by the button in PostInput component*/}
+      <PostModal showPostModal={showPostModal} closePost={closePost} />
     </div>
   );
-}
+};
 
 export default ProfilePageHome;
