@@ -23,10 +23,10 @@ export const createPost = async (req: any, res: Response) => {
             image = await imageController.addOne(req);
         }
         const post = await Post.create({
-            authorId: req.id,
+            authorId: req.body.authorId,
             profileId: req.body.profileId,
             type: req.body.type,
-            content: req.body.text,
+            content: req.body.content,
             imageId: image ? image.id : null,
 
         });
