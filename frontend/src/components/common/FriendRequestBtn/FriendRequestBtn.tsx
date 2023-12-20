@@ -46,25 +46,6 @@ const FriendRequestBtn: React.FC<FriendRequestBtnProps> = ({
       }
     }
   };
-  //accept
-  // const requestedId = 101;
-  // const requesterId = req.body.id;
-  // router.put("/accept-request", friends.acceptRequest);
-  // router.delete("/decline-request", friends.deleteFriend);
-
-  //delete
-  // const userA = 101;
-  // const userB = req.body.id;
-
-  // let friendship = await Friend.findOne({
-  //   where: {
-  //     requestedById: userB,
-  //     requestedToId: userA,
-  //   },
-  // });
-  useEffect(() => {
-    console.log("use effect");
-  }, []);
 
   return (
     <button
