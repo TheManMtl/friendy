@@ -94,7 +94,7 @@ function Navbar() {
 
                   <li className="nav-item">
                     <a className="nav-link " aria-current="page" href="/login">
-                      <i className="">login</i>
+                      <i className="">login(this is a test)</i>
                     </a>
                   </li>
                 </ul>
