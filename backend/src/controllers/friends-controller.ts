@@ -35,8 +35,7 @@ export const createRequest = async (
 ): Promise<any> => {
   try {
     console.log("friend request");
-    // const requesterId = req.id;  TODO: 
-    const requesterId = req.body.rid;
+    const requesterId = req.id;
     const requestedId = req.body.id;
 
     const userExists = await User.findOne({
@@ -96,8 +95,7 @@ export const findAllRequests = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    //const userId = req.id;
-    const userId = 105;
+    const userId = req.id;
     const direction = req.query.direction || "received";
     let whereCondition;
     let attributeCondition;
@@ -145,7 +143,7 @@ export const findAllRequests = async (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const requests: requestProfile[] = await Promise.all(
       allRequests.map(async (item: any) => {
-        const mutuals: number = await findMutualFriends(userId, item.id);
+        const mutuals: number = await findMutualFriends(userId!, item.id);
         let thumbnail: string =
           (direction === "received" ? item.RequestedBy : item.RequestedTo)
             ?.profileImg?.image?.thumbnail || null;
@@ -191,8 +189,7 @@ export const acceptRequest = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    // const requesterId = req.id;
-    const requestedId = 101;
+    const requestedId = req.id;
     const requesterId = req.body.id;
     const request = await Friend.findOne({
       where: {
@@ -220,8 +217,7 @@ export const deleteFriend = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    // const userA = req.id;
-    const userA = req.body.rid
+    const userA = req.id;
     const userB = req.body.id;
 
     let friendship = await Friend.findOne({
