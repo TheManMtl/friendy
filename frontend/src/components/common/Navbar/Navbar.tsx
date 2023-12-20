@@ -96,11 +96,11 @@ function Navbar() {
                     </a>
                   </li>
 
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <a className="nav-link " aria-current="page" href="/login">
                       <i className="">login(this is a test)</i>
                     </a>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
