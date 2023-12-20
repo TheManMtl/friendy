@@ -130,4 +130,5 @@ dist
 .pnp.*
 
 # react builds
-frontend/build
+#frontend/build
+t.txt

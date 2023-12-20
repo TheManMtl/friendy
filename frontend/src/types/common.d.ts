@@ -24,3 +24,14 @@ export interface Post {
   postId?: number;
   profileId?: number;
 }
+
+export interface Comment {
+  id: number;
+  authorId: number;
+  authorName: string;
+  authorPic: string;
+  postId: number;
+  body: string;
+  likeCount: number;
+  createdAt: string;
+}

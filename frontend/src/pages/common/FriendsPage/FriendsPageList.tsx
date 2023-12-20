@@ -11,7 +11,7 @@ type FriendList = {
     profileImgId: number | null;
 }
 
-function FriendsPageList() {
+function FriendsPageList({ userId }: { userId: number | undefined }) {
     const [user, setUser] = useState(null);
     const [friends, setFriends] = useState<FriendList[]>([]);
     const axios = useAxiosToken();
@@ -19,7 +19,6 @@ function FriendsPageList() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const userId = '5';
                 const response = await axios.get(`/friends/all/${userId}`);
                 setFriends(response.data);
             } catch (error) {

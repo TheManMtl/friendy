@@ -178,8 +178,7 @@ export const findPeople = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    const currentUserId = 89;
-    // const currentUserId = req.id;
+    const currentUserId = req.id;
     if (!currentUserId) {
       return res
         .status(401)

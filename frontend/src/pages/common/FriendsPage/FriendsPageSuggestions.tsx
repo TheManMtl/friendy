@@ -9,25 +9,52 @@ type SuggestedFriend = {
   profileImgId: number | null;
 };
 
-function FriendsPageSuggestions({ userId }: { userId: number | undefined }) {
-  const [suggestedFriends, setSuggestedFriends] = useState<SuggestedFriend[]>([]);
+function FriendsPageSuggestions({ userId }: { userId: number }) {
+  const [suggestedFriendsBySchool, setSuggestedFriendsBySchool] = useState<SuggestedFriend[]>([]);
+  const [suggestedFriendsByLocation, setSuggestedFriendsByLocation] = useState<SuggestedFriend[]>([]);
+  const [sentRequests, setSentRequests] = useState<number[]>([]);
   const axios = useAxiosToken();
 
+  // my current setup for filtering by school/location and checking if they're previously sent friend requests
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // TODO: Also make sure the currently logged-in user's ID is being passed
         console.log("Authenticated User Id: " + userId);
-        const response = await axios.get(`/friends/suggested/${userId}`);
-        setSuggestedFriends(response.data);
-      } catch (error) {
-        console.error('Could not retrieve suggested friends:', error);
+
+        const responseSchool = await axios.get(`/friends/suggested-school/${userId}`);
+        setSuggestedFriendsBySchool(responseSchool.data);
+
+        const responseLocation = await axios.get(`/friends/suggested-location/${userId}`);
+        setSuggestedFriendsByLocation(responseLocation.data);
+
+        const sentRequestsResponse = await axios.get(`/friends/requests/sent`);
+        setSentRequests(sentRequestsResponse.data.map((request: any) => request.requestedToId));
+      } catch (error: any) {
+        console.error('Could not retrieve suggested friends:', error.response?.data || error.message);
       }
     };
 
     fetchData();
-  }, []);
+  }, [userId, axios]);
 
+  const addFriend = async (friendId: number, userId: number) => {
+    try {
+      if (sentRequests.includes(friendId)) {
+        await axios.delete(`/remove`, {
+          data: { rid: userId, id: friendId }
+        });
+        setSentRequests((prevRequests) => prevRequests.filter((id) => id !== friendId));
+      } else {
+        const response = await axios.post('/friends/request', {
+          rid: userId,
+          id: friendId,
+        });
+        setSentRequests((prevRequests) => [...prevRequests, friendId]);
+      }
+    } catch (error) {
+      console.error('Error sending/undoing friend request:', error);
+    }
+  };
 
 
   return (
@@ -37,12 +64,26 @@ function FriendsPageSuggestions({ userId }: { userId: number | undefined }) {
           <h4>Suggested Friends (by school)</h4>
         </div>
         <div className="panel-grid">
-          {suggestedFriends.map((friend, index) => (
+          {suggestedFriendsBySchool.map((friend, index) => (
             <FriendPanel
               key={index}
               friend={friend}
-              buttonText="Add Friend"
-              onClick={() => console.log(`Add Friend ${friend.name}`)}
+              buttonText={sentRequests.includes(friend.userId) ? 'Undo Request' : 'Add Friend'}
+              onClick={() => addFriend(friend.userId, userId ?? 0)}
+            />
+          ))}
+        </div>
+        <br />
+        <div className="d-flex justify-content-between align-items-center p-2 m-2">
+          <h4>Suggested Friends (by location)</h4>
+        </div>
+        <div className="panel-grid">
+          {suggestedFriendsByLocation.map((friend, index) => (
+            <FriendPanel
+              key={index}
+              friend={friend}
+              buttonText={sentRequests.includes(friend.userId) ? 'Undo Request' : 'Add Friend'}
+              onClick={() => addFriend(friend.userId, userId)}
             />
           ))}
         </div>

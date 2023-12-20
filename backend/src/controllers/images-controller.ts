@@ -2,12 +2,28 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   DeleteObjectCommand,
+  S3Client
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
 import sharp from "sharp";
 import models from "../db/models";
 import { CustomRequest } from "../middleware/auth";
+import { Response } from "express";
+
+// prepare S3 client
+const bucketName = process.env.BUCKET_NAME;
+const region = process.env.BUCKET_REGION;
+const accessKeyId = process.env.ACCESS_KEY;
+const secretAccessKey = process.env.SECRET_ACCESS_KEY;
+
+const s3Client = new S3Client({
+  region,
+  credentials: {
+    accessKeyId: accessKeyId!,
+    secretAccessKey: secretAccessKey!
+  }
+});
 
 const randomFileName = (byte = 32) => crypto.randomBytes(byte).toString("hex");
 
@@ -176,3 +192,24 @@ export const getPicUrlFromS3 = async (
     return null;
   }
 };
+
+export const getUrlByFileName = async (
+  req: CustomRequest,
+  res: Response
+): Promise<any> => {
+
+  try {
+    const url = await getSignedUrl(
+      s3Client,
+      new GetObjectCommand({
+        Bucket: bucketName,
+        Key: req.params.fileName,
+      }),
+      { expiresIn: 3600 }
+    );
+    return res.status(200).send(url);
+
+  } catch (err) {
+    return res.status(500).json({ message: "Something went wrong. " });
+  }
+}

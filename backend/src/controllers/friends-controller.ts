@@ -35,9 +35,8 @@ export const createRequest = async (
 ): Promise<any> => {
   try {
     console.log("friend request");
-    // hard coded user 101 prior to token creation and use of auth middleware
-    // const requesterId = req.id;
-    const requesterId = 85;
+    // const requesterId = req.id;  TODO: 
+    const requesterId = req.body.rid;
     const requestedId = req.body.id;
 
     const userExists = await User.findOne({
@@ -98,7 +97,7 @@ export const findAllRequests = async (
 ): Promise<any> => {
   try {
     //const userId = req.id;
-    const userId = 101;
+    const userId = 105;
     const direction = req.query.direction || "received";
     let whereCondition;
     let attributeCondition;
@@ -222,7 +221,7 @@ export const deleteFriend = async (
 ): Promise<any> => {
   try {
     // const userA = req.id;
-    const userA = 101;
+    const userA = req.body.rid
     const userB = req.body.id;
 
     let friendship = await Friend.findOne({
@@ -356,28 +355,26 @@ export const viewSuggestedFriendsBySchool = async (
     }
 
     const school = currentUser.school;
-
-    const primaryUserFriends = await Friend.findAll({
+    const primaryUserFriendRequests = await Friend.findAll({
       where: {
         [Op.or]: [
           { requestedById: currentUserId },
           { requestedToId: currentUserId },
         ],
-        acceptedAt: { [Op.not]: null },
+        acceptedAt: null,
       },
     });
 
     const primaryUserFriendIdsSet = new Set<number>();
-    primaryUserFriends.forEach((friend: typeof Friend) => {
-      if (friend.requestedById == currentUserId) {
-        primaryUserFriendIdsSet.add(friend.requestedToId);
+    primaryUserFriendRequests.forEach((friendRequest: typeof Friend) => {
+      if (friendRequest.requestedById == currentUserId) {
+        primaryUserFriendIdsSet.add(friendRequest.requestedToId);
       } else {
-        primaryUserFriendIdsSet.add(friend.requestedById);
+        primaryUserFriendIdsSet.add(friendRequest.requestedById);
       }
     });
 
     const primaryUserFriendIds = Array.from(primaryUserFriendIdsSet);
-
     const suggestedFriends = await User.findAll({
       where: {
         id: {
@@ -417,6 +414,95 @@ export const viewSuggestedFriendsBySchool = async (
     next(error);
   }
 };
+
+export const viewSuggestedFriendsByLocation = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const currentUserId = parseInt(req.params.id, 10);
+    if (isNaN(currentUserId)) {
+      return res
+        .status(400)
+        .send({ message: "Invalid user ID in request parameters." });
+    }
+
+    const currentUser = await User.findByPk(currentUserId, {
+      attributes: ["location"],
+    });
+
+    if (!currentUser) {
+      return res.status(400).send({ message: "Current user not found." });
+    }
+
+    if (!currentUser.location) {
+      return res
+        .status(400)
+        .send({ message: "User location information not available." });
+    }
+
+    const location = currentUser.location;
+    const primaryUserFriendRequests = await Friend.findAll({
+      where: {
+        [Op.or]: [
+          { requestedById: currentUserId },
+          { requestedToId: currentUserId },
+        ],
+        acceptedAt: null,
+      },
+    });
+
+    const primaryUserFriendIdsSet = new Set<number>();
+    primaryUserFriendRequests.forEach((friendRequest: typeof Friend) => {
+      if (friendRequest.requestedById == currentUserId) {
+        primaryUserFriendIdsSet.add(friendRequest.requestedToId);
+      } else {
+        primaryUserFriendIdsSet.add(friendRequest.requestedById);
+      }
+    });
+
+    const primaryUserFriendIds = Array.from(primaryUserFriendIdsSet);
+    const suggestedFriends = await User.findAll({
+      where: {
+        id: {
+          [Op.not]: [...primaryUserFriendIds, currentUserId],
+        },
+        location: location,
+      },
+      include: [
+        {
+          model: Post,
+          as: "profileImg",
+          attributes: ["id"],
+          include: [
+            {
+              model: Image,
+              as: "Image",
+              attributes: ["id", "thumbnail"],
+            },
+          ],
+        },
+      ],
+    });
+
+    const processedSuggestedFriends = suggestedFriends.map(
+      (friend: typeof User) => ({
+        userId: friend.id,
+        name: friend.name,
+        location: friend.location || null,
+        thumbnail: friend.profileImg?.image?.thumbnail || null,
+        profileImgId: friend.profileImg?.id || null,
+      })
+    );
+
+    return res.status(200).send(processedSuggestedFriends);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 
 export const findMutualFriends = async (
   user1id: number,

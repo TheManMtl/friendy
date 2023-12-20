@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FriendsForList } from "../../models/FriendsForList";
-import axios from "axios";
+import useAxiosToken from "../../hooks/useAxiosToken";
 import HomeSingleFriend from "./HomeSingleFriend";
 
 type HomeFriendListProps = {
@@ -9,11 +9,11 @@ type HomeFriendListProps = {
 
 const HomeFriendList: React.FC<HomeFriendListProps> = ({ toggle }) => {
   const [friends, setFriends] = useState<FriendsForList[]>([]);
-
+  const axiosToken = useAxiosToken();
   useEffect(() => {
     console.log("FRIEND RERENDERED");
     try {
-      axios
+      axiosToken
         .get(`${process.env.REACT_APP_HOST_URL}/friends/all/101`)
         .then((response: any) => {
           console.log(

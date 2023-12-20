@@ -33,7 +33,7 @@ import db from "./db/models";
 // savePosts();
 
 // {force: true}    {alter: true}     <-- use as needed
-// db.sequelize.sync({ alter: true });
+ //db.sequelize.sync({ alter: true });
 db.sequelize.authenticate().then(() => {
   app.listen(port, () => {
     console.log(`server running on post ${port}`);
