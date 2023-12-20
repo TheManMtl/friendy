@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import "./FriendRequestBtn.css";
 import { RequestProfile } from "../../../models/RequestProfile";
 import axios from "axios";
+import useAxiosToken from "../../../hooks/useAxiosToken";
 
 type FriendRequestBtnProps = {
   value: boolean;
@@ -15,13 +16,14 @@ const FriendRequestBtn: React.FC<FriendRequestBtnProps> = ({
   returnNewFriend,
   friendId,
 }) => {
+  const axiosToken = useAxiosToken();
   const handleRequest = (result: boolean) => {
     const body = {
       id: friendId,
     };
     if (value) {
       try {
-        axios
+        axiosToken
           //  router.put("/accept-request", friends.acceptRequest);
           .put(`${process.env.REACT_APP_HOST_URL}/friends/accept-request`, body)
           .then((response: any) => {
@@ -33,7 +35,7 @@ const FriendRequestBtn: React.FC<FriendRequestBtnProps> = ({
       }
     } else {
       try {
-        axios
+        axiosToken
           .delete(`${process.env.REACT_APP_HOST_URL}/friends/decline-request`, {
             data: body,
           })
