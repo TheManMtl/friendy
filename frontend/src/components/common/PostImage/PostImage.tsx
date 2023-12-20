@@ -26,9 +26,8 @@ const PostImage: React.FC<PostImageProps> = (props) => {
 
   }
   return (
-    <div className="container">
-    <div className="row">
-      <div className="col-lg-4 col-md-12 mb-4 mb-lg-0 position-relative">
+    
+      <div className="">
         <img
           src={props.thumbnailUrl} 
           className="w-100 shadow-1-strong rounded mb-4"
@@ -68,8 +67,7 @@ const PostImage: React.FC<PostImageProps> = (props) => {
               </li>
             </ul>
           </div>
-        </div>
-      </div>
+     
     </div>
     <Modal show={deleteModal} onHide={() => setDeleteModal(false)} backdrop="static">
         <Modal.Header closeButton>

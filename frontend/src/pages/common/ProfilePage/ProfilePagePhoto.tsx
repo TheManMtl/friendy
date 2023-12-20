@@ -26,8 +26,11 @@ function ProfilePagePhoto() {
 
   return (
     <div>
+      
+      <div className="container">
+    <div className="row">
       {posts.map((post) => (
-        <div key={`post-${post.id}`} className="mt-2">
+        <div key={`post-${post.id}`} className="col-lg-4 col-md-12 mb-4 mb-lg-0 position-relative">
           <PostImage
            postId={post.id}
             thumbnailUrl={post.thumbnailUrl}
@@ -35,6 +38,8 @@ function ProfilePagePhoto() {
           />
         </div>
       ))}
+      </div>
+      </div>
     </div>
   )
 }
