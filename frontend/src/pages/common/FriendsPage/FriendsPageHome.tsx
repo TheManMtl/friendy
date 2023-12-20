@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from '../../../components/common';
 import "./FriendsPage.css";
 
-function FriendsPageHome() {
+function FriendsPageHome({ userId }: { userId: number | undefined }) {
 
     const dummyPanels = Array.from({ length: 50 }, (_, index) => (
         <div key={index} className="panel justify-content-center align-items-center" style={{ backgroundImage: `url('https://picsum.photos/200/200?random=${index}')` }}>

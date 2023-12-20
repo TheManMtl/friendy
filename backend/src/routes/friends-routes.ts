@@ -12,7 +12,8 @@ router.post("/request", friends.createRequest);
 router.get("/active-requests/", attachS3Info, friends.findAllRequests);
 
 router.get("/all/:id", attachS3Info, friends.viewAllFriends);
-router.get("/suggested/:id", friends.viewSuggestedFriendsBySchool);
+router.get("/suggested-school/:id", friends.viewSuggestedFriendsBySchool);
+router.get("/suggested-location/:id", friends.viewSuggestedFriendsByLocation);
 router.put("/accept-request", friends.acceptRequest);
 router.delete("/decline-request", friends.deleteFriend);
 router.delete("/remove", friends.deleteFriend);

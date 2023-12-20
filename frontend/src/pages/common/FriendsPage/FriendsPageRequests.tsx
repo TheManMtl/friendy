@@ -10,7 +10,7 @@ type FriendRequest = {
 }
 
 //TODO - switch out of hard coded user
-function FriendsPageRequests() {
+function FriendsPageRequests({ userId }: { userId: number | undefined }) {
   const [user, setUser] = useState(null);
   const [friendRequestsSent, setFriendRequestsSent] = useState<FriendRequest[]>([]);
   const [friendRequestsReceived, setFriendRequestsReceived] = useState<FriendRequest[]>([]);
@@ -19,15 +19,16 @@ function FriendsPageRequests() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/friends/active-requests?direction=receieved`);
+        const response = await axios.get(`/friends/active-requests?direction=received&id=${userId}`);
         setFriendRequestsReceived(response.data);
       } catch (error) {
         console.error('Could not find active friend requests:', error);
       }
     };
-
+  
     fetchData();
-  }, []);
+  }, [userId]);
+  
 
   useEffect(() => {
     const fetchData = async () => {
