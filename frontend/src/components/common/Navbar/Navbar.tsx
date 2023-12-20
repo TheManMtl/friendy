@@ -96,11 +96,11 @@ function Navbar() {
                     </a>
                   </li>
 
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <a className="nav-link " aria-current="page" href="/login">
                       <i className="">login(this is a test)</i>
                     </a>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
@@ -122,7 +122,7 @@ function Navbar() {
                 <li className="nav-item">
                   <a
                     className="nav-link"
-                    href={`/profile/${authContext?.user?.id}`}
+                    href={`/#profile/${authContext?.user?.id}`}
                   >
                     <ProfileImage
                       src={"https://www.w3schools.com/howto/img_avatar.png"}

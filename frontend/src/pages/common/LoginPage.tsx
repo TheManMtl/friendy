@@ -52,6 +52,11 @@ function LoginPage() {
               navigate("/admin");
             }
           }
+        })
+        .catch((error: any) => {
+          console.log(error + "ERRRRROR");
+          console.log(error.code + "ERRRRROR");
+          // handle error
         });
     } catch (error: any) {
       console.error("Error during login:", error.message);

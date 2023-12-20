@@ -14,12 +14,12 @@ function FriendsPageRequests({ userId }: { userId: number | undefined }) {
   const [user, setUser] = useState(null);
   const [friendRequestsSent, setFriendRequestsSent] = useState<FriendRequest[]>([]);
   const [friendRequestsReceived, setFriendRequestsReceived] = useState<FriendRequest[]>([]);
-  const axios = useAxiosToken();
+  const axiosToken = useAxiosToken();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/friends/active-requests?direction=received&id=${userId}`);
+        const response = await axiosToken.get(`/friends/active-requests?direction=received`);
         setFriendRequestsReceived(response.data);
       } catch (error) {
         console.error('Could not find active friend requests:', error);
@@ -27,13 +27,13 @@ function FriendsPageRequests({ userId }: { userId: number | undefined }) {
     };
   
     fetchData();
-  }, [userId]);
+  }, []);
   
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/friends/active-requests?direction=sent`);
+        const response = await axiosToken.get(`/friends/active-requests?direction=sent`);
         setFriendRequestsSent(response.data);
       } catch (error) {
         console.error('Could not find active friend requests:', error);

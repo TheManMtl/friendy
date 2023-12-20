@@ -1,19 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import "../../../pages/common/ProfilePage/ProfilePage.css";
 import { Link } from "react-router-dom";
 import { useProfilePageContext } from "../../../context/ProfilePageProvider";
+import { Dropdown } from "react-bootstrap";
+import ChangeProfileModal from "./ChangeProfileModal";
+
 interface Props {
   userName: string | undefined;
   userId: string | undefined;
   isPrivateProfile: boolean | undefined;
+  userBio: string | undefined;
 }
+
 const ProfileInfoMenu: React.FC<Props> = ({
   userName,
   userId,
   isPrivateProfile,
+  userBio,
 }) => {
   const { setRoute } = useProfilePageContext();
+  //start change profile Modal section
+  const [showChangeProfile, setShowChangeProfile] = useState<boolean>(false);
+  const showChangeProfileModal = () => {
+    setShowChangeProfile(true);
+  };
+  const closeChangeProfileModal = () => setShowChangeProfile(false);
+  //end change profile Modal section
+
   const handleLinkClick = (route: string) => {
     setRoute(route);
   };
@@ -29,18 +43,34 @@ const ProfileInfoMenu: React.FC<Props> = ({
                   style={{ position: "relative" }}
                 >
                   <div style={{ position: "absolute", bottom: "2rem" }}>
-                    <ProfileImage
-                      src={
-                        "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
-                      }
-                      alt={"profile"}
-                      size={"medium"}
-                    />
+                    <Dropdown>
+                      <Dropdown.Toggle
+                        variant="transparent"
+                        id="dropdown-basic"
+                      >
+                        <ProfileImage
+                          src={
+                            "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
+                          }
+                          alt={"profile"}
+                          size={"medium"}
+                        />
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu>
+                        <Dropdown.Item onClick={showChangeProfileModal}>
+                          Change profile image
+                        </Dropdown.Item>
+                        <Dropdown.Item href="#">
+                          See profile image
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </div>
                 </div>
                 <div className="col-8">
                   <h3 className="d-flex justify-contnet-start">{userName}</h3>
-                  <p className="d-flex justify-contnet-start">Profile Bio</p>
+                  <p className="d-flex justify-contnet-start">{userBio}</p>
                 </div>
               </div>
             </div>
@@ -104,6 +134,12 @@ const ProfileInfoMenu: React.FC<Props> = ({
           </ul>
         </div>
       </div>
+
+      {/* Modal */}
+      <ChangeProfileModal
+        closeChangeProfileModal={closeChangeProfileModal}
+        showChangeProfileModal={showChangeProfile}
+      />
     </div>
   );
 };

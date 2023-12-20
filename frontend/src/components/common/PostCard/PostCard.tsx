@@ -148,7 +148,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                 (
                   <div className="col-1">
                     <img src={window.location.origin + "/thumbs-up.png"} alt="thumb" height={15} width={15} />
-                    <small>{props.likeCount}</small>
+                    <small>{" " + props.likeCount}</small>
                   </div>
 
                 ) : (
@@ -160,7 +160,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
               props.commentCount > 0 ?
                 (
                   <div className="col-4 text-end text-secondary">
-                    <small>{props.commentCount}</small>
+                    <small>{props.commentCount + " "}</small>
                     {
                       props.commentCount === 1 ? (
                         <small>comment</small>
