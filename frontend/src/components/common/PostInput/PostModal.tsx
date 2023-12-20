@@ -4,7 +4,7 @@ import { Formik, Form, Field } from "formik";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import * as Yup from "yup";
 import { Button as ButtonF } from "../../../components/common";
-import axios from "../../../services/api/axios";
+import useAxiosToken from "../../../hooks/useAxiosToken";
 import { Post, PostType } from "../../../types/common";
 import { AuthContext } from "../../../context/AuthProvider";
 
@@ -18,6 +18,7 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
   const [filedValue, setFieldValue] = useState();
   const [files, setFiles] = useState<File[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const axiosToken = useAxiosToken();
   //Formik properties
   const initialValues = {
     authorId: authContext?.user?.id,
@@ -33,7 +34,7 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
       if (files.length !== 0) {
       }
 
-      axios.post("/posts", data).then((response) => {
+      axiosToken.post("/posts", data).then((response) => {
         console.log("====post posted=====");
         if (response.data.error) {
           console.error(response.data.error);
