@@ -15,7 +15,6 @@ import ProfilePageFriend from "./ProfilePageFriend";
 import ProfilePageAlbum from "./ProfilePageFriend";
 import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
-
 import { User, Post } from "../../../types/common";
 
 interface ProfilPageType {
@@ -103,6 +102,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         userName={userProfile?.name}
         userId={id}
         isPrivateProfile={isPrivateProfile}
+        userBio={userProfile?.bio}
       />
       <div>{renderMainPanelContent()}</div>
       {isPrivateProfile ? (

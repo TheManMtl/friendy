@@ -28,6 +28,7 @@ function ProfilePagePhoto() {
       {posts.map((post) => (
         <div key={`post-${post.id}`} className="mt-2">
           <PostImage
+           postId={post.id}
             thumbnailUrl={post.thumbnailUrl}
             alt={"thumbnail"}
           />

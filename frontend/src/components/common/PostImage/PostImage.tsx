@@ -1,13 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/js/bootstrap.bundle.min";
+import {Modal,Button} from "react-bootstrap";
+import { IPost } from "../../../pages/shared/interface/post.interface";
+import axios from "../../../services/api/axios";
 
 type PostImageProps = {
-  // src: string;
+  postId:number;
   alt: string;
   thumbnailUrl?: string;
 };
 
 const PostImage: React.FC<PostImageProps> = (props) => {
+  const[deleteModal, setDeleteModal] = useState(false);
+
+  const handleDeleteModal = () =>{
+   
+     try{
+        axios.delete(`/posts/${props.postId}`);
+        setDeleteModal(false);
+        console.log("Post deleted successfully");
+     }catch(err){
+        console.log(err);
+     }
+    
+
+  }
   return (
     <div className="container">
     <div className="row">
@@ -30,7 +47,7 @@ const PostImage: React.FC<PostImageProps> = (props) => {
             </button>
             <ul className="dropdown-menu">
               <li>
-                <a className="dropdown-item" href="#">
+                <a className="dropdown-item" onClick={()=>setDeleteModal(true)}>
                   Delete
                 </a>
               </li>
@@ -54,7 +71,23 @@ const PostImage: React.FC<PostImageProps> = (props) => {
         </div>
       </div>
     </div>
+    <Modal show={deleteModal} onHide={() => setDeleteModal(false)} backdrop="static">
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Post</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this post?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteModal}>
+            Yes, delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
   </div>
+
+
   );
     }
 export default PostImage;

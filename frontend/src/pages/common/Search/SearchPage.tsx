@@ -4,10 +4,13 @@ import { useSearchParams } from "react-router-dom";
 import { SearchProfile } from "../../../models/SearchProfile";
 import axios from "axios";
 import BrowseUser from "../../../components/common/BrowseUser/BrowseUser";
+import useAuth from "../../../hooks/useAuth";
+import { axiosToken } from "../../../hooks/useAxiosToken";
 
 type SearchPageProps = {};
 
 const SearchPage: React.FC<SearchPageProps> = ({}) => {
+  const { user, setUser } = useAuth();
   const [url, setUrl] = useState<string>("");
   const [profile, setProfiles] = useState<SearchProfile[]>([]);
 
@@ -16,26 +19,27 @@ const SearchPage: React.FC<SearchPageProps> = ({}) => {
 
   useEffect(() => {
     let theUrl = searchParams.get("search");
-    theUrl = theUrl!.replaceAll("%", ",");
-    console.log(theUrl);
+    theUrl = theUrl!.replaceAll(" ", ",");
+    const fetchData = async () => {
+      try {
+        const response = await axiosToken
+          .get(
+            `${process.env.REACT_APP_HOST_URL}/profile/search?search=${theUrl}`
+          )
+          .then((response: any) => {
+            const dataArray = response.data;
+            setProfiles(dataArray);
 
-    try {
-      axios
-        .get(
-          `${process.env.REACT_APP_HOST_URL}/profile/search?search=${theUrl}`
-        )
-        .then((response: any) => {
-          const dataArray = response.data;
-          setProfiles(dataArray);
-
-          //   dataArray.forEach((item: any, index: number) => {
-          //     console.log(`Object ${index + 1}:`, item);
-          //   });
-        });
-    } catch (error: any) {
-      console.error("Error during login:", error.message);
-      alert("An error occurred during login. Please try again.");
-    }
+            //   dataArray.forEach((item: any, index: number) => {
+            //     console.log(`Object ${index + 1}:`, item);
+            //   });
+          });
+      } catch (error: any) {
+        console.error("Error during login:", error.message);
+        alert("An error occurred during login. Please try again.");
+      }
+    };
+    fetchData();
   }, [searchParams]);
   return (
     <div className="container">

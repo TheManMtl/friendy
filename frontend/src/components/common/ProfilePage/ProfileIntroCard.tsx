@@ -1,7 +1,11 @@
 import React from "react";
 import "../../../pages/common/ProfilePage/ProfilePage.css";
+import { IUser } from "../../../pages/shared/interface/user.interface";
 
-function ProfileIntroCard() {
+interface IntroCardProps {
+  userProfile: IUser | null;
+}
+const ProfileIntroCard: React.FC<IntroCardProps> = ({ userProfile }) => {
   return (
     <div>
       <div className="IntroCard card py-4">
@@ -9,7 +13,7 @@ function ProfileIntroCard() {
           <h4>Intro</h4>
         </div>
         <div className="d-flex justify-content-center">
-          <p>Self intro</p>
+          <p>{userProfile?.bio}</p>
         </div>
         <div>
           <button className="btn btn-secondary col-10">Edit bio</button>
@@ -19,21 +23,21 @@ function ProfileIntroCard() {
           <div className="d-flex justify-content-start">
             <i className="bi bi-mortarboard-fill icon"></i>
             <p>
-              Studied at <a href="/">University of Moratuwa</a>
+              Studied at <a href="/">{userProfile?.school}</a>
             </p>
           </div>
 
           <div className="d-flex justify-content-start">
             <i className="bi bi-house-heart icon"></i>
             <p className="mx-1">
-              Lives in <a href="/">Montreal, QC</a>
+              Lives in <a href="/">{userProfile?.location}</a>
             </p>
           </div>
 
           <div className="d-flex justify-content-start ">
             <i className="bi bi-geo-alt-fill icon"></i>
             <p>
-              From <a href="/">Colombo, Sri Lanka</a>
+              Work at <a href="/">{userProfile?.workplace}</a>
             </p>
           </div>
           <div>
@@ -43,6 +47,6 @@ function ProfileIntroCard() {
       </div>
     </div>
   );
-}
+};
 
 export default ProfileIntroCard;
