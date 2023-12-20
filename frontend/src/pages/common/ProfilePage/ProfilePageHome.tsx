@@ -12,9 +12,13 @@ import { AuthContext } from "../../../context/AuthProvider";
 
 interface ProfileHomeProps {
   userProfile: IUser | null;
+  isPrivateProfile: boolean;
 }
 
-const ProfilePageHome: React.FC<ProfileHomeProps> = ({ userProfile }) => {
+const ProfilePageHome: React.FC<ProfileHomeProps> = ({
+  userProfile,
+  isPrivateProfile,
+}) => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const axiosToken = useAxiosToken();
 
@@ -91,7 +95,10 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({ userProfile }) => {
     <div>
       <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
         <div className="leftContent col-md-4">
-          <ProfileIntroCard userProfile={userProfile} />
+          <ProfileIntroCard
+            userProfile={userProfile}
+            isPrivateProfile={isPrivateProfile}
+          />
           <PhotoGallery />
         </div>
         {/* right content */}
