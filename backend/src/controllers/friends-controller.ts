@@ -499,7 +499,6 @@ export const viewSuggestedFriendsByLocation = async (
   }
 };
 
-
 export const findMutualFriends = async (
   user1id: number,
   user2id: number

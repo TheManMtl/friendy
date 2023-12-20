@@ -35,6 +35,7 @@ function LoginPage() {
         .post(`/users/login`, data)
         .then((response) => {
           if (response.data.error) {
+            console.log(response.data.error + "error");
             alert(response.data.error);
           } else {
             localStorage.setItem("accessToken", response.data.token);
@@ -60,6 +61,7 @@ function LoginPage() {
         });
     } catch (error: any) {
       console.error("Error during login:", error.message);
+      console.log(error.status + "login status code");
       alert("An error occurred during login. Please try again.");
     }
   };

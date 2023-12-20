@@ -5,6 +5,7 @@ import FriendRequestBtn from "../common/FriendRequestBtn/FriendRequestBtn";
 import { RequestProfile } from "../../models/RequestProfile";
 import SingleFriendRequest from "./SingleFriendRequest";
 import useAxiosToken from "../../hooks/useAxiosToken";
+import { useNavigate } from "react-router-dom";
 
 type HomeFriendRequestProps = {
   id: string;
@@ -20,6 +21,7 @@ const HomeFriendRequest: React.FC<HomeFriendRequestProps> = ({
   const [friendRequests, setFriendRequests] = useState<RequestProfile[]>([]);
   const [rerender, setRerender] = useState<boolean>(true);
   const axiosToken = useAxiosToken();
+  const navigate = useNavigate();
   useEffect(() => {
     console.log("REQUEST RERENDRED");
     try {
@@ -57,7 +59,12 @@ const HomeFriendRequest: React.FC<HomeFriendRequestProps> = ({
               <p className="text-start ms-4">Friend requests</p>
             </div>
             <div className="col-6">
-              <p className="text-end me-4">See all</p>
+              <p
+                className="text-end me-4"
+                onClick={() => navigate(`/friends/requests`)}
+              >
+                See all
+              </p>
             </div>
           </div>
         </div>
