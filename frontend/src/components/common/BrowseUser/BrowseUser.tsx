@@ -5,6 +5,7 @@ import ProfileImage from "../ProfileImage/ProfileImage";
 import { useNavigate } from "react-router-dom";
 import { RequestProfile } from "../../../models/RequestProfile";
 import FriendRequestBtn from "../FriendRequestBtn/FriendRequestBtn";
+import SendRequestBtn from "../SendRequestBtn/SendRequestBtn";
 
 type BrowseUserProps = {
   profile: SearchProfile;
@@ -45,6 +46,11 @@ const BrowseUser: React.FC<BrowseUserProps> = ({
       setToggle(!toggle);
     }
   };
+
+  const request = () => {
+    setToggle(!toggle);
+  };
+
   return (
     <div className="my-2 container search-container">
       <div className="row">
@@ -74,7 +80,15 @@ const BrowseUser: React.FC<BrowseUserProps> = ({
         <div className="col-3 my-auto">
           {!isRequested && !isRequestor ? (
             <button className={`btn friend-${profile.isFriend} py-2 pz-1`}>
-              {profile.isFriend ? "Friend" : "Add Friend"}
+              {profile.isFriend ? (
+                "Friend"
+              ) : (
+                <SendRequestBtn
+                  styles={`btn  friend-${profile.isFriend} py-1 pz-1`}
+                  request={request}
+                  userId={profile.id}
+                />
+              )}
             </button>
           ) : isRequestor ? (
             <div>Friend request sent</div>
