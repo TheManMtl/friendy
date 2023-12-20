@@ -9,7 +9,6 @@ export default axios.create({
 
 export const axiosToken = axios.create({
   baseURL: Constants.BASE_URL,
-  //   baseURL: `http://localhost:8080/api`,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
