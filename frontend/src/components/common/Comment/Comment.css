@@ -24,10 +24,15 @@
 .comment-reply {
     border-radius: 25px!important;
     width: 100%;
-    
-  
-}
+    padding-right: 50px!important;
+    resize: vertical!important;
+    overflow-y: hidden;
 
+}
+.form-scroll {
+    overflow-x: scroll;
+    overflow-wrap: break-word;
+}
 .no-margin-padding-left {
     margin-left: 0px;
     padding-left: 0px;
@@ -36,4 +41,8 @@
 .comment-submit {
     margin-top: 18px;
     margin-left: -45px;
+}
+
+.comment-true {
+    font-weight: 600;
 }

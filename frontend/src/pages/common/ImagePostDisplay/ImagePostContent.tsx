@@ -10,9 +10,14 @@ import {
   Chat,
 } from "react-bootstrap-icons";
 import Comment from "../../../components/common/Comment/Comment";
-type ImagePostContentProps = {};
+import { Profile } from "../../../models/Profile";
+import { SinglePost } from "../../../models/SinglePost";
+type ImagePostContentProps = {
+  user: Profile;
+  post: SinglePost;
+};
 
-const ImagePostContent: React.FC<ImagePostContentProps> = ({}) => {
+const ImagePostContent: React.FC<ImagePostContentProps> = ({ user, post }) => {
   const axiosToken = useAxiosToken();
 
   return (
@@ -29,7 +34,9 @@ const ImagePostContent: React.FC<ImagePostContentProps> = ({}) => {
             </div>
             <div className="col-10">
               <div className="row text-start basic-info">
-                <div className="col-12 fw-bolder display-text">Name</div>
+                <div className="col-12 fw-bolder display-text">
+                  {user && user.name && user!.name}
+                </div>
                 <div className="col-12 display-text">8h</div>
               </div>
             </div>
