@@ -12,7 +12,7 @@ import ProfilePageHome from "./ProfilePageHome";
 import ProfilePageAbout from "./ProfilePageAbout";
 import ProfilePagePhoto from "./ProfilePagePhoto";
 import ProfilePageFriend from "./ProfilePageFriend";
-import ProfilePageAlbum from "./ProfilePageFriend";
+import ProfilePageAlbum from "./ProfilePageAlbum";
 import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { User, Post } from "../../../types/common";

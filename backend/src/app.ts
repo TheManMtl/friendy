@@ -6,6 +6,7 @@ import postRoutes from "./routes/posts-routes";
 import profileRoutes from "./routes/profile-routes";
 import imgRoutes from "./routes/Images-routes";
 import commentRoutes from "./routes/comment-routes"
+import albumRoutes from "./routes/Album-routes"
 import session from "express-session";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -49,6 +50,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/images", imgRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/album", albumRoutes);
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

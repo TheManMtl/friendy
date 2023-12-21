@@ -22,7 +22,7 @@ import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import PersistAuth from "./components/PersistAuth";
 import AlbumList from './components/common/AlbumDisplay/AlbumList';
-
+import CreateAlbum from "./pages/common/ProfilePage/CreateAlbum";
 import SearchPage from "./pages/common/Search/SearchPage";
 
 function App() {
@@ -61,6 +61,7 @@ function App() {
                 </FriendsPageProvider>
               }
             />
+            <Route path="createalbum" element={<CreateAlbum/>}></Route>
           </Route>
         </Routes>
       </HashRouter>
