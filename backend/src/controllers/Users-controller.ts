@@ -205,6 +205,10 @@ export const refresh: RequestHandler<
     req.session.name = user.name;
     return res.status(200).send(theUser);
   } catch (error) {
+
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).send({ message: "You have been logged out. Please login to continue." });
+    }
     next(error);
   }
 };

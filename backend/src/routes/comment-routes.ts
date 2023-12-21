@@ -3,6 +3,8 @@ import * as comments from "../controllers/comment-controller";
 import { authUser } from "../middleware/auth";
 const router = express.Router();
 
+router.get("/comment/:id([0-9]+)", authUser, comments.getCommentChildren);
+router.get("/post/:id([0-9]+)", comments.getPostComments);
 
 router.post("/post/:id([0-9]+)", authUser, comments.commentOnPost);
 router.post("/comment/:id([0-9]+)", authUser, comments.commentOnComment);
