@@ -236,6 +236,8 @@ export const deleteFriend = async (
       });
     }
 
+    console.log("friend: " + userB + "user: " + userA);
+
     if (!friendship) {
       return res.status(400).send({ message: "friendship doesn't exist" });
     }
@@ -395,16 +397,25 @@ export const viewSuggestedFriendsBySchool = async (
     });
 
     const processedSuggestedFriends = suggestedFriends.map(
-      (friend: typeof User) => ({
-        userId: friend.id,
-        name: friend.name,
-        school: friend.school || null,
-        thumbnail: friend.profileImg?.image?.thumbnail || null,
-        profileImgId: friend.profileImg?.id || null,
-      })
+      async (friend: typeof User) => {
+        const thumbnail =
+          (await getPicUrlFromS3(
+            req,
+            friend.profileImg?.Image?.thumbnail || "default.jpg"
+          )) || "";
+
+        return {
+          userId: friend.id,
+          name: friend.name,
+          school: friend.school || null,
+          thumbnail: thumbnail,
+          profileImgId: friend.profileImg?.id || null,
+        };
+      }
     );
 
-    return res.status(200).send(processedSuggestedFriends);
+    const result = await Promise.all(processedSuggestedFriends);
+    return res.status(200).send(result);
   } catch (error) {
     console.error(error);
     next(error);
@@ -483,21 +494,31 @@ export const viewSuggestedFriendsByLocation = async (
     });
 
     const processedSuggestedFriends = suggestedFriends.map(
-      (friend: typeof User) => ({
-        userId: friend.id,
-        name: friend.name,
-        location: friend.location || null,
-        thumbnail: friend.profileImg?.image?.thumbnail || null,
-        profileImgId: friend.profileImg?.id || null,
-      })
+      async (friend: typeof User) => {
+        const thumbnail =
+          (await getPicUrlFromS3(
+            req,
+            friend.profileImg?.Image?.thumbnail || "default.jpg"
+          )) || "";
+
+        return {
+          userId: friend.id,
+          name: friend.name,
+          location: friend.location || null,
+          thumbnail: thumbnail,
+          profileImgId: friend.profileImg?.id || null,
+        };
+      }
     );
 
-    return res.status(200).send(processedSuggestedFriends);
+    const result = await Promise.all(processedSuggestedFriends);
+    return res.status(200).send(result);
   } catch (error) {
     console.error(error);
     next(error);
   }
 };
+
 
 export const findMutualFriends = async (
   user1id: number,
