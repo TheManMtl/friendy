@@ -134,7 +134,7 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
                     <ButtonF
                       type="submit"
                       variant="color"
-                      label="Save Changes"
+                      label="Create Post"
                       onClick={closePost}
                     ></ButtonF>
                   </div>

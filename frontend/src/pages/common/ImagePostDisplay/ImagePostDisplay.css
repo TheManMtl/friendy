@@ -1,0 +1,58 @@
+.full-height {
+   height: 100vh!important;
+
+}
+
+.image-post-content-scroll {
+    height: 100vh; 
+    overflow-y: auto;  
+    overflow-x: hidden;
+}
+
+.display-src {
+
+    max-width: 80%;
+    height: 100vh; /* Set the initial height to 100% of viewport height */
+    object-fit: contain;
+  
+}
+
+.display-text {
+    font-size: 1.1em;
+}
+
+.interact-options {
+    border-bottom: 1px solid #656565;
+    border-top: 1px solid #656565;
+    font-size: 1.2em;
+    font-weight: 500;
+    color: #656565;
+}
+.post-content {
+min-width: 550px;
+max-width: 550px;
+}
+.basic-info {
+    margin-left: .5em;
+}
+
+.big-x {
+font-size: 3em;
+color: white;
+}
+
+.descended-row {
+    height: 0px;
+}
+
+@media (max-width: 992px) {
+    .display-src {
+        height: 100%; 
+        margin: auto; 
+        display: block; 
+    }
+}
+
+.profile-thumbnail {
+    margin-left: -20px;
+}

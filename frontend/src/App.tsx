@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -21,22 +21,27 @@ import "./assets/global.css";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import PersistAuth from "./components/PersistAuth";
-import AlbumList from './components/common/AlbumDisplay/AlbumList';
+
+import AlbumList from "./components/common/AlbumDisplay/AlbumList";
 import CreateAlbum from "./pages/common/ProfilePage/CreateAlbum";
+
 import SearchPage from "./pages/common/Search/SearchPage";
+import ImagePostDisplay from "./pages/common/ImagePostDisplay/ImagePostDisplay";
 
 function App() {
   // Determine if the current route is an admin route
-  const isAdminRoute = window.location.pathname.startsWith("/admin");
+  const isAdminRoute = window.location.hash.startsWith("#admin");
+  const isDisplayRoute = window.location.hash.startsWith("#display");
 
   return (
     <div className="App">
       {/* <AuthProvider> */}
 
       <HashRouter>
-        {isAdminRoute ? <></> : <Navbar />}
+        {isAdminRoute || isDisplayRoute ? <></> : <Navbar />}
         <Routes>
           <Route element={<PersistAuth />}>
+            <Route path="/display" element={<ImagePostDisplay />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -61,7 +66,7 @@ function App() {
                 </FriendsPageProvider>
               }
             />
-            <Route path="createalbum" element={<CreateAlbum/>}></Route>
+            <Route path="createalbum" element={<CreateAlbum />}></Route>
           </Route>
         </Routes>
       </HashRouter>
