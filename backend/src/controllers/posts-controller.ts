@@ -18,10 +18,12 @@ interface PostWithUrl extends PostAttributes {
 
 // create new post (only one image allowed)
 export const createPost = async (req: any, res: Response) => {
-  const imageFile = req.file;
+  console.log("========this is in the createPost=========");
+  const imageFile = req.body.file;
   let image = null;
   try {
     if (imageFile) {
+      console.log("========there is imageFile=========");
       image = await imageController.addOne(req);
     }
     const post = await Post.create({

@@ -18,7 +18,7 @@ import useAxiosToken from "../../../hooks/useAxiosToken";
 import { User, Post } from "../../../types/common";
 
 interface ProfilPageType {
-  userInfo?: User;
+  userInfo?: IUser;
   postsInfo?: IPost;
 }
 
