@@ -2,6 +2,7 @@ import React from "react";
 import HomeFriendRequest from "../../components/Home/FriendRequest";
 import HomeRightPanel from "../../components/Home/HomeRightPanel";
 import "./HomePage.css";
+import Comment from "../../components/common/Comment/Comment";
 function HomePage() {
   return (
     <div className="container-fluid px-0 mx-0">

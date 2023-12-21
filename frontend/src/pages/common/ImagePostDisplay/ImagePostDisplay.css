@@ -3,6 +3,12 @@
 
 }
 
+.image-post-content-scroll {
+    height: 100vh; 
+    overflow-y: auto;  
+    overflow-x: hidden;
+}
+
 .display-src {
 
     max-width: 80%;
