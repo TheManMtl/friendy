@@ -3,10 +3,11 @@ import useAxiosToken from '../../../hooks/useAxiosToken';
 import FriendPanel from '../../../components/common/FriendPanel/FriendPanel';
 
 type SuggestedFriend = {
-  userId: number;
+  friendId: number;
   name: string;
-  thumbnail: string | null;
-  profileImgId: number | null;
+  userId: number;
+  friendsSince: Date;
+  thumbnail: string;
 };
 
 function FriendsPageSuggestions({ userId }: { userId: number }) {
@@ -19,15 +20,16 @@ function FriendsPageSuggestions({ userId }: { userId: number }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log("Authenticated User Id: " + userId);
 
         const responseSchool = await axios.get(`/friends/suggested-school/${userId}`);
         setSuggestedFriendsBySchool(responseSchool.data);
 
         const responseLocation = await axios.get(`/friends/suggested-location/${userId}`);
+        console.log("Suggested Friends by Location:", responseLocation.data); // Add this log
         setSuggestedFriendsByLocation(responseLocation.data);
 
-        const sentRequestsResponse = await axios.get(`/friends/requests/sent`);
+        const sentRequestsResponse = await axios.get(`/friends/active-requests?direction=sent`);
+        console.log("Sent friend requests: ", sentRequestsResponse.data);
         setSentRequests(sentRequestsResponse.data.map((request: any) => request.requestedToId));
       } catch (error: any) {
         console.error('Could not retrieve suggested friends:', error.response?.data || error.message);
@@ -40,13 +42,12 @@ function FriendsPageSuggestions({ userId }: { userId: number }) {
   const addFriend = async (friendId: number, userId: number) => {
     try {
       if (sentRequests.includes(friendId)) {
-        await axios.delete(`/remove`, {
-          data: { rid: userId, id: friendId }
+        await axios.delete(`/friends/remove`, {
+          data: { id: friendId }
         });
         setSentRequests((prevRequests) => prevRequests.filter((id) => id !== friendId));
       } else {
         const response = await axios.post('/friends/request', {
-          rid: userId,
           id: friendId,
         });
         setSentRequests((prevRequests) => [...prevRequests, friendId]);
@@ -55,6 +56,7 @@ function FriendsPageSuggestions({ userId }: { userId: number }) {
       console.error('Error sending/undoing friend request:', error);
     }
   };
+
 
 
   return (

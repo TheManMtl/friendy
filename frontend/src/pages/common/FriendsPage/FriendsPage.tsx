@@ -11,24 +11,22 @@ import FriendsPageList from './FriendsPageList';
 
 function FriendsPage() {
 
-    // TODO: make sure this isn't royally f'd up.
     const { selectedRoute } = useFriendsPageContext();
     const authContext = useContext(AuthContext);
     const user = authContext && authContext.user;
-    console.log('Authenticated User:', user);
 
     const renderMainPanelContent = () => {
         switch (selectedRoute) {
             case '/friends':
-                return <FriendsPageHome userId={user?.id}/>;
+                return <FriendsPageHome userId={user?.id ?? 0}/>;
             case '/friends/requests':
-                return <FriendsPageRequests userId={user?.id}/>;
+                return <FriendsPageRequests userId={user?.id ?? 0}/>;
             case '/friends/suggestions':
                 return  <FriendsPageSuggestions userId={user?.id ?? 0} />;
             case '/friends/list':
-                return <FriendsPageList userId={user?.id}/>;
+                return <FriendsPageList userId={user?.id ?? 0}/>;
             default:
-                return <FriendsPageHome userId={user?.id}/>;
+                return <FriendsPageHome userId={user?.id ?? 0}/>;
         }
     };
 
