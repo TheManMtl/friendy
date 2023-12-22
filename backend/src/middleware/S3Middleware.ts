@@ -23,7 +23,7 @@ export const s3 = new S3Client({
 });
 
 export const attachS3Info = async (
-  req: CustomRequest,
+  req: any,
   res: Response,
   next: NextFunction
 ): Promise<void> => {

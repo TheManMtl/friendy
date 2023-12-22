@@ -11,6 +11,7 @@ type ImageDisplayProps = {
 
 const ImageDisplay: React.FC<ImageDisplayProps> = ({ src }) => {
   const axiosToken = useAxiosToken();
+
   const exit = () => {
     console.log("exited");
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import "../CommentReply/CommentReply.css";
 import useAxiosToken from "../../../hooks/useAxiosToken";
@@ -10,8 +10,14 @@ type CommentReplyProps = {};
 const CommentReply: React.FC<CommentReplyProps> = ({}) => {
   const axiosToken = useAxiosToken();
 
+  const handleTextareaInput = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    event.target.style.height = "auto";
+    event.target.style.height = `${event.target.scrollHeight}px`;
+  };
   return (
-    <div className="d-flex flex-lg-row flex-column my-3 pe-5">
+    <div className="d-flex flex-lg-row flex-column my-3 ">
       <div className="">
         <ProfileImage
           src={
@@ -21,17 +27,19 @@ const CommentReply: React.FC<CommentReplyProps> = ({}) => {
           size={"small"}
         />
       </div>
-      <div className=" flex-grow-1">
-        <form className={``} onSubmit={() => console.log("submit")}>
-          <input
-            className=" comment-reply mt-2"
-            type="text"
+      <div className=" flex-grow-1 ">
+        <form className={`form-row`} onSubmit={() => console.log("submit")}>
+          <textarea
+            onChange={handleTextareaInput}
+            className="comment-reply mt-2"
+            rows={1} // Set the initial number of rows
             aria-label="Comment Reply"
-            //   {...register("searchTerms")}
+            style={{ overflow: "break-word", resize: "none" }}
+            // {...register("searchTerms")}
           />
         </form>
       </div>
-      <div className=" flex-column comment-submit">
+      <div className=" flex-column comment-submit" id="submitBtn">
         <SendFill />
       </div>
     </div>
