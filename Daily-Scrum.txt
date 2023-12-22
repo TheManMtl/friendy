@@ -651,12 +651,13 @@ Nick:
   - 
 
 Shiyu:
- Finished: 
-  - 
- Working On: 
-  - 
- Challenges: 
-  - 
+Finished:
+-tried implementing uploading image
+-created the logic and ui for profile image uploading
+Working on
+-debug the logic and modify the backend to upload image with the post
+Challenges:
+-getting the image file in the formData with appended post info
 
 Xuerun:
  Finished: 
