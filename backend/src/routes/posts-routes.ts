@@ -13,7 +13,7 @@ router.get(
   s3Middleware.attachS3Info,
   posts.getPostImageUrl
 );
-
+router.get("/newsfeed", authUser, s3Middleware.attachS3Info, posts.getNewsfeed);
 router.post(
   "/",
   authUser,
@@ -21,7 +21,7 @@ router.post(
   s3Middleware.attachS3Info,
   posts.createPost
 );
-router.put("/:id([0-9]+)", authUser, posts.updatePost);
+router.put("/:id([0-9]+)", authUser, posts.editPostContent);
 router.delete(
   "/:id([0-9]+)",
   authUser,
