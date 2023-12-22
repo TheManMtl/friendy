@@ -13,11 +13,13 @@ import { AuthContext } from "../../../context/AuthProvider";
 interface ProfileHomeProps {
   userProfile: IUser | null;
   isPrivateProfile: boolean;
+  profileThumb: string | null;
 }
 
 const ProfilePageHome: React.FC<ProfileHomeProps> = ({
   userProfile,
   isPrivateProfile,
+  profileThumb,
 }) => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const axiosToken = useAxiosToken();
@@ -106,7 +108,9 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
           <div className="">
             <PostInput
               src={
-                "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
+                profileThumb
+                  ? profileThumb
+                  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
               }
               alt={"profile"}
               size={"small"}
