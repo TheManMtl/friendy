@@ -147,6 +147,17 @@ export const viewProfile = async (
     if (!profile) {
       return res.status(400).send({ message: "user does not exist" });
     }
+
+    // image
+    let thumbnail: string | null = "";
+
+    if (profile.profileImg) {
+      thumbnail = profile.profileImg?.Image?.thumbnail;
+    } else {
+      thumbnail = "default.jpg";
+    }
+    thumbnail = await getPicUrlFromS3(req, thumbnail!);
+
     const profileInfo: userProfile = {
       name: profile.name,
       email: profile.email,
@@ -158,7 +169,7 @@ export const viewProfile = async (
       birthday: profile.birthday || null,
       relationshipStatus: profile.relationshipStatus || null,
       profileImgId: profile.profileImg?.id || null,
-      profileImgThumbnail: profile.profileImg?.Image?.thumbnail || null,
+      profileImgThumbnail: thumbnail!,
       coverImgId: profile.coverImg?.id || null,
       coverImgFileName: profile.coverImg?.Image?.fileName || null,
       relationId: profile.relationshipWith?.id || null,

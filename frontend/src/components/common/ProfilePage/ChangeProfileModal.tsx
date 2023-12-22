@@ -46,10 +46,10 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
         formData.append("profileId", userId.toString());
       }
 
-      for (const entry of formData.entries()) {
-        const [fieldName, fieldValue] = entry;
-        console.log(`${fieldName}: ${fieldValue}`);
-      }
+      // for (const entry of formData.entries()) {
+      //   const [fieldName, fieldValue] = entry;
+      //   console.log(`${fieldName}: ${fieldValue}`);
+      // }
 
       axiosToken
         .post("/posts/", formData)

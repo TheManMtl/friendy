@@ -10,12 +10,14 @@ import {
   ChatFill,
   Chat,
 } from "react-bootstrap-icons";
+import { Comments } from "../../../models/Comments";
 type CommentProps = {
   isNested: boolean;
   size: number;
+  comment: Comments;
 };
 
-const Comment: React.FC<CommentProps> = ({ isNested, size }) => {
+const Comment: React.FC<CommentProps> = ({ isNested, size, comment }) => {
   const [viewReplies, setViewReplies] = useState<boolean>(true);
   const [makeComment, setMakeComment] = useState<boolean>(false);
   return (
