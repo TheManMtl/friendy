@@ -16,7 +16,7 @@ import ProfilePageAlbum from "./ProfilePageAlbum";
 import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { User, Post } from "../../../types/common";
-
+import axios from "../../../services/api/axios";
 interface ProfilPageType {
   userInfo?: IUser;
   postsInfo?: IPost;
@@ -30,6 +30,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
   const { user, setUser } = useAuth();
   const axiosToken = useAxiosToken();
+  const [profileThumb, setProfileThumb] = useState<string | null>("");
 
   const [userProfile, setUserProfile] = useState<User | null>(null);
   // const [posts, setPosts] = useState<Post[] | null>(null);
@@ -76,6 +77,14 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
       } catch (error: any) {
         console.log("error message");
       }
+
+      axios.get(`/posts/userprofile/${id}`).then((response) => {
+        if (response.data.length !== 0) {
+          //TODO: fetch the profil pic which has the id associated with the user
+          const latestProfilIndex = response.data.length - 1;
+          setProfileThumb(response.data[latestProfilIndex].thumbnailUrl);
+        }
+      });
     }
   }, [axiosToken, id, navigate, user, userId]);
 
@@ -86,6 +95,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
           <ProfilePageHome
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
+            profileThumb={profileThumb}
           />
         );
       case `/profile/${id}/about`:
@@ -101,10 +111,14 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
           <ProfilePageHome
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
+            profileThumb={profileThumb}
           />
         );
     }
   };
+
+  useEffect(() => {}, []);
+
   return (
     <div>
       <CoverImage src={coverImageUrl} isPrivateProfile={isPrivateProfile} />
