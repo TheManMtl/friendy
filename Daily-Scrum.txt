@@ -613,6 +613,59 @@ Xuerun:
  Working On: 
   - add createalbum controller
   -fix photo display bug
+
+Date: Dec 20
+
+
+Alex:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Ehsan:
+Finished:
+	- 
+ Working On: 
+	- hosting backend
+	 
+ Challenges: 
+	-
+
+Meredith:
+ Finished: 
+  - debug comments/post card
+ Working On: 
+  - continue yesterday's todos
+ Challenges: 
+  - 
+
+Nick:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Shiyu:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Xuerun:
+ Finished: 
+  -fix photo display bug
+  -can display album list
+  -created create album page
+ Working On: 
+  -work on createalbum page
+  -create editalbum page
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------

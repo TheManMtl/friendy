@@ -3,7 +3,7 @@ import ProfileImage from "../ProfileImage/ProfileImage";
 import "./PostCard.css";
 import { Comment } from "../../../types/common";
 import * as Yup from "yup";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers} from "formik";
 import { Button } from "../../../components/common";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 
@@ -27,6 +27,15 @@ const PostCard: React.FC<PostCardProps> = (props) => {
 
   const axiosToken = useAxiosToken();
   const [success, setSuccess] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   const validationSchema = Yup.object().shape({
     body: Yup.string().max(1500).required("Comment body must be between 1 and 1500 characters."),
@@ -35,11 +44,14 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     body: ""
   };
 
-  const handleCommentOnPost = async (data: input) => {
+  const handleCommentOnPost = async (data: input, {resetForm}: FormikHelpers<input>) => {
+    console.log("handleCommentOnPost called");
     try {
       console.log("will it work?");
       await axiosToken.post(`/comments/post/${props.id}`, data);
       setSuccess(true);
+      setIsFocused(false);
+      resetForm();
       //TODO
       console.log("did it work?");
     } catch (error) {
@@ -50,12 +62,18 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     }
   };
 
-//datetime helpers
+  //datetime helpers
   const getPostTime = (datetime: string) => {
+    //console.log("getPostTime arg: " + datetime);
 
-    const diff = new Date().getTimezoneOffset();
+   // const diff = new Date().getTimezoneOffset();
+   // console.log("diff: " + diff);
     let newDate = new Date(datetime);
-    newDate = new Date(newDate.getTime() - (diff * 60000));
+    //console.log(newDate);
+
+    //newDate = new Date(newDate.getTime() - (diff * 60000));
+   // console.log(newDate);
+
     const millisec = Date.now() - newDate.getTime();
 
     const min = Math.floor(millisec / 60000);
@@ -195,29 +213,38 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           <hr />
         </div>
         <div className="card-footer bg-transparent border-0">
-        <Formik
-              initialValues={initialValues}
-              onSubmit={handleCommentOnPost}
-              validationSchema={validationSchema}
-            >
-              {(formikprops) => (
-                <Form>
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleCommentOnPost}
+            validationSchema={validationSchema}
+            validateOnChange={true}
+          >
+            {(formikprops) => (
+              <Form>
+                <div className={`textarea-container${isFocused ? " focused" : ""}`}
+                            onFocus={handleFocus}
+                            onBlur={handleBlur}
+                >
                   <div>
                     <Field
                       as="textarea"
                       id={props.id + "CommentInput"}
                       name="body"
                       placeholder="Write a comment..."
+                      rows={isFocused ? 2 : 1}
+                      className="pe-5"
                     />
                   </div>
-                  <div>
-                  </div>
                   {/* <Button type="submit" variant="color" label="Post comment"></Button> */}
-                  <button className="btn-block btn-color" type="submit">Post comment</button>
+                  {/* {isFocused && ( */}
+                    <button className="btn-block btn-color submit-button" type="submit"  onClick={() => console.log("Button clicked")}>&#10148;</button>
+                  {/* )}  */}
 
-                </Form>
-              )}
-            </Formik>
+                </div>
+                <ErrorMessage name="body" component="div" />
+              </Form>
+            )}
+          </Formik>
         </div>
       </div>
     </div>

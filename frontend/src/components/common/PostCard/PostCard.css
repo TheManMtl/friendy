@@ -1,3 +1,16 @@
 .text-left-custom {
   text-align: left;
 }
+.textarea-container {
+  position: relative;
+}
+
+.comment-input {
+    padding-right: '25px !important',
+}
+
+.submit-button {
+  position: absolute;
+  bottom: 15px; /* Adjust the distance from the bottom */
+  right: 25px; /* Adjust the distance from the right */
+}

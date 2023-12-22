@@ -6,6 +6,7 @@ const sequelize = models.sequelize;
 const User = models.User;
 const Comment = models.Comment;
 const Post = models.Post;
+const Image = models.Image;
 
 export const commentOnPost = async (
     req: CustomRequest,
@@ -14,7 +15,12 @@ export const commentOnPost = async (
     try {
         //get post and user
         const user = await User.findByPk(req.id);
-        const post = await Post.findByPk(req.params.id);
+        const post = await Post.findByPk(req.params.id,
+            {
+                where: {
+                    isDeleted: false
+                }
+            });
 
         if (!post) {
             return res.status(404).send({ message: "Post not found" });
@@ -41,7 +47,8 @@ export const commentOnPost = async (
                 'commentCount',
                 {
                     where: {
-                        id: req.params.id
+                        id: req.params.id,
+                        isDeleted: false
                     }
                 }, { transaction: t });
 
@@ -74,7 +81,12 @@ export const commentOnComment = async (
     try {
         //get post and user
         const user = await User.findByPk(req.id);
-        const parent = await Comment.findByPk(req.params.id);
+        const parent = await Comment.findByPk(req.params.id,
+            {
+                where: {
+                    isDeleted: false
+                }
+            });
 
         if (!parent) {
             return res.status(404).send({ message: "Parent comment not found" });
@@ -135,4 +147,112 @@ export const commentOnComment = async (
     }
 };
 
+export const getCommentChildren = async (
+    req: CustomRequest,
+    res: Response
+): Promise<any> => {
+    try {
+        //get parent comment
+        const parent = await Comment.findByPk(req.params.id,
+            {
+                where: {
+                    isDeleted: false
+                }
+            });
 
+        if (!parent) {
+            return res.status(404).send({ message: "Parent comment not found" });
+        }
+
+
+        const children = await Comment.findAll(
+            {
+                where: {
+                    parentId: parent.id,
+                    isDeleted: false
+                },
+                include : [
+                    {
+                        model: User,
+                        attributes: ["name"],
+                        include: [
+                          {
+                            model: Post,
+                            as: "profileImg",
+                            attributes: ["id"],
+                            include: [
+                              {
+                                model: Image,
+                                as: "Image",
+                                attributes: ["id", "thumbnail"],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                ]
+            }
+        );
+        
+        return res.status(200).send(children);
+
+    } catch (error) {
+
+        return res.status(500).send({ message: "Something went wrong" });
+    }
+};
+
+export const getPostComments = async (
+    req: CustomRequest,
+    res: Response
+): Promise<any> => {
+    try {
+        //get parent comment
+        const post = await Post.findByPk(req.params.id, {
+            where: {
+                isDeleted: false
+            }
+        });
+
+        if (!post) {
+            return res.status(404).send({ message: "Post not found" });
+        }
+
+
+        const comments = await Comment.findAll(
+            {
+                where: {
+                    postId: post.id,
+                    parentId: null,
+                    isDeleted: false
+                },
+                include: [
+                    {
+                        model: User,
+                        attributes: ["name"],
+                        include: [
+                          {
+                            model: Post,
+                            as: "profileImg",
+                            attributes: ["id"],
+                            include: [
+                              {
+                                model: Image,
+                                as: "Image",
+                                attributes: ["id", "thumbnail"],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                ]
+            }
+        );
+        
+        return res.status(200).send(comments);
+
+    } catch (error) {
+
+        return res.status(500).send({ message: "Something went wrong" });
+    }
+};

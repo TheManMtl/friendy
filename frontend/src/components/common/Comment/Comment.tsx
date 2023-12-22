@@ -4,7 +4,12 @@ import "./Comment.css";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import CommentReply from "../CommentReply/CommentReply";
-
+import {
+  HandThumbsUpFill,
+  HandThumbsUp,
+  ChatFill,
+  Chat,
+} from "react-bootstrap-icons";
 type CommentProps = {
   isNested: boolean;
   size: number;
@@ -12,10 +17,10 @@ type CommentProps = {
 
 const Comment: React.FC<CommentProps> = ({ isNested, size }) => {
   const [viewReplies, setViewReplies] = useState<boolean>(true);
-  const [makeComment, setMakeComment] = useState<boolean>(true);
+  const [makeComment, setMakeComment] = useState<boolean>(false);
   return (
     <div
-      className={`d-flex flex-lg-row flex-column my-3 pe-5 nested-${isNested}-${size} `}
+      className={`d-flex flex-lg-row flex-column my-3 pe-2 nested-${isNested}-${size} `}
     >
       <div className="">
         <ProfileImage
@@ -37,10 +42,20 @@ const Comment: React.FC<CommentProps> = ({ isNested, size }) => {
         <div className="row text-start  ms-1">
           <div className="col-12">
             <span className="comment-interaction me-2">Like</span>
-            <span className="comment-interaction me-2">Comment</span>
-            <span className="comment-interaction me-2">25m</span>
+            <span
+              className={`comment-interaction  me-2 comment-${makeComment}`}
+              onClick={() => {
+                setMakeComment(!makeComment);
+              }}
+            >
+              Comment
+            </span>
+            <span className="comment-interaction me-4">25m</span>
+            <span className="comment-interaction ">
+              <HandThumbsUpFill /> 3
+            </span>
           </div>
-          {viewReplies && (
+          {viewReplies && !makeComment && (
             <div className="col-12 view-replies">View Replies</div>
           )}
           {makeComment && <CommentReply />}
