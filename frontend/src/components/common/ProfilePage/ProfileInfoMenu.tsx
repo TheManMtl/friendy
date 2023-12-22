@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import "../../../pages/common/ProfilePage/ProfilePage.css";
 import { Link } from "react-router-dom";
 import { useProfilePageContext } from "../../../context/ProfilePageProvider";
 import { Dropdown } from "react-bootstrap";
 import ChangeProfileModal from "./ChangeProfileModal";
+import axios from "../../../services/api/axios";
 
 interface Props {
   userName: string | undefined;
@@ -20,6 +21,7 @@ const ProfileInfoMenu: React.FC<Props> = ({
   userBio,
 }) => {
   const { setRoute } = useProfilePageContext();
+  const [profileThumb, setProfileThumb] = useState<string | null>("");
   //start change profile Modal section
   const [showChangeProfile, setShowChangeProfile] = useState<boolean>(false);
   const showChangeProfileModal = () => {
@@ -31,6 +33,16 @@ const ProfileInfoMenu: React.FC<Props> = ({
   const handleLinkClick = (route: string) => {
     setRoute(route);
   };
+
+  useEffect(() => {
+    axios.get(`/posts/userprofile/${userId}`).then((response) => {
+      if (response.data.length !== 0) {
+        //TODO: fetch the profil pic which has the id associated with the user
+        const latestProfilIndex = response.data.length - 1;
+        setProfileThumb(response.data[latestProfilIndex].thumbnailUrl);
+      }
+    });
+  }, []);
   return (
     <div>
       <div className="InfoCard card py-4">
@@ -50,7 +62,9 @@ const ProfileInfoMenu: React.FC<Props> = ({
                       >
                         <ProfileImage
                           src={
-                            "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
+                            profileThumb
+                              ? profileThumb
+                              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
                           }
                           alt={"profile"}
                           size={"medium"}

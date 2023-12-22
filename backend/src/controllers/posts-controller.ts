@@ -202,6 +202,58 @@ export const getTimeline = async (req: any, res: Response) => {
   }
 };
 
+//get image post
+export const getPostImageUrl = async (req: Request, res: Response) => {
+  try {
+    //find all the posts with the authorId as user, and the type is profilePic
+    const posts = await Post.findAll({
+      where: {
+        [Op.and]: [{ authorId: req.params.id }, { type: "profilePic" }],
+      },
+      include: [
+        {
+          model: Image,
+          attributes: ["id", "fileName", "thumbnail"],
+        },
+      ],
+    });
+    //check if the posts exist
+    if (posts.length === 0) {
+      return res.status(404).json("No posts found");
+    }
+    // find all the images and append the url into posts
+    const resData: PostWithUrl[] = [];
+    for (let i = 0; i < posts.length; i++) {
+      let url = null;
+      let thumbnailUrl = null;
+
+      if (posts[i].Image) {
+        url = await imageController.getPicUrlFromS3(
+          req,
+          posts[i].Image.fileName
+        );
+        thumbnailUrl = await imageController.getPicUrlFromS3(
+          req,
+          posts[i].Image.thumbnail
+        );
+      }
+
+      const resPost: PostWithUrl = {
+        ...posts[i].toJSON(),
+        imageUrl: url,
+        thumbnailUrl: thumbnailUrl,
+      };
+
+      resData.push(resPost);
+    }
+
+    return res.status(200).json(resData);
+  } catch (error) {
+    console.error("Error fetching post images:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 // update
 // NOT IMPLEMENTED
 export const updatePost = async (req: Request, res: Response) => {
