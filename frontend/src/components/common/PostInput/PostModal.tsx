@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, FormEvent } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { Formik, Form, Field } from "formik";
 import ProfileImage from "../ProfileImage/ProfileImage";
@@ -7,6 +7,7 @@ import { Button as ButtonF } from "../../../components/common";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { Post, PostType } from "../../../types/common";
 import { AuthContext } from "../../../context/AuthProvider";
+import { any } from "prop-types";
 
 interface PostModalProps {
   showPostModal: boolean;
@@ -15,6 +16,8 @@ interface PostModalProps {
 
 const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
   const authContext = useContext(AuthContext);
+  const [file, setFile] = useState<any>();
+  const [content, setContent] = useState<string>("")
   const [filedValue, setFieldValue] = useState();
   const [files, setFiles] = useState<File[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -26,6 +29,18 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
     content: "",
     imageId: null,
   };
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("content", content)
+    formData.append("authorId", authContext?.user?.id.toString()??"");
+    formData.append("profileId", authContext?.user?.id.toString()??"");
+    formData.append("type", PostType.timeline);
+    await axiosToken.post("/posts", formData, { headers: {'Content-Type': 'multipart/form-data'}})
+  }
 
   const onSubmit = (data: Post) => {
     console.log("====submit button clicked=====");
@@ -95,14 +110,19 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
               <div>username</div>
             </div>
           </div>
+          <form onSubmit={submit}>
+            <input onChange={(e : any) => setFile(e.target.files[0])} type="file" accept="image/*"></input>
+            <input value={content} onChange={e => setContent(e.target.value)} type="text" placeholder='content'></input>
+            <button type="submit">Submit</button>
+          </form>
           <div className="row">
-            <Formik
+            {/* <Formik
               initialValues={initialValues}
               onSubmit={onSubmit}
-              // validationSchema={validationSchema}
+            // validationSchema={validationSchema}
             >
               {(formikprops) => (
-                <Form>
+                <Form encType="multipart/form-data">
                   <div>
                     <Field
                       as="textarea"
@@ -119,15 +139,15 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
                       type="file"
                       id="image"
                       name="image"
-                      accept="image/*"
-                      // onChange={(event: HTMLInputElement) => {
-                      //   const file = event.currentTarget.files[0];
-                      //   setFieldValue("image", file);
-                      // }}
+                      accept="image/*" */}
+                    {/* // onChange={(event: HTMLInputElement) => {
+                    //   const file = event.currentTarget.files[0];
+                    //   setFieldValue("image", file);
+                    // }}
                     />
                   </div>
                   {/* Buttons inside the Form */}
-                  <div className="mt-3">
+                  {/* <div className="mt-3">
                     <Button variant="secondary" onClick={closePost}>
                       Close
                     </Button>
@@ -140,7 +160,7 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
                   </div>
                 </Form>
               )}
-            </Formik>
+            </Formik> */} 
           </div>
         </Modal.Body>
         {/* Modal.Footer is not needed in this case */}

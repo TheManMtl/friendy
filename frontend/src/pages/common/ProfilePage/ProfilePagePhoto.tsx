@@ -28,7 +28,7 @@ function ProfilePagePhoto() {
     <div>
       
       <div className="container">
-    <div className="row">
+      <div className="row">
       {posts.map((post) => (
         <div key={`post-${post.id}`} className="col-lg-4 col-md-12 mb-4 mb-lg-0 position-relative">
           <PostImage
