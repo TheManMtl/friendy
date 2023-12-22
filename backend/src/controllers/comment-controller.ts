@@ -9,6 +9,22 @@ const Comment = models.Comment;
 const Post = models.Post;
 const Image = models.Image;
 
+interface CommentResponse {
+  name: string;
+  profileImg?: string | null;
+  body: string;
+  childCount: number;
+  createdAt: Date;
+  deleteAt?: Date | null;
+  id: number;
+  isDeleted: boolean;
+  likeCount: number;
+  parentId?: number | null;
+  postId: number;
+  updatedAt?: Date | null;
+  userId: number;
+}
+
 export const commentOnPost = async (
   req: CustomRequest,
   res: Response
@@ -200,7 +216,7 @@ export const getCommentChildren = async (
     });
     const updatedChildren = await Promise.all(
       children.map(async (child: any) => {
-        let thumbnail = "";
+        let thumbnail: string | null = "";
 
         if (child.User.profileImg === null) {
           console.log("profile is null");
@@ -209,11 +225,26 @@ export const getCommentChildren = async (
           thumbnail = child.User.profileImg.Image.thumbnail;
         }
 
-        child.User.profileImg = await getPicUrlFromS3(req, thumbnail);
+        thumbnail = await getPicUrlFromS3(req, thumbnail!);
         console.log(child.User.name + " NAME");
         console.log(child.User.profileImg + " IMG");
+        const comment: CommentResponse = {
+          name: child.User.name,
+          profileImg: thumbnail,
+          body: child.body,
+          childCount: child.childCount,
+          createdAt: child.createdAt,
+          deleteAt: child.deleteAt || null,
+          id: child.id,
+          isDeleted: child.isDeleted,
+          likeCount: child.likeCount,
+          parentId: child.parentId || null,
+          postId: child.postId,
+          updatedAt: child.updatedAt || null,
+          userId: child.userId,
+        };
 
-        return child;
+        return comment;
       })
     );
     return res.status(200).send(updatedChildren);
@@ -267,7 +298,7 @@ export const getPostComments = async (
     });
     const updatedComments = await Promise.all(
       comments.map(async (comment: any) => {
-        let thumbnail = "";
+        let thumbnail: string | null = "";
 
         if (comment.User.profileImg === null) {
           console.log("profile is null");
@@ -276,11 +307,24 @@ export const getPostComments = async (
           thumbnail = comment.User.profileImg.Image.thumbnail;
         }
 
-        comment.User.thumbnail = await getPicUrlFromS3(req, thumbnail);
-        console.log(comment.User.name + " NAME");
-        console.log(comment.User.profileImg + " IMG");
+        thumbnail = await getPicUrlFromS3(req, thumbnail!);
+        const returnComment: CommentResponse = {
+          name: comment.User.name,
+          profileImg: thumbnail,
+          body: comment.body,
+          childCount: comment.childCount,
+          createdAt: comment.createdAt,
+          deleteAt: comment.deleteAt || null,
+          id: comment.id,
+          isDeleted: comment.isDeleted,
+          likeCount: comment.likeCount,
+          parentId: comment.parentId || null,
+          postId: comment.postId,
+          updatedAt: comment.updatedAt || null,
+          userId: comment.userId,
+        };
 
-        return comment;
+        return returnComment;
       })
     );
     return res.status(200).send(updatedComments);

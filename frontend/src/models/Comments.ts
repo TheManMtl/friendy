@@ -1,5 +1,6 @@
 export interface Comments {
-  User: { name: string; profileImg: string };
+  name: string;
+  profileImg?: string | null;
   body: string;
   childCount: number;
   createdAt: Date;
