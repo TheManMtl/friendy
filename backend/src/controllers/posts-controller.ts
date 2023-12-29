@@ -156,18 +156,16 @@ export const getTimeline = async (req: any, res: Response) => {
             },
             {
               model: Like,
-              as: "Likes"
+              as: "Likes",
             },
           ],
         },
         {
           model: Like,
-          as: "Likes"
+          as: "Likes",
         },
       ],
-      order: [
-        ['createdAt', 'DESC']
-      ]
+      order: [["createdAt", "DESC"]],
     });
 
     if (!posts) {
@@ -211,9 +209,9 @@ export const getTimeline = async (req: any, res: Response) => {
 export const getPostImageUrl = async (req: Request, res: Response) => {
   try {
     //find all the posts with the authorId as user, and the type is profilePic
-    const posts = await Post.findAll({
+    const post = await Post.findOne({
       where: {
-        [Op.and]: [{ authorId: req.params.id }, { type: "profilePic" }],
+        id: req.params.id,
       },
       include: [
         {
@@ -223,36 +221,50 @@ export const getPostImageUrl = async (req: Request, res: Response) => {
       ],
     });
     //check if the posts exist
-    if (posts.length === 0) {
+    if (post.length === 0) {
       return res.status(404).json("No posts found");
     }
     // find all the images and append the url into posts
-    const resData: PostWithUrl[] = [];
-    for (let i = 0; i < posts.length; i++) {
-      let url = null;
-      let thumbnailUrl = null;
+    // const resData: PostWithUrl[] = [];
+    // for (let i = 0; i < post.length; i++) {
+    //   let url = null;
+    //   let thumbnailUrl = null;
 
-      if (posts[i].Image) {
-        url = await imageController.getPicUrlFromS3(
-          req,
-          posts[i].Image.fileName
-        );
-        thumbnailUrl = await imageController.getPicUrlFromS3(
-          req,
-          posts[i].Image.thumbnail
-        );
-      }
+    //   if (post[i].Image) {
+    //     url = await imageController.getPicUrlFromS3(
+    //       req,
+    //       post[i].Image.fileName
+    //     );
+    //     thumbnailUrl = await imageController.getPicUrlFromS3(
+    //       req,
+    //       post[i].Image.thumbnail
+    //     );
+    //   }
 
-      const resPost: PostWithUrl = {
-        ...posts[i].toJSON(),
-        imageUrl: url,
-        thumbnailUrl: thumbnailUrl,
-      };
+    //   const resPost: PostWithUrl = {
+    //     ...post[i].toJSON(),
+    //     imageUrl: url,
+    //     thumbnailUrl: thumbnailUrl,
+    //   };
 
-      resData.push(resPost);
+    let url = null;
+    let thumbnailUrl = null;
+
+    if (post.Image) {
+      url = await imageController.getPicUrlFromS3(req, post.Image.fileName);
+      thumbnailUrl = await imageController.getPicUrlFromS3(
+        req,
+        post.Image.thumbnail
+      );
     }
 
-    return res.status(200).json(resData);
+    const resPost: PostWithUrl = {
+      ...post.toJSON(),
+      imageUrl: url,
+      thumbnailUrl: thumbnailUrl,
+    };
+
+    return res.status(200).json(resPost);
   } catch (error) {
     console.error("Error fetching post images:", error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -261,9 +273,7 @@ export const getPostImageUrl = async (req: Request, res: Response) => {
 
 // edit post content
 export const editPostContent = async (req: CustomRequest, res: Response) => {
-
-  try{
-
+  try {
     const post = await Post.findOne({
       where: {
         id: req.params.id,
@@ -277,7 +287,10 @@ export const editPostContent = async (req: CustomRequest, res: Response) => {
     }
 
     // validate (only posts with images can have empty content)
-    if ( post.imageId != null && (!req.body.content || (req.body?.content as string).length < 1)) {
+    if (
+      post.imageId != null &&
+      (!req.body.content || (req.body?.content as string).length < 1)
+    ) {
       return res.status(400).json({ message: "Post content cannot exceed " });
     }
 
@@ -297,7 +310,6 @@ export const editPostContent = async (req: CustomRequest, res: Response) => {
       }
     );
     res.status(200).json({ message: "Successfully updated post" });
-
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Something went wrong" });
@@ -346,29 +358,24 @@ export const deletePost = async (req: CustomRequest, res: Response) => {
 
 export const getNewsfeed = async (req: any, res: Response) => {
   try {
-
     if (!req.id) {
-      return res.status(400).send({ message: "User not logged in."})
+      return res.status(400).send({ message: "User not logged in." });
     }
 
-    const user = await User.findByPk(req.id,
-        {
-          where: {
-            isDeleted: false,
-          }
-        });
+    const user = await User.findByPk(req.id, {
+      where: {
+        isDeleted: false,
+      },
+    });
 
     if (!user) {
-      return res.status(404).send({ message: "User not found."})
+      return res.status(404).send({ message: "User not found." });
     }
-    
+
     const id = user.id;
     const friends = await Friend.findAll({
       where: {
-        [Op.or]: [
-          { requestedById: id},
-          { requestedToId: id},
-        ],
+        [Op.or]: [{ requestedById: id }, { requestedToId: id }],
         acceptedAt: {
           [Op.not]: null,
         },
@@ -377,14 +384,12 @@ export const getNewsfeed = async (req: any, res: Response) => {
 
     // list of friends ids
     const authorIds = friends.map(async (friend: typeof Friend) => {
-
       //check friend is active
-      await User.findByPk(friend.id,
-        {
-          where: {
-            isDeleted: false,
-          }
-        });
+      await User.findByPk(friend.id, {
+        where: {
+          isDeleted: false,
+        },
+      });
       return friend.requestedById === id
         ? friend.requestedToId
         : friend.requestedById;
@@ -400,18 +405,13 @@ export const getNewsfeed = async (req: any, res: Response) => {
 
         //exclude album single images
         type: {
-          [Op.not]: [
-            "albumImg"
-          ]
+          [Op.not]: ["albumImg"],
         },
         //include posts by users on their own timelines, by other users on your timeline, by friends or user on friends' timelines
         //exclude posts by friends on non-friend timelines
         profileId: {
-          [Op.or]: [
-            null,
-            authorIds
-          ]
-        }
+          [Op.or]: [null, authorIds],
+        },
       },
       include: [
         {
@@ -465,7 +465,7 @@ export const getNewsfeed = async (req: any, res: Response) => {
             },
             {
               model: Like,
-              as: "Likes"
+              as: "Likes",
             },
           ],
         },
@@ -474,14 +474,12 @@ export const getNewsfeed = async (req: any, res: Response) => {
           as: "Likes",
         },
       ],
-      order: [
-        ['createdAt', 'DESC']
-      ]
+      order: [["createdAt", "DESC"]],
     });
 
     // append img urls
     const resData: PostWithUrl[] = [];
-   
+
     for (let i = 0; i < posts.length; i++) {
       let url = null;
       let thumbnailUrl = null;
@@ -507,7 +505,6 @@ export const getNewsfeed = async (req: any, res: Response) => {
     }
 
     res.status(200).send(resData);
-    
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Something went wrong" });

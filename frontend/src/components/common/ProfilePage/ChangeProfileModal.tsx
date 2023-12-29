@@ -45,14 +45,26 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((response) => {
-          console.log("pictureId", response.data.id);
+          console.log("pictureId", response.data.post.id);
           // TODO:use flash message
           alert("Picture successfully uploaded!");
+          axiosToken
+            .put("/profile/update", { profilePostId: response.data.post.id })
+            .then((response) => {
+              console.log(
+                "===========profilePostId for use updated==========="
+              );
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
         .catch((error) => {
           console.log(error);
         });
       setFile(undefined);
+
+      //update profilePostId in the User record
     } else {
       console.log("====No file selected===");
     }

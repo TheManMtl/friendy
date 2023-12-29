@@ -12,6 +12,7 @@ interface Props {
   userId: string | undefined;
   isPrivateProfile: boolean | undefined;
   userBio: string | undefined;
+  profileThumb: string | null;
 }
 
 const ProfileInfoMenu: React.FC<Props> = ({
@@ -19,9 +20,9 @@ const ProfileInfoMenu: React.FC<Props> = ({
   userId,
   isPrivateProfile,
   userBio,
+  profileThumb,
 }) => {
   const { setRoute } = useProfilePageContext();
-  const [profileThumb, setProfileThumb] = useState<string | null>("");
   //start change profile Modal section
   const [showChangeProfile, setShowChangeProfile] = useState<boolean>(false);
   const showChangeProfileModal = () => {
@@ -35,13 +36,19 @@ const ProfileInfoMenu: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    axios.get(`/posts/userprofile/${userId}`).then((response) => {
-      if (response.data.length !== 0) {
-        //TODO: fetch the profil pic which has the id associated with the user
-        const latestProfilIndex = response.data.length - 1;
-        setProfileThumb(response.data[latestProfilIndex].thumbnailUrl);
-      }
-    });
+    // axios.get(`/posts/userprofile/${userId}`).then((response) => {
+    //   if (response.data.length !== 0) {
+    //     //TODO: fetch the profil pic which has the id associated with the user
+    //     const latestProfilIndex = response.data.length - 1;
+    //     setProfileThumb(response.data[latestProfilIndex].thumbnailUrl);
+    //   }
+    // });
+    // axios.get(`/posts/userprofile/${profilePostId}`).then((response) => {
+    //   if (response.data.length !== 0) {
+    //     //TODO: fetch the profil pic which has the id associated with the user
+    //     setProfileThumb(response.data.thumbnailUrl);
+    //   }
+    // });
   }, []);
   return (
     <div>

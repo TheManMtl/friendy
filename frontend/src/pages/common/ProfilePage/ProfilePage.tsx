@@ -59,10 +59,25 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
               name: user.name,
               password: user.password,
               position: user.position,
-              profilePostId: user.profilePostId,
+              profilePostId: user.profileImgId,
               school: user.school,
               workplace: user.workplace,
             });
+            if (user.profileImgId != null) {
+              console.log("=======profilePostId is:====" + user.profileImgId);
+              axios
+                .get(`/posts/userprofile/${user.profileImgId}`)
+                .then((response) => {
+                  if (response.data.length !== 0) {
+                    //TODO: fetch the profil pic which has the id associated with the user
+                    setProfileThumb(response.data.thumbnailUrl);
+                  }
+                });
+            } else {
+              setProfileThumb(
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
+              );
+            }
           }
 
           if (id && userId) {
@@ -77,14 +92,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
       } catch (error: any) {
         console.log("error message");
       }
-
-      axios.get(`/posts/userprofile/${id}`).then((response) => {
-        if (response.data.length !== 0) {
-          //TODO: fetch the profil pic which has the id associated with the user
-          const latestProfilIndex = response.data.length - 1;
-          setProfileThumb(response.data[latestProfilIndex].thumbnailUrl);
-        }
-      });
     }
   }, [axiosToken, id, navigate, user, userId]);
 
@@ -127,6 +134,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         userId={id}
         isPrivateProfile={isPrivateProfile}
         userBio={userProfile?.bio}
+        profileThumb={profileThumb}
       />
       <div>{renderMainPanelContent()}</div>
       {isPrivateProfile ? (

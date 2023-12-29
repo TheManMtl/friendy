@@ -236,6 +236,12 @@ export const updateProfile = async (
       updates++;
     }
 
+    //added by Shiyu
+    if (request.profilePostId != null) {
+      user.profilePostId = request.profilePostId;
+      updates++;
+    }
+
     if (request.birthday != null) {
       if (!(request.birthday instanceof Date)) {
         return res

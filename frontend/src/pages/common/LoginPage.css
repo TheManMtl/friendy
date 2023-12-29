@@ -6,6 +6,8 @@
 
 } */
 
+/* Purple  #8426c6 */
+
 input,
 textarea {
   /* background-color: #d4a0dd; */
@@ -50,7 +52,7 @@ textarea:focus {
 
 .card2 {
   width: 100%;
-  background-image: linear-gradient(to right, #ffd54f, #d500f9, #8426c6);
+  background-image: linear-gradient(to right, #ffd54f, #d500f9);
   border: none;
 }
 
