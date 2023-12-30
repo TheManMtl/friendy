@@ -16,18 +16,18 @@ function ProfilePageAlbum () {
     useEffect(() => {
         const userId = authContext?.user?.id;
         axiosToken
-            .get(`/album/user/${userId}`) // TODO: get user id from auth
+            .get(`/albums/user/${userId}`) // TODO: get user id from auth
             .then((res) => {
             setAlbums(res.data);
             });
-        }, []);
+        }, [albums]);
   return (
   
   <div className="container">
     <Link to="/createalbum">
     <Button variant="secondary" className="mt-3">Create Album</Button>
     </Link>
-    <div className="row mt-3">
+    <div className="row mt-3 mb-3">
     {albums.map((album)=> (
         <div key={`album-${album.id}`} className="col-lg-4 col-md-12 mb-4 mb-lg-0 position-relative">
             <AlbumList

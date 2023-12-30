@@ -43,6 +43,33 @@ export const createPost = async (req: any, res: Response) => {
   }
 };
 
+// create multiple posts
+export const createMultiplePosts = async (req: any, res: Response) => {
+  const imageFiles = req.files;
+  const posts : any[] = [];
+  try {
+    for (const imageFile of imageFiles) {
+      const image = await imageController.addOneImage(req, imageFile);
+
+      const post = await Post.create({
+        authorId: req.body.authorId,
+        type: req.body.type,
+        albumId: req.body.albumId,
+        imageId: image ? image.id : null,
+      });
+
+      posts.push(post);
+    }
+    return res.status(201).json(posts);
+  } catch (error) {
+    console.error("Error creating post:", error);
+    // Handle errors and send an appropriate response
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
+  }
+};
+
 // retrieve single post
 export const getPost = async (req: any, res: Response) => {
   try {

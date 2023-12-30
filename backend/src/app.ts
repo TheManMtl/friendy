@@ -50,7 +50,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/images", imgRoutes);
 app.use("/api/comments", commentRoutes);
-app.use("/api/album", albumRoutes);
+app.use("/api/albums", albumRoutes);
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

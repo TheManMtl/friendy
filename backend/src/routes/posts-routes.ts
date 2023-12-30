@@ -9,6 +9,7 @@ const router = express.Router();
 router.get('/:id([0-9]+)', s3Middleware.attachS3Info, posts.getPost);
 router.get('/user/:id([0-9]+)', s3Middleware.attachS3Info, posts.getTimeline);
 router.post('/', authUser, multer.uploadSingleImage, s3Middleware.attachS3Info, posts.createPost);
+router.post('/multiple', authUser, multer.uploadMultipleImages, s3Middleware.attachS3Info, posts.createMultiplePosts);
 router.put('/:id([0-9]+)', authUser, posts.updatePost);
 router.delete('/:id([0-9]+)', authUser, s3Middleware.attachS3Info, posts.deletePost);
 
