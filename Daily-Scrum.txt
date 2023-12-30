@@ -651,12 +651,13 @@ Nick:
   - 
 
 Shiyu:
- Finished: 
-  - 
- Working On: 
-  - 
- Challenges: 
-  - 
+Finished:
+-tried implementing uploading image
+-created the logic and ui for profile image uploading
+Working on
+-debug the logic and modify the backend to upload image with the post
+Challenges:
+-getting the image file in the formData with appended post info
 
 Xuerun:
  Finished: 
@@ -666,6 +667,70 @@ Xuerun:
  Working On: 
   -work on createalbum page
   -create editalbum page
+
+Date: Dec 22
+
+
+Alex:
+Finished:
+- commenting component in image view
+- axios calls to render content 
+- comment forms 
+Working On:
+- finish image view page 
+- Like component 
+- actually add comment
+- delete and edit (comment/post) 
+- Default cover img 
+- fix API calls to fetch image URL
+- DTO for commenting 
+Challenges: 
+- N/A
+
+Ehsan:
+Finished:
+	- started to host the backend
+ Working On: 
+	- hosting backend and fix the frontend 
+	 
+ Challenges: 
+	-
+
+Meredith:
+ Finished: 
+  - progress on comments
+  - debugging + error handling
+ Working On: 
+  -
+ Challenges: 
+  - 
+
+Nick
+  Working on: 
+           -friend page debugging
+           -research voice/video call workflow
+  Challenges:
+           -friend route debug (typing in url)
+
+Shiyu:
+Finished:
+-hooked profile image in postInput and profileMenu
+-finished profile image uploading business logic
+-created route in post controller to fetch post with imageUrl
+Working on
+-hook photos in the home page
+-finish about subpage
+-start working on friends subpage
+
+Xuerun:
+ Finished: 
+  -implement create post with image 
+  -worked on createalbum logic at frontend, but did not success
+ Working On: 
+  -continue work on createalbum page
+  -create editalbum page
+  -implement add a post to an album
+  -make the image as profile image or cover photo
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------

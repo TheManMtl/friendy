@@ -5,7 +5,8 @@ import { authUser } from "../middleware/auth";
 
 const router = express.Router();
 
-router.get("/view/:id", authUser, profiles.viewProfile);
+router.get("/view/:id", authUser, attachS3Info, profiles.viewProfile);
 router.get("/search", authUser, attachS3Info, profiles.findPeople);
+router.put("/update", authUser, profiles.updateProfile);
 
 export default router;

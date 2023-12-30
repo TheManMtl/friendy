@@ -21,6 +21,8 @@ import "./assets/global.css";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import PersistAuth from "./components/PersistAuth";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthProvider";
 
 import AlbumList from "./components/common/AlbumDisplay/AlbumList";
 import CreateAlbum from "./pages/common/ProfilePage/CreateAlbum";
@@ -33,7 +35,6 @@ function App() {
   // Determine if the current route is an admin route
   const isAdminRoute = window.location.hash.startsWith("#admin");
   const isDisplayRoute = window.location.hash.startsWith("#display");
-
   return (
     <div className="App">
       {/* <AuthProvider> */}

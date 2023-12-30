@@ -10,6 +10,7 @@ const User = models.User;
 const Image = models.Image;
 const Comment = models.Comment;
 const Like = models.Like;
+const Friend = models.Friend;
 
 interface PostWithUrl extends PostAttributes {
   imageUrl: string | null;
@@ -163,10 +164,6 @@ export const getTimeline = async (req: any, res: Response) => {
           as: "Comments",
           include: [
             {
-              model: Comment,
-              as: "parentComment",
-            },
-            {
               model: User,
               attributes: ["id", "name"],
               include: [
@@ -186,10 +183,16 @@ export const getTimeline = async (req: any, res: Response) => {
             },
             {
               model: Like,
+              as: "Likes",
             },
           ],
         },
+        {
+          model: Like,
+          as: "Likes",
+        },
       ],
+      order: [["createdAt", "DESC"]],
     });
 
     if (!posts) {
@@ -229,10 +232,115 @@ export const getTimeline = async (req: any, res: Response) => {
   }
 };
 
-// update
-// NOT IMPLEMENTED
-export const updatePost = async (req: Request, res: Response) => {
-  res.status(500).json({ message: "Not yet implemented!" });
+//get image post
+export const getPostImageUrl = async (req: Request, res: Response) => {
+  try {
+    //find all the posts with the authorId as user, and the type is profilePic
+    const post = await Post.findOne({
+      where: {
+        id: req.params.id,
+      },
+      include: [
+        {
+          model: Image,
+          attributes: ["id", "fileName", "thumbnail"],
+        },
+      ],
+    });
+    //check if the posts exist
+    if (post.length === 0) {
+      return res.status(404).json("No posts found");
+    }
+    // find all the images and append the url into posts
+    // const resData: PostWithUrl[] = [];
+    // for (let i = 0; i < post.length; i++) {
+    //   let url = null;
+    //   let thumbnailUrl = null;
+
+    //   if (post[i].Image) {
+    //     url = await imageController.getPicUrlFromS3(
+    //       req,
+    //       post[i].Image.fileName
+    //     );
+    //     thumbnailUrl = await imageController.getPicUrlFromS3(
+    //       req,
+    //       post[i].Image.thumbnail
+    //     );
+    //   }
+
+    //   const resPost: PostWithUrl = {
+    //     ...post[i].toJSON(),
+    //     imageUrl: url,
+    //     thumbnailUrl: thumbnailUrl,
+    //   };
+
+    let url = null;
+    let thumbnailUrl = null;
+
+    if (post.Image) {
+      url = await imageController.getPicUrlFromS3(req, post.Image.fileName);
+      thumbnailUrl = await imageController.getPicUrlFromS3(
+        req,
+        post.Image.thumbnail
+      );
+    }
+
+    const resPost: PostWithUrl = {
+      ...post.toJSON(),
+      imageUrl: url,
+      thumbnailUrl: thumbnailUrl,
+    };
+
+    return res.status(200).json(resPost);
+  } catch (error) {
+    console.error("Error fetching post images:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// edit post content
+export const editPostContent = async (req: CustomRequest, res: Response) => {
+  try {
+    const post = await Post.findOne({
+      where: {
+        id: req.params.id,
+        authorId: req.id,
+        isDeleted: false,
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // validate (only posts with images can have empty content)
+    if (
+      post.imageId != null &&
+      (!req.body.content || (req.body?.content as string).length < 1)
+    ) {
+      return res.status(400).json({ message: "Post content cannot exceed " });
+    }
+
+    if (req.body?.content && (req.body?.content as string).length > 1500) {
+      return res.status(400).json({ message: "Post content cannot exceed " });
+    }
+
+    // update by id
+    await Post.update(
+      {
+        content: req.body.content,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
+    res.status(200).json({ message: "Successfully updated post" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
 };
 
 export const deletePost = async (req: CustomRequest, res: Response) => {
@@ -271,6 +379,161 @@ export const deletePost = async (req: CustomRequest, res: Response) => {
 
     res.status(200).json({ message: "Successfully deleted post" });
   } catch {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const getNewsfeed = async (req: any, res: Response) => {
+  try {
+    if (!req.id) {
+      return res.status(400).send({ message: "User not logged in." });
+    }
+
+    const user = await User.findByPk(req.id, {
+      where: {
+        isDeleted: false,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found." });
+    }
+
+    const id = user.id;
+    const friends = await Friend.findAll({
+      where: {
+        [Op.or]: [{ requestedById: id }, { requestedToId: id }],
+        acceptedAt: {
+          [Op.not]: null,
+        },
+      },
+    });
+
+    // list of friends ids
+    const authorIds = friends.map(async (friend: typeof Friend) => {
+      //check friend is active
+      await User.findByPk(friend.id, {
+        where: {
+          isDeleted: false,
+        },
+      });
+      return friend.requestedById === id
+        ? friend.requestedToId
+        : friend.requestedById;
+    });
+
+    //add id to include user's own posts
+    authorIds.push(id);
+
+    // post list by authors
+    const posts = await Post.findAll({
+      where: {
+        authorId: authorIds,
+
+        //exclude album single images
+        type: {
+          [Op.not]: ["albumImg"],
+        },
+        //include posts by users on their own timelines, by other users on your timeline, by friends or user on friends' timelines
+        //exclude posts by friends on non-friend timelines
+        profileId: {
+          [Op.or]: [null, authorIds],
+        },
+      },
+      include: [
+        {
+          model: Image,
+          attributes: ["id", "fileName", "thumbnail"],
+        },
+        {
+          model: User,
+          as: "author",
+          attributes: ["id", "name"],
+          include: [
+            {
+              model: Post,
+              as: "profileImg",
+              attributes: ["id"],
+              include: [
+                {
+                  model: Image,
+                  as: "Image",
+                  attributes: ["id", "thumbnail"],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Comment,
+          as: "Comments",
+          include: [
+            {
+              model: Comment,
+              as: "parentComment",
+            },
+            {
+              model: User,
+              attributes: ["id", "name"],
+              include: [
+                {
+                  model: Post,
+                  as: "profileImg",
+                  attributes: ["id"],
+                  include: [
+                    {
+                      model: Image,
+                      as: "Image",
+                      attributes: ["id", "thumbnail"],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              model: Like,
+              as: "Likes",
+            },
+          ],
+        },
+        {
+          model: Like,
+          as: "Likes",
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    // append img urls
+    const resData: PostWithUrl[] = [];
+
+    for (let i = 0; i < posts.length; i++) {
+      let url = null;
+      let thumbnailUrl = null;
+
+      if (posts[i].Image) {
+        url = await imageController.getPicUrlFromS3(
+          req,
+          posts[i].Image.fileName
+        );
+        thumbnailUrl = await imageController.getPicUrlFromS3(
+          req,
+          posts[i].Image.thumbnail
+        );
+      }
+
+      const resPost: PostWithUrl = {
+        ...posts[i].toJSON(),
+        imageUrl: url,
+        thumbnailUrl: thumbnailUrl,
+      };
+
+      resData.push(resPost);
+    }
+
+    res.status(200).send(resData);
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Something went wrong" });
   }
 };

@@ -23,45 +23,48 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
   const [profilePost, setProfilePost] = useState<Post | undefined>(undefined);
   const [userId, setUserId] = useState<number | undefined>(undefined);
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("====image file changed===");
-    const file = event?.target?.files?.[0];
+  const handleImageChange = (event: any) => {
+    event.preventDefault();
+    const file = event.target.files[0];
     setFile(file);
   };
   const uploadFile = () => {
-    console.log("===upload image button clicked===");
     if (file !== undefined && file !== null) {
-      console.log("===File has been loaded===");
       const formData = new FormData();
       formData.append("image", file);
-      console.log("====file appended====");
-      console.log("===userId:====" + userId);
 
       if (userId) {
-        // const userIdAsNumber = parseInt(userId);
         // Append other fields to formData
         formData.append("authorId", userId.toString());
         formData.append("type", PostType.profilePic);
         formData.append("content", "This is a profile image");
-        formData.append("profileId", userId.toString());
-      }
-
-      for (const entry of formData.entries()) {
-        const [fieldName, fieldValue] = entry;
-        console.log(`${fieldName}: ${fieldValue}`);
       }
 
       axiosToken
-        .post("/posts/", formData)
+        .post("/posts", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
         .then((response) => {
-          console.log("pictureId", response.data.id);
+          console.log("pictureId", response.data.post.id);
           // TODO:use flash message
           alert("Picture successfully uploaded!");
+          axiosToken
+            .put("/profile/update", { profilePostId: response.data.post.id })
+            .then((response) => {
+              console.log(
+                "===========profilePostId for use updated==========="
+              );
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         })
         .catch((error) => {
           console.log(error);
         });
       setFile(undefined);
+
+      //update profilePostId in the User record
     } else {
       console.log("====No file selected===");
     }

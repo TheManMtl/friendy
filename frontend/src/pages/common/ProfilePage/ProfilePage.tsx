@@ -16,7 +16,7 @@ import ProfilePageAlbum from "./ProfilePageAlbum";
 import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { User, Post } from "../../../types/common";
-
+import axios from "../../../services/api/axios";
 interface ProfilPageType {
   userInfo?: IUser;
   postsInfo?: IPost;
@@ -30,6 +30,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
   const { user, setUser } = useAuth();
   const axiosToken = useAxiosToken();
+  const [profileThumb, setProfileThumb] = useState<string | null>("");
 
   const [userProfile, setUserProfile] = useState<User | null>(null);
   // const [posts, setPosts] = useState<Post[] | null>(null);
@@ -58,10 +59,25 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
               name: user.name,
               password: user.password,
               position: user.position,
-              profilePostId: user.profilePostId,
+              profilePostId: user.profileImgId,
               school: user.school,
               workplace: user.workplace,
             });
+            if (user.profileImgId != null) {
+              console.log("=======profilePostId is:====" + user.profileImgId);
+              axios
+                .get(`/posts/userprofile/${user.profileImgId}`)
+                .then((response) => {
+                  if (response.data.length !== 0) {
+                    //TODO: fetch the profil pic which has the id associated with the user
+                    setProfileThumb(response.data.thumbnailUrl);
+                  }
+                });
+            } else {
+              setProfileThumb(
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
+              );
+            }
           }
 
           if (id && userId) {
@@ -86,6 +102,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
           <ProfilePageHome
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
+            profileThumb={profileThumb}
           />
         );
       case `/profile/${id}/about`:
@@ -101,10 +118,14 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
           <ProfilePageHome
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
+            profileThumb={profileThumb}
           />
         );
     }
   };
+
+  useEffect(() => {}, []);
+
   return (
     <div>
       <CoverImage src={coverImageUrl} isPrivateProfile={isPrivateProfile} />
@@ -113,6 +134,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         userId={id}
         isPrivateProfile={isPrivateProfile}
         userBio={userProfile?.bio}
+        profileThumb={profileThumb}
       />
       <div>{renderMainPanelContent()}</div>
       {isPrivateProfile ? (

@@ -30,7 +30,7 @@ interface userProfile {
   profileImgId?: number;
   profileImgThumbnail?: string;
   coverImgId?: number;
-  coverImgFileName?: string;
+  coverImgFileName?: string | null;
   relationId?: number;
   relationName?: string;
   isFriend?: boolean;
@@ -147,6 +147,27 @@ export const viewProfile = async (
     if (!profile) {
       return res.status(400).send({ message: "user does not exist" });
     }
+
+    // image
+    let thumbnail: string | null = "";
+    let coverPic: string | null;
+
+    if (profile.profileImg) {
+      thumbnail = profile.profileImg?.Image?.thumbnail;
+    } else {
+      thumbnail = "default_thumbnail.jpg";
+    }
+    thumbnail = await getPicUrlFromS3(req, thumbnail!);
+    // default-cover_thumbnail.jpg
+
+    if (profile.coverImg) {
+      coverPic = profile.coverImgId?.Image?.fileName;
+    } else {
+      coverPic = "default-cover.jpg";
+    }
+    coverPic = await getPicUrlFromS3(req, coverPic!);
+    // coverImgFileName
+
     const profileInfo: userProfile = {
       name: profile.name,
       email: profile.email,
@@ -158,14 +179,125 @@ export const viewProfile = async (
       birthday: profile.birthday || null,
       relationshipStatus: profile.relationshipStatus || null,
       profileImgId: profile.profileImg?.id || null,
-      profileImgThumbnail: profile.profileImg?.Image?.thumbnail || null,
+      profileImgThumbnail: thumbnail!,
       coverImgId: profile.coverImg?.id || null,
-      coverImgFileName: profile.coverImg?.Image?.fileName || null,
+      coverImgFileName: coverPic,
       relationId: profile.relationshipWith?.id || null,
       relationName: profile.relationshipWith?.name || null,
       isFriend: isFriend,
     };
     res.status(200).send({ profileInfo });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateProfile = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  try {
+    const userId = req.id;
+    const request = req.body;
+    let updates = 0;
+    const user = await User.findByPk(userId, {
+      where: {
+        isDeleted: false,
+      },
+    });
+
+    if (!user) {
+      return res.status(400).send({ message: "User could not be found." });
+    }
+
+    if (request.location != null) {
+      user.location = request.location;
+      updates++;
+    }
+
+    if (request.school != null) {
+      user.school = request.school;
+      updates++;
+    }
+
+    if (request.workplace != null) {
+      user.workplace = request.workplace;
+      updates++;
+    }
+
+    if (request.position != null) {
+      user.position = request.position;
+      updates++;
+    }
+
+    if (request.bio != null) {
+      user.bio = request.bio;
+      updates++;
+    }
+
+    //added by Shiyu
+    if (request.profilePostId != null) {
+      user.profilePostId = request.profilePostId;
+      updates++;
+    }
+
+    if (request.birthday != null) {
+      if (!(request.birthday instanceof Date)) {
+        return res
+          .status(400)
+          .send({ message: "Birthday must be a valid date" });
+      }
+      const today = new Date();
+      const userBirthday = new Date(request.birthday);
+      const age = today.getFullYear() - userBirthday.getFullYear();
+
+      if (age < 5 || age > 120) {
+        return res
+          .status(400)
+          .send({ message: "Birthday must be between 5 and 120 years ago" });
+      }
+      user.birthday = request.birthday;
+      updates++;
+    }
+
+    if (request.relationshipWithId != null) {
+      const relationship = await User.findByPk(request.relationshipWithId, {
+        where: {
+          isDeleted: false,
+        },
+      });
+      if (!relationship) {
+        return res
+          .status(400)
+          .send({ message: "Relationship with is not a valid user" });
+      }
+
+      user.relationshipWithId = request.relationshipWithId;
+      user.relationshipUpdatedAt = new Date();
+      updates++;
+    }
+
+    if (request.relationshipStatus != null) {
+      if (
+        Object.values(RelationshipStatus).includes(request.relationshipStatus)
+      ) {
+        user.relationshipStatus = request.relationshipStatus;
+        user.relationshipUpdatedAt = new Date();
+        updates++;
+      } else {
+        return res
+          .status(400)
+          .send({ message: "Not valid relationship status" });
+      }
+    }
+
+    if (updates > 0) {
+      user.profileUpdatedAt = new Date();
+      await user.save();
+    }
+
+    return res.status(200).send(user);
   } catch (error) {
     next(error);
   }
@@ -289,7 +421,8 @@ export const findPeople = async (
               (await getPicUrlFromS3(req, user.profileImg.Image.thumbnail)) ||
               "";
           } else {
-            thumbnail = (await getPicUrlFromS3(req, "default.jpg")) || "";
+            thumbnail =
+              (await getPicUrlFromS3(req, "default_thumbnail.jpg")) || "";
           }
 
           return {

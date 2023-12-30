@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 import { useForm } from "react-hook-form";
 import ProfileImage from "../ProfileImage/ProfileImage";
@@ -7,10 +7,15 @@ import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthProvider";
 import { SearchModel } from "../../../models/SearchModel";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Navbar() {
   const authContext = useContext(AuthContext);
+  const userId = authContext?.user?.id;
+  console.log("====userId in Navbar is====" + userId);
   const navigate = useNavigate();
+  const [profileThumb, setProfileThumb] = useState<string | null>("");
+
   const {
     register,
     handleSubmit,
@@ -24,6 +29,18 @@ function Navbar() {
     const params = encodeURIComponent(urlParams);
     navigate(`/search?search=${params}`);
   }
+
+  useEffect(() => {
+    if (userId) {
+      axios.get(`/posts/userprofile/${userId}`).then((response) => {
+        if (response.data.length !== 0) {
+          //TODO: fetch the profil pic which has the id associated with the user
+          const latestProfilIndex = response.data.length - 1;
+          setProfileThumb(response.data[latestProfilIndex].thumbnailUrl);
+        }
+      });
+    }
+  }, []);
   return (
     <div>
       <nav className="navbar navbar-expand-lg nav-custom py-3">
@@ -95,12 +112,6 @@ function Navbar() {
                       <i className="bi bi-controller icon"></i>
                     </a>
                   </li>
-
-                  {/* <li className="nav-item">
-                    <a className="nav-link " aria-current="page" href="/login">
-                      <i className="">login(this is a test)</i>
-                    </a>
-                  </li> */}
                 </ul>
               </div>
             </div>
@@ -125,7 +136,11 @@ function Navbar() {
                     href={`/#profile/${authContext?.user?.id}`}
                   >
                     <ProfileImage
-                      src={"https://www.w3schools.com/howto/img_avatar.png"}
+                      src={
+                        profileThumb
+                          ? profileThumb
+                          : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
+                      }
                       alt={"profile"}
                       size={"small"}
                     />
