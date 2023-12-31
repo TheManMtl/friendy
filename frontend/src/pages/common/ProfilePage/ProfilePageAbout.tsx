@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import EditAbout from "../../../components/common/ProfilePage/EditAbout";
+import { IUser } from "../../shared/interface/user.interface";
 
-function ProfilePageAbout() {
+interface ProfileAboutProps {
+  userProfile: IUser | null;
+  isPrivateProfile: boolean;
+}
+
+const ProfilePageAbout: React.FC<ProfileAboutProps> = ({
+  userProfile,
+  isPrivateProfile,
+}) => {
   return (
     <div>
       <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
@@ -11,12 +20,15 @@ function ProfilePageAbout() {
               <h2>About</h2>
             </div>
             <hr />
-            <EditAbout />
+            <EditAbout
+              userProfile={userProfile}
+              isPrivateProfile={isPrivateProfile}
+            />
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default ProfilePageAbout;
