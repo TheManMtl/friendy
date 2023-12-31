@@ -28,7 +28,7 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
     type: PostType.timeline,
     content: "",
     imageId: null,
-  };
+  }
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

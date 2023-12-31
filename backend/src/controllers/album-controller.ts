@@ -8,15 +8,20 @@ const User = models.User;
 const Post = models.Post;
 
 import express from "express";
-//TODO: create album
-// export const createAlbum = async (req: any, res: any) => {
-//     const { userId, title, posts, images } = req.body;
-//     try {
-        
-//     } catch (err) {
-//         console.log("Error", err);
-//     }
-// }
+
+export const createAlbum = async (req: any, res: any) => {
+    const { profileId, title } = req.body;
+    try {
+        const album = await Album.create({
+            profileId: profileId,
+            title: title,
+            type: "custom",
+        });
+        res.status(200).json(album);
+    } catch (err) {
+        console.log("Error", err);
+    }
+}
 
 export const getAlbumsByUserId = async (req: any, res: any) => {
     try {
@@ -76,7 +81,7 @@ export const deleteAlbum = async (req: any, res: any) => {
         // find the album
         const album = await Album.findOne({
             where: {
-                id: req.body.albumId,
+                id: req.params.albumId,
             },
         });
 
@@ -90,7 +95,7 @@ export const deleteAlbum = async (req: any, res: any) => {
         // find all posts in the album
         const posts = await Post.findAll({
             where: {
-                albumId: req.body.albumId,
+                albumId: req.params.albumId,
             },
         });
 

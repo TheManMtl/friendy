@@ -3,6 +3,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import {Modal,Button} from "react-bootstrap";
 import { IPost } from "../../../pages/shared/interface/post.interface";
 import axios from "../../../services/api/axios";
+import useAxiosToken from "../../../hooks/useAxiosToken";
 
 type PostImageProps = {
   postId:number;
@@ -12,19 +13,29 @@ type PostImageProps = {
 
 const PostImage: React.FC<PostImageProps> = (props) => {
   const[deleteModal, setDeleteModal] = useState(false);
-
+  const[moveToAlbumModal, setMoveToAlbumModal] = useState(false);
+  const axiosToken = useAxiosToken();
   const handleDeleteModal = () =>{
    
      try{
-        axios.delete(`/posts/${props.postId}`);
+        axiosToken.delete(`/posts/${props.postId}`);
         setDeleteModal(false);
         console.log("Post deleted successfully");
      }catch(err){
         console.log(err);
      }
     
-
+    //  const handleMoveToAlbumModal = () =>{
+         
+    //   try{
+    //      axiosToken.put(`/posts/${props.postId}`);
+    //      setMoveToAlbumModal(false);
+    //      console.log("Post deleted successfully");
+    //   }catch(err){
+    //      console.log(err);
+    //   }
   }
+  
   return (
     
       <div className="">

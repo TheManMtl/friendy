@@ -7,7 +7,7 @@ import { Post, PostType } from "../../../types/common";
 import { AuthContext } from "../../../context/AuthProvider";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 
-function CreateAlbum() {
+function EditAlbum() {
     const authContext = useContext(AuthContext);
     const [files, setFiles] = useState<File[]>([]);
     const [title, setTitle] = useState<string>("")
@@ -24,26 +24,23 @@ function CreateAlbum() {
     const submit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
-        const newAlbum = await axiosToken.post("/albums", {
-            title: title,
-            profileId: authContext?.user?.id
-        });
-
-        console.log(newAlbum.data.id);
-        console.log(files.length);
+        const newAlbum = await axiosToken.post("/albums", { 
+                                                title: title, 
+                                                profileId: authContext?.user?.id});
 
         const imageData = new FormData();
         if (files.length !== 0 && newAlbum.data.id !== null) {
-            for (let file of files) {
+            files.forEach((file, index) => {
                 imageData.append("images", file);
-            };
+              });
+            imageData.append("albumId", newAlbum.data.id.toString());
             imageData.append("authorId", authContext?.user?.id.toString() ?? "");
+            imageData.append("profileId", authContext?.user?.id.toString() ?? "");
             imageData.append("type", PostType.albumImg);
             imageData.append("albumId", newAlbum.data.id.toString() ?? "");
-            await axiosToken.post("/posts/multiple", imageData, { headers: { 'Content-Type': 'multipart/form-data' } });
         }
 
-        
+        const post = await axiosToken.post("/posts", imageData, { headers: { 'Content-Type': 'multipart/form-data' } })
     }
 
     return (
@@ -56,7 +53,7 @@ function CreateAlbum() {
                         </Button>
                     </div>
                     <hr></hr>
-                    <h2 className="pt-5 mb-5">Create Album</h2>
+                    <h2 className="pt-5 mb-5">Edit Album</h2>
                     <form onSubmit={submit}>
                         <div className="mb-5">
 
@@ -71,7 +68,7 @@ function CreateAlbum() {
                         </div>
                         <div className="mb-5">
                             <label htmlFor="fileInput" className="custom-file-upload">
-                                <input type="file" name="images" multiple accept="image/*" onChange={(e: any) => setFiles(e.target.files)} id="fileInput" className="file-input" />
+                                <input type="file" multiple accept="image/*" onChange={(e: any) => setFiles(e.target.files)} id="fileInput" className="file-input" />
                                 Upload Photos
                             </label>
                         </div>
@@ -91,4 +88,4 @@ function CreateAlbum() {
         </div>
     )
 }
-export default CreateAlbum;
+export default EditAlbum;

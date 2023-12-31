@@ -22,7 +22,7 @@ function ProfilePagePhoto() {
       .then((res) => {
         setPosts(res.data);
       });
-  }, []);
+  }, [posts]);
 
   return (
     <div>

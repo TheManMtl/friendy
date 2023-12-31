@@ -29,7 +29,15 @@ const randomFileName = (byte = 32) => crypto.randomBytes(byte).toString("hex");
 
 export const addOne = async (req: any): Promise<any> => {
   const imageFile = req.file;
+  try {
+    return await addOneImage(req, imageFile);
+  } catch (error) {
+    console.error("Error creating post:", error);
+    return null;
+  }
+};
 
+export const addOneImage = async (req: any, imageFile: any): Promise<any> => {
   try {
     const originalFileBuffer = await sharp(imageFile.buffer).toBuffer();
     const resizedFileBuffer = await sharp(imageFile.buffer)
