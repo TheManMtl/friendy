@@ -14,6 +14,7 @@ router.get(
   posts.getPostImageUrl
 );
 router.get("/newsfeed", authUser, s3Middleware.attachS3Info, posts.getNewsfeed);
+router.get("/album/:albumId([0-9]+)", s3Middleware.attachS3Info, posts.getPostsByAlbumId);
 router.post(
   "/",
   authUser,
@@ -23,6 +24,7 @@ router.post(
 );
 router.post('/multiple', authUser, multer.uploadMultipleImages, s3Middleware.attachS3Info, posts.createMultiplePosts);
 router.put("/:id([0-9]+)", authUser, posts.editPostContent);
+router.put("/toalbum/:postId([0-9]+)", authUser, posts.moveToAlbum)
 router.delete(
   "/:id([0-9]+)",
   authUser,

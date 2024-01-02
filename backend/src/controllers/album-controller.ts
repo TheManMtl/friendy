@@ -8,6 +8,7 @@ const User = models.User;
 const Post = models.Post;
 
 import express from "express";
+import exp from 'constants';
 
 export const createAlbum = async (req: any, res: any) => {
     const { profileId, title } = req.body;
@@ -106,6 +107,43 @@ export const deleteAlbum = async (req: any, res: any) => {
         });
 
         res.status(200).json({ message: "Album deleted" });
+    } catch (err) {
+        console.log("Error", err);
+    }
+}
+export const updateAlbum = async (req: any, res: any) => {
+    try {
+        const album = await Album.findOne({
+            where: {
+                id: req.params.albumId,
+            },
+        });
+
+        if (!album) {
+            return res.status(404).json({ error: "Album not found" });
+        }
+
+        album.title = req.body.title;
+        await album.save();
+
+        res.status(200).json(album);
+    } catch (err) {
+        console.log("Error", err);
+    }
+}
+export const getAlbumById = async (req: any, res: any) => {
+    try {
+        const album = await Album.findOne({
+            where: {
+                id: req.params.albumId,
+            },
+        });
+
+        if (!album) {
+            return res.status(404).json({ error: "Album not found" });
+        }
+
+        res.status(200).json(album);
     } catch (err) {
         console.log("Error", err);
     }

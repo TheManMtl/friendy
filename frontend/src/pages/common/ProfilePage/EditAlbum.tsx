@@ -6,13 +6,27 @@ import { Link, useNavigate } from "react-router-dom";
 import { Post, PostType } from "../../../types/common";
 import { AuthContext } from "../../../context/AuthProvider";
 import useAxiosToken from "../../../hooks/useAxiosToken";
+import { useParams } from 'react-router-dom';
 
-function EditAlbum() {
+// function EditAlbum() {
+  
+    const EditAlbum =()=> {
+        const { albumId } = useParams();
     const authContext = useContext(AuthContext);
     const [files, setFiles] = useState<File[]>([]);
     const [title, setTitle] = useState<string>("")
     const axiosToken = useAxiosToken();
     const navigate = useNavigate();
+    useEffect(() => {
+        try{
+            axiosToken.get(`/albums/${albumId}`).then((res) => {
+               
+                setTitle(res.data.title);
+            })
+        }catch(err){
+            console.log("can't find the album",err);
+        }
+    }, [albumId]);
     const initialValues = {
         profileId: authContext?.user?.id,
         authorId: authContext?.user?.id,
@@ -24,7 +38,7 @@ function EditAlbum() {
     const submit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
-        const newAlbum = await axiosToken.post("/albums", { 
+        const newAlbum = await axiosToken.put(`/albums/${albumId}`, { 
                                                 title: title, 
                                                 profileId: authContext?.user?.id});
 
@@ -35,12 +49,13 @@ function EditAlbum() {
               });
             imageData.append("albumId", newAlbum.data.id.toString());
             imageData.append("authorId", authContext?.user?.id.toString() ?? "");
-            imageData.append("profileId", authContext?.user?.id.toString() ?? "");
-            imageData.append("type", PostType.albumImg);
+            // imageData.append("profileId", authContext?.user?.id.toString() ?? "");
+            // imageData.append("type", PostType.albumImg);
             imageData.append("albumId", newAlbum.data.id.toString() ?? "");
+            await axiosToken.post("/posts/multiple", imageData, { headers: { 'Content-Type': 'multipart/form-data' } });
         }
 
-        const post = await axiosToken.post("/posts", imageData, { headers: { 'Content-Type': 'multipart/form-data' } })
+      
     }
 
     return (
@@ -61,7 +76,7 @@ function EditAlbum() {
                                 type="text"
                                 className="form-control"
                                 id="albumTitle"
-                                placeholder="Album Title"
+                                placeholder={title}
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                             />

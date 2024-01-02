@@ -18,11 +18,11 @@ function ProfilePagePhoto() {
   useEffect(() => {
     const userId = authContext?.user?.id;
     axiosToken
-      .get(`/posts/user/${userId}`) // TODO: get user id from auth
+      .get(`/posts/user/${userId}`)
       .then((res) => {
         setPosts(res.data);
       });
-  }, [posts]);
+  }, []);
 
   return (
     <div>

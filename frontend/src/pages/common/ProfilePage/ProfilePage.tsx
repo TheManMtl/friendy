@@ -13,6 +13,9 @@ import ProfilePageAbout from "./ProfilePageAbout";
 import ProfilePagePhoto from "./ProfilePagePhoto";
 import ProfilePageFriend from "./ProfilePageFriend";
 import ProfilePageAlbum from "./ProfilePageAlbum";
+import CreateAlbum from "./CreateAlbum";
+import EditAlbum from "./EditAlbum";
+import AlbumDetail from "./AlbumDetail";
 import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { User, Post } from "../../../types/common";
@@ -136,6 +139,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         userBio={userProfile?.bio}
         profileThumb={profileThumb}
       />
+      
       <div>{renderMainPanelContent()}</div>
       {isPrivateProfile ? (
         <div>This is private</div>

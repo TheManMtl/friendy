@@ -30,6 +30,7 @@ import CreateAlbum from "./pages/common/ProfilePage/CreateAlbum";
 import SearchPage from "./pages/common/Search/SearchPage";
 import ImagePostDisplay from "./pages/common/ImagePostDisplay/ImagePostDisplay";
 import EditAlbum from "./pages/common/ProfilePage/EditAlbum";
+import AlbumDetail from "./pages/common/ProfilePage/AlbumDetail";
 
 function App() {
   // Determine if the current route is an admin route
@@ -68,8 +69,9 @@ function App() {
                 </FriendsPageProvider>
               }
             />
-            {/* <Route path="/createalbum" element={<CreateAlbum />}></Route>
-            <Route path="/editalbum" element={<EditAlbum />}></Route> */}
+            <Route path="/profile/:id/createalbum" element={<CreateAlbum />}></Route>
+            <Route path="/profile/:id/editalbum/:albumId" element={<EditAlbum />}></Route>
+            <Route path="/profile/:id/album/:albumId" element={<AlbumDetail />}></Route>
           </Route>
         </Routes>
       </HashRouter>

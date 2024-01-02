@@ -537,3 +537,135 @@ export const getNewsfeed = async (req: any, res: Response) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+//update albumId of post (used for adding post to album)
+export const moveToAlbum = async (req: any, res: Response) => {
+  try {
+    const post = await Post.findOne({
+      where: {
+        id: req.params.postId,
+        authorId: req.id,
+        isDeleted: false,
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // update by id
+    await post.update(
+      {
+        albumId: req.body.albumId,
+      }
+    );
+    res.status(200).json({ message: "post is added to album" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const getPostsByAlbumId = async (req: any, res: Response) => {
+  try {
+    const posts = await Post.findAll({
+      where: {
+        albumId: req.params.albumId,
+        isDeleted: false,
+      },
+      include: [
+        {
+          model: Image,
+          attributes: ["id", "fileName", "thumbnail"],
+        },
+        // {
+        //   model: User,
+        //   as: "author",
+        //   attributes: ["id", "name"],
+        //   include: [
+        //     {
+        //       model: Post,
+        //       as: "profileImg",
+        //       attributes: ["id"],
+        //       include: [
+        //         {
+        //           model: Image,
+        //           as: "Image",
+        //           attributes: ["id", "thumbnail"],
+        //         },
+        //       ],
+        //     },
+        //   ],
+        // },
+        // {
+        //   model: Comment,
+        //   as: "Comments",
+        //   include: [
+        //     {
+        //       model: User,
+        //       attributes: ["id", "name"],
+        //       include: [
+        //         {
+        //           model: Post,
+        //           as: "profileImg",
+        //           attributes: ["id"],
+        //           include: [
+        //             {
+        //               model: Image,
+        //               as: "Image",
+        //               attributes: ["id", "thumbnail"],
+        //             },
+        //           ],
+        //         },
+        //       ],
+        //     },
+        //     {
+        //       model: Like,
+        //       as: "Likes",
+        //     },
+        //   ],
+        // },
+        // {
+        //   model: Like,
+        //   as: "Likes",
+        // },
+      ],
+      order: [["createdAt", "DESC"]],
+    });
+
+    if (!posts) {
+      return res.status(404).json("No posts found");
+    }
+
+    const resData: PostWithUrl[] = [];
+
+    // get signed urls for images
+    for (let i = 0; i < posts.length; i++) {
+      let url = null;
+      let thumbnailUrl = null;
+
+      if (posts[i].Image) {
+        url = await imageController.getPicUrlFromS3(
+          req,
+          posts[i].Image.fileName
+        );
+        thumbnailUrl = await imageController.getPicUrlFromS3(
+          req,
+          posts[i].Image.thumbnail
+        );
+      }
+
+      const resPost: PostWithUrl = {
+        ...posts[i].toJSON(),
+        imageUrl: url,
+        thumbnailUrl: thumbnailUrl,
+      };
+
+      resData.push(resPost);
+    }
+
+    res.json(resData);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+}
