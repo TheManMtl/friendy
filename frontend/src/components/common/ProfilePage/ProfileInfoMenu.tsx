@@ -52,7 +52,7 @@ const ProfileInfoMenu: React.FC<Props> = ({
   }, []);
   return (
     <div>
-      <div className="InfoCard card py-4">
+      <div className="InfoCard card mb-5">
         <div className="basicInfo row">
           <div className="leftInfo col-md-6">
             <div className="profileName px-5">

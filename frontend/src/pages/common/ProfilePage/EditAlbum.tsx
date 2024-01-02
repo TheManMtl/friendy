@@ -16,6 +16,7 @@ import { useParams } from 'react-router-dom';
     const [files, setFiles] = useState<File[]>([]);
     const [title, setTitle] = useState<string>("")
     const axiosToken = useAxiosToken();
+    const userId=authContext?.user?.id;
     const navigate = useNavigate();
     useEffect(() => {
         try{
@@ -27,17 +28,11 @@ import { useParams } from 'react-router-dom';
             console.log("can't find the album",err);
         }
     }, [albumId]);
-    const initialValues = {
-        profileId: authContext?.user?.id,
-        authorId: authContext?.user?.id,
-        type: PostType.timeline,
-        content: "",
-        imageId: null,
-    };
+
 
     const submit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-
+try{
         const newAlbum = await axiosToken.put(`/albums/${albumId}`, { 
                                                 title: title, 
                                                 profileId: authContext?.user?.id});
@@ -54,8 +49,10 @@ import { useParams } from 'react-router-dom';
             imageData.append("albumId", newAlbum.data.id.toString() ?? "");
             await axiosToken.post("/posts/multiple", imageData, { headers: { 'Content-Type': 'multipart/form-data' } });
         }
-
-      
+        navigate(`/profile/${userId}/album`);
+    } catch (err) {
+        console.log("Error editing album",err);
+    }
     }
 
     return (

@@ -6,6 +6,7 @@ import { authUser } from "../middleware/auth";
 const router=express.Router();
 router.post("/", authUser, albums.createAlbum);
 router.get('/user/:userId([0-9]+)', s3Middleware.attachS3Info, albums.getAlbumsByUserId);
+
 router.get("/:albumId([0-9]+)", s3Middleware.attachS3Info, albums.getAlbumById);
 router.post("/addPostToAlbum", authUser, albums.addPostToAlbum);
 router.delete("/:albumId([0-9]+)", authUser, s3Middleware.attachS3Info, albums.deleteAlbum);

@@ -10,23 +10,27 @@ import useAxiosToken from "../../../hooks/useAxiosToken";
 function CreateAlbum() {
     const authContext = useContext(AuthContext);
     const [files, setFiles] = useState<File[]>([]);
+    const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [title, setTitle] = useState<string>("")
     const axiosToken = useAxiosToken();
     const navigate = useNavigate();
-    const initialValues = {
-        profileId: authContext?.user?.id,
-        authorId: authContext?.user?.id,
-        type: PostType.timeline,
-        content: "",
-        imageId: null,
-    };
+    const userId=authContext?.user?.id;
+    // const initialValues = {
+    //     profileId: authContext?.user?.id,
+    //     authorId: authContext?.user?.id,
+    //     type: PostType.timeline,
+    //     content: "",
+    //     imageId: null,
+    // };
 
     const submit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
+try{
+
 
         const newAlbum = await axiosToken.post("/albums", {
             title: title,
-            profileId: authContext?.user?.id
+            profileId: userId
         });
 
         console.log(newAlbum.data.id);
@@ -42,9 +46,21 @@ function CreateAlbum() {
             imageData.append("albumId", newAlbum.data.id.toString() ?? "");
             await axiosToken.post("/posts/multiple", imageData, { headers: { 'Content-Type': 'multipart/form-data' } });
         }
-
-        
+        navigate(`/profile/${userId}/album`);
+    } catch (err) {
+        console.log("Error creating album",err);
     }
+    }
+
+    const handleFileChange = (e: any) => {
+        setFiles(e.target.files);
+        const imageUrls : string[] = [] ;
+        for (let file of e.target.files) {
+            imageUrls.push(URL.createObjectURL(file));
+        }
+        setImagePreviews(imageUrls);
+    };
+
 
     return (
         <div className="parent-container d-flex">
@@ -71,7 +87,7 @@ function CreateAlbum() {
                         </div>
                         <div className="mb-5">
                             <label htmlFor="fileInput" className="custom-file-upload">
-                                <input type="file" name="images" multiple accept="image/*" onChange={(e: any) => setFiles(e.target.files)} id="fileInput" className="file-input" />
+                                <input type="file" name="images" multiple accept="image/*" onChange={handleFileChange} id="fileInput" className="file-input" />
                                 Upload Photos
                             </label>
                         </div>
@@ -83,9 +99,11 @@ function CreateAlbum() {
 
             <div className="container col-xl-9">
                 <div className="row">
-                    <div className="">
-                        Container Right
-                    </div>
+                        {imagePreviews.map((imageSrc, index) => (
+                            <div key={index} className="col-12 col-md-6 col-lg-4 mb-3">
+                                <img src={imageSrc} alt={`preview-${index}`} className="img-fluid" />
+                            </div>
+                        ))}
                 </div>
             </div>
         </div>

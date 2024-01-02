@@ -32,4 +32,5 @@ router.delete(
   posts.deletePost
 );
 
+router.get('/user/:userId([0-9]+)/photos', s3Middleware.attachS3Info, posts.getPhotosByUserId);
 export default router;

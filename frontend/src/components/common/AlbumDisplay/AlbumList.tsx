@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import {Card} from 'flowbite-react'
@@ -8,6 +8,7 @@ import "../PostCard/PostCard.css";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import axios from "../../../services/api/axios";
 import {Modal,Button} from "react-bootstrap";
+import { AuthContext } from "../../../context/AuthProvider";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
 type AlbumListProps = {
@@ -20,7 +21,8 @@ const AlbumList: React.FC <AlbumListProps>= (props) => {
   const axiosToken = useAxiosToken();
     const [deleteModal, setDeleteModal] = useState(false);
     const navigate = useNavigate();
-    const {userId}= useParams();
+    const authContext = useContext(AuthContext);
+    const userId = authContext?.user?.id;
     const handleDeleteModal = () =>{
    
       try{

@@ -49,32 +49,6 @@ const PostImage: React.FC<PostImageProps> = (props) => {
     setMoveToAlbumModal(true);
   };
 
-  // const handleMoveToAlbumModal = () => {
-
-  //   try {
-  //     axiosToken.put(`/posts/${props.postId}/album`);
-  //     setMoveToAlbumModal(false);
-  //     console.log("Post is moved to album successfully");
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
-  // const handleMoveToAlbumModalOpen = () => {
-  //   fetchAlbums();
-  //   setMoveToAlbumModal(true);
-  // };
-
-  // const fetchAlbums = () => {
-  //   const userId = authContext?.user?.id;
-  //   try{
-  //     axiosToken.get(`/albums/user/${userId}`).then((res) => {
-  //       setAlbums(res.data);
-  //     });
-
-  //   }catch(err){
-  //     console.log(err);
-  //   }
-  // }
   const handleAlbumSelection = (albumId: number) => {
     console.log(albumId + " is selected");
     setSelectedAlbumId(albumId);
@@ -96,14 +70,14 @@ const PostImage: React.FC<PostImageProps> = (props) => {
 
   return (
 
-    <div className="">
+    <div className="mt-3">
       <img
         src={props.thumbnailUrl}
         className="w-100 shadow-1-strong rounded mb-4"
         alt={"Post Thumbnail"}
       />
 
-      <div className="position-absolute top-0 end-0 m-3">
+      <div className="position-absolute top-0 pt-2 end-0 m-3">
         <div className="dropdown">
           <button
             className="btn btn-secondary dropdown-toggle"
@@ -136,8 +110,9 @@ const PostImage: React.FC<PostImageProps> = (props) => {
             </li>
           </ul>
         </div>
-
+        
       </div>
+    
       {/* delete modal */}
       <Modal show={deleteModal} onHide={() => setDeleteModal(false)} backdrop="static">
         <Modal.Header closeButton>
@@ -182,7 +157,7 @@ const PostImage: React.FC<PostImageProps> = (props) => {
         </Modal.Footer>
       </Modal>
     </div>
-
+    
 
   );
 }

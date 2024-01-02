@@ -15,10 +15,10 @@ function ProfilePageAlbum () {
     const authContext = useContext(AuthContext);
     const axiosToken = useAxiosToken();
     const navigate = useNavigate();
-    
-    const {userId}= useParams();
+    const userId = authContext?.user?.id;
+    // const {userId}= useParams();
     useEffect(() => {
-        const userId = authContext?.user?.id;
+        
         axiosToken
             .get(`/albums/user/${userId}`) 
             .then((res) => {
