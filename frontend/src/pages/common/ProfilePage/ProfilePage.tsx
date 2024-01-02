@@ -109,7 +109,12 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
           />
         );
       case `/profile/${id}/about`:
-        return <ProfilePageAbout />;
+        return (
+          <ProfilePageAbout
+            userProfile={userProfile}
+            isPrivateProfile={isPrivateProfile}
+          />
+        );
       case `/profile/${id}/friend`:
         return <ProfilePageFriend />;
       case `/profile/${id}/photo`:

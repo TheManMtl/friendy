@@ -7,14 +7,20 @@ import { useContext } from "react";
 import { AuthContext } from "../../../context/AuthProvider";
 import { SearchModel } from "../../../models/SearchModel";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import useAuth from "../../../hooks/useAuth";
+import useAxiosToken from "../../../hooks/useAxiosToken";
+import axios from "../../../services/api/axios";
 
 function Navbar() {
+  const [refreshTimestamp, setRefreshTimestamp] = useState(Date.now());
+
   const authContext = useContext(AuthContext);
   const userId = authContext?.user?.id;
   console.log("====userId in Navbar is====" + userId);
   const navigate = useNavigate();
   const [profileThumb, setProfileThumb] = useState<string | null>("");
+  const { user, setUser } = useAuth();
+  const axiosToken = useAxiosToken();
 
   const {
     register,
@@ -31,16 +37,31 @@ function Navbar() {
   }
 
   useEffect(() => {
-    if (userId) {
-      axios.get(`/posts/userprofile/${userId}`).then((response) => {
-        if (response.data.length !== 0) {
-          //TODO: fetch the profil pic which has the id associated with the user
-          const latestProfilIndex = response.data.length - 1;
-          setProfileThumb(response.data[latestProfilIndex].thumbnailUrl);
+    if (user != null) {
+      axiosToken.get(`/profile/view/${user.id}`).then((response) => {
+        console.log(
+          "=====navbar profileImageId=====" +
+            response.data.profileInfo.profileImgId
+        );
+        console.log("====API Response====", response.data);
+
+        if (response.data.profileInfo.profileImgId) {
+          const profileImageId = response.data.profileInfo.profileImgId;
+          axios.get(`/posts/userprofile/${profileImageId}`).then((response) => {
+            console.log("====thumbnail URl====" + response.data.thumbnailUrl);
+            if (response.data.length !== 0) {
+              //TODO: fetch the profil pic which has the id associated with the user
+              setProfileThumb((prevProfileThumb) => response.data.thumbnailUrl);
+            }
+          });
+        } else {
+          setProfileThumb(
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
+          );
         }
       });
     }
-  }, []);
+  }, [user, refreshTimestamp]);
   return (
     <div>
       <nav className="navbar navbar-expand-lg nav-custom py-3">
