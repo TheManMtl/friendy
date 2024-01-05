@@ -251,28 +251,6 @@ export const getPostImageUrl = async (req: Request, res: Response) => {
     if (post.length === 0) {
       return res.status(404).json("No posts found");
     }
-    // find all the images and append the url into posts
-    // const resData: PostWithUrl[] = [];
-    // for (let i = 0; i < post.length; i++) {
-    //   let url = null;
-    //   let thumbnailUrl = null;
-
-    //   if (post[i].Image) {
-    //     url = await imageController.getPicUrlFromS3(
-    //       req,
-    //       post[i].Image.fileName
-    //     );
-    //     thumbnailUrl = await imageController.getPicUrlFromS3(
-    //       req,
-    //       post[i].Image.thumbnail
-    //     );
-    //   }
-
-    //   const resPost: PostWithUrl = {
-    //     ...post[i].toJSON(),
-    //     imageUrl: url,
-    //     thumbnailUrl: thumbnailUrl,
-    //   };
 
     let url = null;
     let thumbnailUrl = null;
@@ -554,11 +532,9 @@ export const moveToAlbum = async (req: any, res: Response) => {
     }
 
     // update by id
-    await post.update(
-      {
-        albumId: req.body.albumId,
-      }
-    );
+    await post.update({
+      albumId: req.body.albumId,
+    });
     res.status(200).json({ message: "post is added to album" });
   } catch (error) {
     console.log(error);
@@ -617,14 +593,14 @@ export const getPostsByAlbumId = async (req: any, res: Response) => {
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
-}
+};
 //get all posts which contain images
 export const getPhotosByUserId = async (req: any, res: Response) => {
   try {
     const posts = await Post.findAll({
       where: {
         authorId: req.params.userId,
-        imageId: { [Op.ne]: null }
+        imageId: { [Op.ne]: null },
       },
       include: [
         {
@@ -643,11 +619,13 @@ export const getPhotosByUserId = async (req: any, res: Response) => {
       let thumbnailUrl = null;
 
       if (posts[i].Image) {
-        url = await imageController.getPicUrlFromS3(req, posts[i].Image.fileName);
+        url = await imageController.getPicUrlFromS3(
+          req,
+          posts[i].Image.fileName
+        );
         thumbnailUrl = await imageController.getPicUrlFromS3(
           req,
           posts[i].Image.thumbnail
-
         );
       }
 
@@ -658,10 +636,9 @@ export const getPhotosByUserId = async (req: any, res: Response) => {
       };
       resData.push(resPost);
     }
-      res.json(resData);
-    
+    res.json(resData);
   } catch (error) {
     console.error("Error fetching post images:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};

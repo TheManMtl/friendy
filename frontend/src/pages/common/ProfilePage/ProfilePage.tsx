@@ -13,9 +13,6 @@ import ProfilePageAbout from "./ProfilePageAbout";
 import ProfilePagePhoto from "./ProfilePagePhoto";
 import ProfilePageFriend from "./ProfilePageFriend";
 import ProfilePageAlbum from "./ProfilePageAlbum";
-import CreateAlbum from "./CreateAlbum";
-import EditAlbum from "./EditAlbum";
-import AlbumDetail from "./AlbumDetail";
 import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { User, Post } from "../../../types/common";
@@ -34,8 +31,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const { user, setUser } = useAuth();
   const axiosToken = useAxiosToken();
   const [profileThumb, setProfileThumb] = useState<string | null>("");
-
-  const [userProfile, setUserProfile] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<IUser | null>(null);
   // const [posts, setPosts] = useState<Post[] | null>(null);
   let navigate = useNavigate();
   const { id } = useParams();
@@ -65,6 +61,8 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
               profilePostId: user.profileImgId,
               school: user.school,
               workplace: user.workplace,
+              profileImageUrl: user.profileImgThumbnail,
+              coverImagePostId: user.coverImgId,
             });
             if (user.profileImgId != null) {
               console.log("=======profilePostId is:====" + user.profileImgId);
@@ -80,6 +78,25 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
               setProfileThumb(
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
               );
+            }
+
+            if (user.coverImgId != null) {
+              console.log("=======coverImagePostId is:====" + user.coverImgId);
+              axios
+                .get(`/posts/userprofile/${user.coverImgId}`)
+                .then((response) => {
+                  if (response.data.length !== 0) {
+                    //TODO: fetch the profil pic which has the id associated with the user
+                    setCoverImageUrl(response.data.imageUrl);
+                    console.log(
+                      "====cover image url is:=====" + response.data.imageUrl
+                    );
+                  } else {
+                    setCoverImageUrl(
+                      "https://t4.ftcdn.net/jpg/03/78/40/11/360_F_378401105_9LAka9cRxk5Ey2wwanxrLTFCN1U51DL0.jpg"
+                    );
+                  }
+                });
             }
           }
 
@@ -144,7 +161,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         userBio={userProfile?.bio}
         profileThumb={profileThumb}
       />
-      
       <div>{renderMainPanelContent()}</div>
       {isPrivateProfile ? (
         <div>This is private</div>
