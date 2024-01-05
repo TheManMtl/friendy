@@ -12,9 +12,20 @@ import { any } from "prop-types";
 interface PostModalProps {
   showPostModal: boolean;
   closePost: () => void;
+  src: string;
+  alt: string;
+  size?: string;
+  username?: string;
 }
 
-const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
+const PostModal: React.FC<PostModalProps> = ({
+  src,
+  alt,
+  size,
+  showPostModal,
+  closePost,
+  username,
+}) => {
   const authContext = useContext(AuthContext);
   const [file, setFile] = useState<any>();
   const [content, setContent] = useState<string>("");
@@ -23,12 +34,12 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const axiosToken = useAxiosToken();
   //Formik properties
-  const initialValues = {
-    authorId: authContext?.user?.id,
-    type: PostType.timeline,
-    content: "",
-    imageId: null,
-  }
+  // const initialValues = {
+  //   authorId: authContext?.user?.id,
+  //   type: PostType.timeline,
+  //   content: "",
+  //   imageId: null,
+  // }
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -100,16 +111,10 @@ const PostModal: React.FC<PostModalProps> = ({ showPostModal, closePost }) => {
         <Modal.Body style={{ width: "500px" }}>
           <div className="row mb-4">
             <div className="col-2">
-              <ProfileImage
-                src={
-                  "https://www.istockphoto.com/resources/images/IllustrationsLanding/BackgroundTile.jpg"
-                }
-                alt={"profilImage"}
-                size="small"
-              />
+              <ProfileImage src={src} alt={alt} size={size} />
             </div>
             <div className="col-10 d-flex justify-content-start">
-              <div>username</div>
+              <div>{username}</div>
             </div>
           </div>
           <form onSubmit={submit}>

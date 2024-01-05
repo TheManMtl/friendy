@@ -142,7 +142,18 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
       </div>
 
       {/* Post Modal - This modal is opened by the button in PostInput component*/}
-      <PostModal showPostModal={showPostModal} closePost={closePost} />
+      <PostModal
+        showPostModal={showPostModal}
+        closePost={closePost}
+        src={
+          profileThumb
+            ? profileThumb
+            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
+        }
+        alt={"profile"}
+        size={"small"}
+        username={userProfile?.name}
+      />
     </div>
   );
 };
