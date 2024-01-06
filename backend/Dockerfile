@@ -20,4 +20,5 @@ RUN npm run build
 EXPOSE 3000
 
 # Define the command to run your app
-CMD [ "node", "dist/app.js" ] # replace 'src/app.js' with the path to your compiled app.js file
+CMD [ "node", "/src/app.ts" ]
+ # replace 'src/app.js' with the path to your compiled app.js file
