@@ -1,11 +1,17 @@
 import { useState } from "react";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import "./PostCard.css";
-import { Comment } from "../../../types/common";
+import { Comment as IComment } from "../../../types/common";
 import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage, FormikHelpers} from "formik";
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
 import { Button } from "../../../components/common";
 import useAxiosToken from "../../../hooks/useAxiosToken";
+import CommentContainer from "../Comment/CommentContainer";
+import Comment from "../Comment/Comment";
+import {
+  HandThumbsUp,
+  SendFill,
+} from "react-bootstrap-icons";
 
 type PostCardProps = {
   id: number
@@ -16,7 +22,7 @@ type PostCardProps = {
   thumbnailUrl?: string;
   likeCount: number;
   commentCount: number;
-  comments?: Comment[];
+  comments?: IComment[];
 }
 
 interface input {
@@ -28,6 +34,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const axiosToken = useAxiosToken();
   const [success, setSuccess] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -44,7 +51,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     body: ""
   };
 
-  const handleCommentOnPost = async (data: input, {resetForm}: FormikHelpers<input>) => {
+  const handleCommentOnPost = async (data: input, { resetForm }: FormikHelpers<input>) => {
     console.log("handleCommentOnPost called");
     try {
       console.log("will it work?");
@@ -52,7 +59,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       setSuccess(true);
       setIsFocused(false);
       resetForm();
-      //TODO
+      setRefresh((prev) => prev + 1);      
       console.log("did it work?");
     } catch (error) {
       //TODO
@@ -66,13 +73,13 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const getPostTime = (datetime: string) => {
     //console.log("getPostTime arg: " + datetime);
 
-   // const diff = new Date().getTimezoneOffset();
-   // console.log("diff: " + diff);
+    // const diff = new Date().getTimezoneOffset();
+    // console.log("diff: " + diff);
     let newDate = new Date(datetime);
     //console.log(newDate);
 
     //newDate = new Date(newDate.getTime() - (diff * 60000));
-   // console.log(newDate);
+    // console.log(newDate);
 
     const millisec = Date.now() - newDate.getTime();
 
@@ -124,7 +131,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   }
 
   return (
-    <div>
+    <div key={refresh}>
       <div className="card">
         <div className="card-body">
           <div className="row card-title">
@@ -159,25 +166,26 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             )}
           </div>
 
-          <div className="row justify-content-between">
+          <div className="row">
 
-            {
-              props.likeCount > 0 ?
-                (
-                  <div className="col-1">
-                    <img src={window.location.origin + "/thumbs-up.png"} alt="thumb" height={15} width={15} />
-                    <small>{" " + props.likeCount}</small>
-                  </div>
-
-                ) : (
-                  <></>
-                )
-            }
+            <div className="col-2 text-start">
+              {
+                props.likeCount > 0 ?
+                  (
+                    <>
+                      <HandThumbsUp />
+                      <small>{" " + props.likeCount}</small>
+                    </>
+                  ) : (
+                    <></>
+                  )
+              }
+            </div>
 
             {
               props.commentCount > 0 ?
                 (
-                  <div className="col-4 text-end text-secondary">
+                  <div className="col-4 offset-6 text-end text-secondary">
                     <small>{props.commentCount + " "}</small>
                     {
                       props.commentCount === 1 ? (
@@ -199,7 +207,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           <hr />
           <div className="row text-center">
             <div className="col-4">
-              <img src={window.location.origin + "/thumbs-up.png"} alt="thumb" height={15} width={15} />
+            <HandThumbsUp />
               {/* TODO buttons */}
               <span className="text-secondary px-3">Like</span>
             </div>
@@ -211,6 +219,18 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             </div>
           </div>
           <hr />
+          {
+            props.commentCount > 0 ?
+              (
+                <div className="row">
+                  {/* TODO: display first comment only, toggle full list view */}
+                  <CommentContainer postId={props.id} commentId={0}/>
+                </div>
+
+              ) : (
+                <></>
+              )
+          }
         </div>
         <div className="card-footer bg-transparent border-0">
           <Formik
@@ -222,8 +242,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             {(formikprops) => (
               <Form>
                 <div className={`textarea-container${isFocused ? " focused" : ""}`}
-                            onFocus={handleFocus}
-                            onBlur={handleBlur}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
                 >
                   <div>
                     <Field
@@ -237,7 +257,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                   </div>
                   {/* <Button type="submit" variant="color" label="Post comment"></Button> */}
                   {/* {isFocused && ( */}
-                    <button className="btn-block btn-color submit-button" type="submit"  onClick={() => console.log("Button clicked")}>&#10148;</button>
+                  <button className="btn-block btn-color submit-button" type="submit" onClick={() => console.log("Button clicked")}><SendFill /></button>
                   {/* )}  */}
 
                 </div>
