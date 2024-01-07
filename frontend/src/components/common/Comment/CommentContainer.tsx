@@ -17,10 +17,12 @@ const CommentContainer: React.FC<CommentContainerProps> = ({
   const [comments, setComments] = useState<Comments[]>([]);
   const axiosToken = useAxiosToken();
   const [toggle, setToggle] = useState<boolean>(true);
+  const [isParent, setIsParent] = useState<boolean>(false);
   useEffect(() => {
     let url = "";
     if (commentId === 0) {
       url = `${process.env.REACT_APP_HOST_URL}/comments/post/${postId}`;
+      setIsParent(true);
     } else {
       url = `${process.env.REACT_APP_HOST_URL}/comments/comment/${commentId}`;
     }
@@ -42,8 +44,11 @@ const CommentContainer: React.FC<CommentContainerProps> = ({
     <>
       {comments && comments.length > 0 && (
         <div>
-          <Comment isNested={false} size={1} comment={comments[0]} />
-          <Comment isNested={true} size={1} comment={comments[0]} />
+          {/* <Comment isNested={false} size={1} comment={comments[0]} />
+          <Comment isNested={true} size={1} comment={comments[0]} /> */}
+          {comments.map((comment, index) => (
+            <Comment key={index} isNested={!isParent} comment={comment} />
+          ))}
         </div>
       )}
     </>

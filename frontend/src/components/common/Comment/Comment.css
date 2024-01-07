@@ -10,12 +10,10 @@
     margin-left: 8px;
 }
 
-.nested-true-3 {
-    margin-left: 2.5em;
-}
-.nested-true-1 {
-    margin-left: 1.5em;
-}
+
+/* .nested-true {
+    margin-left:  em;
+} */
 .view-replies {
     margin-left: 8px;
     font-size: .9em;

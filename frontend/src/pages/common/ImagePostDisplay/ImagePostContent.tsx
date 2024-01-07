@@ -85,7 +85,7 @@ const ImagePostContent: React.FC<ImagePostContentProps> = ({ user, post }) => {
         </div>
 
         <div className="col-12 no-margin-padding-left">
-          <CommentContainer commentId={14} postId={89} />
+          <CommentContainer commentId={0} postId={89} />
         </div>
       </div>
     </div>
