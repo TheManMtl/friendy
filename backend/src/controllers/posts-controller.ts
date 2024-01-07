@@ -388,17 +388,33 @@ export const getNewsfeed = async (req: any, res: Response) => {
     });
 
     // list of friends ids
-    const authorIds = friends.map(async (friend: typeof Friend) => {
+    const authorIds = await Promise.all(friends.map(async (friend: typeof Friend) => {
       //check friend is active
-      await User.findByPk(friend.id, {
-        where: {
-          isDeleted: false,
-        },
-      });
-      return friend.requestedById === id
-        ? friend.requestedToId
-        : friend.requestedById;
-    });
+      let friendId;
+      if (friend.requestedById == id) {
+        await User.findByPk(friend.requestedToId, {
+          where: {
+            isDeleted: false,
+          },
+        });
+        console.log("===============================");
+        console.log("friend: " + friend.requestedToId);
+        console.log("===============================");
+        friendId = friend.requestedToId;
+      }
+      if (friend.requestedToId == id) {
+        await User.findByPk(friend.requestedById, {
+          where: {
+            isDeleted: false,
+          },
+        });
+        console.log("===============================");
+        console.log("friend: " + friend.requestedById);
+        console.log("===============================");
+        friendId = friend.requestedById;
+      }
+      return friendId;
+    }));
 
     //add id to include user's own posts
     authorIds.push(id);

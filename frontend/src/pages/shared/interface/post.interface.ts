@@ -24,5 +24,5 @@ interface IPostAuthor {
     id: number;
     name: string;
     profileImg?: IPost;
-
+    defaultAvatarUrl?: string;
 }

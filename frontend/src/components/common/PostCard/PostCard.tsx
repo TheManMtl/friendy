@@ -115,7 +115,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     ];
     let result = months[month] + " " + newDate.getDate();
     if (newDate.getFullYear() < new Date().getFullYear()) {
-      result += newDate.getFullYear();
+      result += (" " + newDate.getFullYear());
     }
     return result;
   }
