@@ -20,7 +20,7 @@ router.get(
 router.post("/post/:id([0-9]+)", authUser, comments.commentOnPost);
 router.post("/comment/:id([0-9]+)", authUser, comments.commentOnComment);
 
-//coming soon
-//router.delete("/:id([0-9]+)", authUser, comments.deleteComment);
+router.delete("/post/:id([0-9]+)", authUser, comments.deleteCommentOnPost);
+router.delete("/comment/:id([0-9]+)", authUser, comments.deleteCommentOnComment);
 
 export default router;

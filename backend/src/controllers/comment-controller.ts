@@ -144,7 +144,7 @@ export const commentOnComment = async (
         "commentCount",
         {
           where: {
-            id: parent.post.id,
+            id: parent.postId,
           },
         },
         { transaction: t }
@@ -155,7 +155,7 @@ export const commentOnComment = async (
       await Comment.create(
         {
           userId: user.id,
-          postId: parent.post.id,
+          postId: parent.postId,
           parent: parent.id,
           body: req.body.body,
         },
@@ -332,3 +332,158 @@ export const getPostComments = async (
     return res.status(500).send({ message: "Something went wrong" });
   }
 };
+
+
+export const deleteCommentOnPost = async (
+    req: CustomRequest,
+    res: Response
+  ): Promise<any> => {
+    try {
+      //get post and user
+      const user = await User.findByPk(req.id);
+
+      if (!user) {
+        return res.status(404).send({ message: "User not found" });
+      }
+
+      const comment = await Comment.findByPk(req.params.id, {
+        where: {
+          isDeleted: false,
+          authorId: user.id
+        },
+      });
+
+      if (!(comment && comment.postId)) {
+        return res.status(404).send({ message: "Comment not found" });
+      }
+
+      const post = await Post.findByPk(comment.postId);
+  
+      if (!post) {
+        return res.status(404).send({ message: "Post not found" });
+      }
+  
+      //transaction to delete comment and update post accordingly
+      const t = await sequelize.transaction();
+  
+      try {
+        await Post.decrement(
+          "commentCount",
+          {
+            where: {
+              id: comment.postId,
+            },
+          },
+          { transaction: t }
+        );
+  
+        await Comment.update(
+          {
+            isDeleted: true
+          },
+          {
+            where: {
+                id: comment.id
+            }
+          },
+          { transaction: t }
+        );
+  
+        await t.commit();
+      } catch (error) {
+        await t.rollback();
+        return res
+          .status(500)
+          .send({ message: "Something went wrong in transaction: " + error });
+      }
+      return res.status(200).send({ message: "Comment successfully deleted" });
+
+    } catch (error) {
+      return res.status(500).send({ message: "Something went wrong: " + error });
+    }
+  };
+
+  export const deleteCommentOnComment = async (
+        req: CustomRequest,
+        res: Response
+      ): Promise<any> => {
+        try {
+          //get post and user
+          const user = await User.findByPk(req.id);
+
+          if (!user) {
+            return res.status(404).send({ message: "User not found" });
+          }
+
+          const comment = await Comment.findByPk(req.params.id, {
+            where: {
+              isDeleted: false,
+              authorId: user.id
+            },
+          });
+      
+          if (!(comment && comment.parentId && comment.postId)) {
+            return res.status(404).send({ message: "Comment not found" });
+          }
+
+          const parent = await Comment.findByPk(comment.parentId);
+      
+          if (!parent) {
+            return res.status(404).send({ message: "Parent comment not found" });
+          }
+
+          const post = await Post.findByPk(comment.postId);
+      
+          if (!post) {
+            return res.status(404).send({ message: "Original post not found" });
+          }
+      
+          //transaction to delete comment and update parent and post accordingly
+          const t = await sequelize.transaction();
+      
+          try {
+            await Comment.decrement(
+              "childCount",
+              {
+                where: {
+                  id: parent.id,
+                },
+              },
+              { transaction: t }
+            );
+      
+            await Post.decrement(
+              "commentCount",
+              {
+                where: {
+                  id: comment.postId,
+                },
+              },
+              { transaction: t }
+            );
+      
+            await t.commit();
+      
+            await Comment.update(
+                {
+                  isDeleted: true
+                },
+                {
+                  where: {
+                      id: comment.id
+                  }
+                },
+                { transaction: t }
+              );
+
+          } catch (error) {
+            await t.rollback();
+            return res.status(500).send({ message: "Something went wrong" });
+          }
+      
+          return res.status(200).send({ message: "Comment successfully deleted" });
+
+        } catch (error) {
+          return res.status(500).send({ message: "Something went wrong" });
+        }
+      };
