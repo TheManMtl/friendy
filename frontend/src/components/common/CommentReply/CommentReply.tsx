@@ -6,13 +6,22 @@ import ProfileImage from "../ProfileImage/ProfileImage";
 import { SendFill } from "react-bootstrap-icons";
 import FormData from "form-data";
 import { useForm } from "react-hook-form";
+import { Comments } from "../../../models/Comments";
 
 type Reply = {
   body: string;
 };
-type CommentReplyProps = { commentId: number };
+type CommentReplyProps = {
+  commentId: number;
+  newComment(commentId: number): any;
+  setMakeComment(window: boolean): any;
+};
 
-const CommentReply: React.FC<CommentReplyProps> = ({ commentId }) => {
+const CommentReply: React.FC<CommentReplyProps> = ({
+  commentId,
+  newComment,
+  setMakeComment,
+}) => {
   const axiosToken = useAxiosToken();
 
   const handleTextareaInput = (
@@ -46,6 +55,9 @@ const CommentReply: React.FC<CommentReplyProps> = ({ commentId }) => {
       })
       .then((response) => {
         console.log("success!!");
+        console.log(response.data);
+        setMakeComment(false);
+        newComment(response.data.id);
       })
       .catch((error) => {
         console.log(error);

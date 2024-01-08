@@ -98,6 +98,7 @@ export const commentOnComment = async (
   req: CustomRequest,
   res: Response
 ): Promise<any> => {
+  let newComment;
   try {
     //get post and user
     const user = await User.findByPk(req.id);
@@ -150,7 +151,7 @@ export const commentOnComment = async (
         { transaction: t }
       );
 
-      await Comment.create(
+      newComment = await Comment.create(
         {
           userId: user.id,
           postId: parent.postId,
@@ -167,7 +168,7 @@ export const commentOnComment = async (
       return res.status(500).send({ message: "Something went wrong" });
     }
 
-    return res.status(201).send({ message: "Comment successfully posted" });
+    return res.status(201).send(newComment);
   } catch (error) {
     console.log("\n\n\n\n" + error);
     return res.status(500).send({ message: "Something went wrong" });
@@ -533,5 +534,76 @@ export const updateComment = async (
     return res.status(201).send({ message: "Comment successfully updated" });
   } catch (error) {
     return res.status(500).send({ message: "Something went wrong: " + error });
+  }
+};
+
+export const getSingleComment = async (
+  req: CustomRequest,
+  res: Response
+): Promise<any> => {
+  if (req.params.id == null) {
+    return res.status(400).send({ message: "Comment ID is required" });
+  }
+
+  try {
+    const comment = await Comment.findByPk(req.params.id, {
+      where: { isDeleted: false },
+      include: [
+        {
+          model: User,
+          attributes: ["name"],
+          include: [
+            {
+              model: Post,
+              as: "profileImg",
+              attributes: ["id"],
+              include: [
+                {
+                  model: Image,
+                  as: "Image",
+                  attributes: ["id", "thumbnail"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!comment) {
+      return res.status(404).send({ message: "Comment not found" });
+    }
+
+    let thumbnail: string | null = "";
+
+    if (comment.User.profileImg === null) {
+      console.log("profile is null");
+      thumbnail = "default.jpg";
+    } else {
+      thumbnail = comment.User.profileImg.Image.thumbnail;
+    }
+
+    thumbnail = await getPicUrlFromS3(req, thumbnail!);
+
+    const returnComment: CommentResponse = {
+      name: comment.User.name,
+      profileImg: thumbnail,
+      body: comment.body,
+      childCount: comment.childCount,
+      createdAt: comment.createdAt,
+      deleteAt: comment.deleteAt || null,
+      id: comment.id,
+      isDeleted: comment.isDeleted,
+      likeCount: comment.likeCount,
+      parentId: comment.parentId || null,
+      postId: comment.postId,
+      updatedAt: comment.updatedAt || null,
+      userId: comment.userId,
+    };
+
+    return res.status(200).send(returnComment);
+  } catch (error) {
+    console.error("Error finding single comment:", error);
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 };
