@@ -70,6 +70,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
                 <div
                   onClick={() => {
                     setViewReplies(!viewReplies);
+                    console.log(comment.id);
                   }}
                 >
                   {viewReplies ? <>Close Replies</> : <>View Replies</>}

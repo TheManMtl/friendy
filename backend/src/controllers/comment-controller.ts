@@ -154,14 +154,13 @@ export const commentOnComment = async (
         {
           userId: user.id,
           postId: parent.postId,
-          parent: parent.id,
+          parentId: parent.id,
           body: req.body.body,
         },
         { transaction: t }
       );
 
       await t.commit();
-      
     } catch (error) {
       await t.rollback();
       console.log("ERROR" + error);
