@@ -18,7 +18,7 @@ type CommentProps = {
   isNested: boolean;
   comment: Comments;
 };
-
+ 
 const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
   const [viewReplies, setViewReplies] = useState<boolean>(false);
   const [makeComment, setMakeComment] = useState<boolean>(false);
@@ -56,7 +56,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
             >
               Comment
             </span>
-            <span className="comment-interaction me-4">
+            <span className="comment-interaction me-2">
               {comment.createdAt && timeAgo.format(new Date(comment.createdAt))}
             </span>
             <span className="comment-interaction ">

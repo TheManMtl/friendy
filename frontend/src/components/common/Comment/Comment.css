@@ -3,7 +3,7 @@
     border-radius: 35px;
     padding: 10px 8px;
 }
-
+ 
 .comment-interaction {
     font-size: .8em;
     color: #757678;
@@ -11,9 +11,9 @@
 }
 
 
-/* .nested-true {
-    margin-left:  em;
-} */
+.nested-true {
+    margin-left: -4em;
+}
 .view-replies {
     margin-left: 8px;
     font-size: .9em;

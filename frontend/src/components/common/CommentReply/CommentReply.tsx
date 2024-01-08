@@ -4,9 +4,15 @@ import "../CommentReply/CommentReply.css";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import { SendFill } from "react-bootstrap-icons";
+import FormData from "form-data";
+import { useForm } from "react-hook-form";
 
+
+type Reply = {
+  body: string
+}
 type CommentReplyProps = {};
-
+ 
 const CommentReply: React.FC<CommentReplyProps> = ({}) => {
   const axiosToken = useAxiosToken();
 
@@ -15,7 +21,21 @@ const CommentReply: React.FC<CommentReplyProps> = ({}) => {
   ) => {
     event.target.style.height = "auto";
     event.target.style.height = `${event.target.scrollHeight}px`;
+    setValue("body", event.target.value);
   };
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm<Reply>();
+
+  async function onSubmit(input: Reply) {
+   console.log(input.body);
+   console.log("submitting")
+  }
+
   return (
     <div className="d-flex flex-lg-row flex-column my-3 ">
       <div className="">
@@ -28,20 +48,20 @@ const CommentReply: React.FC<CommentReplyProps> = ({}) => {
         />
       </div>
       <div className=" flex-grow-1 ">
-        <form className={`form-row`} onSubmit={() => console.log("submit")}>
+        <form className={`form-row`} id="commentForm" onSubmit={handleSubmit(onSubmit)}>
           <textarea
-            onChange={handleTextareaInput}
+         onChange={handleTextareaInput}
             className="comment-reply mt-2"
-            rows={1} // Set the initial number of rows
+            rows={1} 
             aria-label="Comment Reply"
             style={{ overflow: "break-word", resize: "none" }}
-            // {...register("searchTerms")}
           />
         </form>
       </div>
-      <div className=" flex-column comment-submit" id="submitBtn">
+      <button className=" flex-column comment-submit" id="submitBtn"        type="submit"
+          form="commentForm">
         <SendFill />
-      </div>
+      </button>
     </div>
   );
 };
