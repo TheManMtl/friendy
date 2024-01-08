@@ -157,7 +157,9 @@ export const getTimeline = async (req: any, res: Response) => {
             profileId: req.params.id,
           },
         ],
-        type: "timeline",
+        type: {
+          [Op.not]: "albumImg"
+        },
         isDeleted: false,
       },
       include: [
@@ -318,10 +320,10 @@ export const editPostContent = async (req: CustomRequest, res: Response) => {
 
     // validate (only posts with images can have empty content)
     if (
-      post.imageId != null &&
+      post.imageId === null &&
       (!req.body.content || (req.body?.content as string).length < 1)
     ) {
-      return res.status(400).json({ message: "Post content cannot exceed " });
+      return res.status(400).json({ message: "Post content cannot be empty" });
     }
 
     if (req.body?.content && (req.body?.content as string).length > 1500) {

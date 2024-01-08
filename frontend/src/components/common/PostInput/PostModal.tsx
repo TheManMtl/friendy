@@ -8,6 +8,8 @@ import useAxiosToken from "../../../hooks/useAxiosToken";
 import { Post, PostType } from "../../../types/common";
 import { AuthContext } from "../../../context/AuthProvider";
 import { any } from "prop-types";
+import { AxiosError } from "axios";
+import { apiError } from "../../../types/common";
 
 interface PostModalProps {
   showPostModal: boolean;
@@ -17,6 +19,9 @@ interface PostModalProps {
   size?: string;
   username?: string;
   profileId: string | null;
+  postId?: number;
+  postBody?: string;
+
 }
 
 const PostModal: React.FC<PostModalProps> = ({
@@ -26,16 +31,18 @@ const PostModal: React.FC<PostModalProps> = ({
   showPostModal,
   closePost,
   username,
-  profileId
-
+  profileId,
+  postId,
+  postBody
 }) => {
   const authContext = useContext(AuthContext);
   const [file, setFile] = useState<any>();
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState<string>(postBody ?? "");
   const [filedValue, setFieldValue] = useState();
   const [files, setFiles] = useState<File[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const axiosToken = useAxiosToken();
+  const [errorMessage, setErrorMessage] = useState('');
   //Formik properties
   // const initialValues = {
   //   authorId: authContext?.user?.id,
@@ -46,16 +53,37 @@ const PostModal: React.FC<PostModalProps> = ({
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    try {
+    if (!postId){
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("content", content);
+      // formData.append("authorId", authContext?.user?.id.toString() ?? "");
+      formData.append("profileId", profileId ?? "");
+      formData.append("type", PostType.timeline);
+      await axiosToken.post("/posts", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } else {
+      console.log("attempting edit submission");
+      await axiosToken.put(`/posts/${postId}`, { content: content });
+    }
+  } catch (error: any) {
+    const err = error as AxiosError<apiError>;
 
-    const formData = new FormData();
-    formData.append("image", file);
-    formData.append("content", content);
-    // formData.append("authorId", authContext?.user?.id.toString() ?? "");
-    formData.append("profileId", profileId ?? "");
-    formData.append("type", PostType.timeline);
-    await axiosToken.post("/posts", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    if (!err?.response) {
+      setErrorMessage("Failed to connect to server.");
+      console.log(errorMessage);
+
+    } else if (err.response?.data?.message) {
+      setErrorMessage(err.response.data.message);
+      console.log(errorMessage);
+
+    } else {
+      console.log(err);
+      setErrorMessage("Something went wrong.");
+    }
+  }
   };
 
   //FIXME: trigger update to parent component
@@ -110,7 +138,7 @@ const PostModal: React.FC<PostModalProps> = ({
       {/* Post Modal */}
       <Modal centered show={showPostModal} onHide={closePost} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Create Post</Modal.Title>
+          <Modal.Title>{postId ? "Edit post" : "Create post"}</Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ width: "500px" }}>
           <div className="row mb-4">
@@ -138,7 +166,7 @@ const PostModal: React.FC<PostModalProps> = ({
             <ButtonF
               type="submit"
               variant="color"
-              label="Create Post"
+              label={postId ? "Save changes " : "Post"}
               onClick={closePost}
             ></ButtonF>
           </form>

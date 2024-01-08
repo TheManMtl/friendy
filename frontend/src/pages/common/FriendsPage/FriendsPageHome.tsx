@@ -1,6 +1,9 @@
 import React from 'react'
 import { Button } from '../../../components/common';
 import "./FriendsPage.css";
+import FriendsPageRequests from './FriendsPageRequests';
+import FriendsPageList from './FriendsPageList';
+import FriendsPageSuggestions from './FriendsPageSuggestions';
 
 function FriendsPageHome({ userId }: { userId: number | undefined }) {
 
@@ -21,11 +24,12 @@ function FriendsPageHome({ userId }: { userId: number | undefined }) {
     return (
         <div>
             <div className="d-flex justify-content-between align-items-center p-2 m-2">
-                <h4>...need to figure out what actually goes here...</h4>
             </div>
-            <div className="panel-grid">
-                {dummyPanels}
-            </div>
+            <FriendsPageList userId={userId ?? 0}/>
+            <hr/>
+            <FriendsPageRequests userId={userId ?? 0}/>
+            <hr/>
+            <FriendsPageSuggestions userId={userId ?? 0}/>
         </div>
     )
 }

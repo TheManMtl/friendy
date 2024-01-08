@@ -20,8 +20,10 @@ function FriendsPageRequests({ userId }: { userId: number }) {
       const response = await axiosToken.delete('/friends/remove', {
         data: { id: friendId },
       });
+      setFriendRequestsSent((prevFriendRequests) =>
+      prevFriendRequests.filter((friendRequest) => friendRequest.userId !== friendId)
+    );
       console.log('Friend request revoked successfully:', response.data);
-      window.alert("friend request removed - todo: make this panel *disappear* when you remove request ;)")
     } catch (error) {
       console.error('Error revoking friend request:', error);
     }

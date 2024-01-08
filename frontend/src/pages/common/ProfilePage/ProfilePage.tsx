@@ -31,14 +31,15 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const { selectedRoute } = useProfilePageContext();
   const [isPrivateProfile, setIsPrivateProfile] = useState<boolean>(false);
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
-  const { user, setUser } = useAuth();
+  const { user } = useAuth();
   const axiosToken = useAxiosToken();
   const [profileThumb, setProfileThumb] = useState<string | null>("");
+  const [currentUserProfileThumb, setCurrentUserProfileThumb] = useState<string | null>("");
   const [userProfile, setUserProfile] = useState<IUser | null>(null);
   // const [posts, setPosts] = useState<Post[] | null>(null);
   let navigate = useNavigate();
   const { id } = useParams();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (user == null) {
@@ -46,7 +47,9 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     }
     setUserId(user?.id);
     if (user != null) {
-        axiosToken.get(`/profile/view/${id}`).then((response) => {
+      axiosToken
+        .get(`/profile/view/${id}`)
+        .then((response) => {
           if (response.data.error) {
             console.log("====Error receiving response.data=====");
           } else {
@@ -69,7 +72,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
             });
             if (user.profileImgId != null) {
               console.log("=======profilePostId is:====" + user.profileImgId);
-              axios
+              axiosToken
                 .get(`/posts/userprofile/${user.profileImgId}`)
                 .then((response) => {
                   if (response.data.length !== 0) {
@@ -77,21 +80,22 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
                     setProfileThumb(response.data.thumbnailUrl);
                   }
                 })
-                .catch ((error: any) => {
+                .catch((error: any) => {
                   const err = error as AxiosError<apiError>;
-                  
+
                   if (!err?.response) {
                     setErrorMessage("Failed to connect to server.");
                     console.log(errorMessage);
-            
                   } else if (err.response?.data?.message) {
                     setErrorMessage(err.response.data.message);
                     console.log(errorMessage);
-            
                   } else {
                     console.log(err);
                     setErrorMessage("Something went wrong.");
                   }
+                  setProfileThumb(
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
+                  );
                 });
             } else {
               setProfileThumb(
@@ -101,7 +105,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
 
             if (user.coverImgId != null) {
               console.log("=======coverImagePostId is:====" + user.coverImgId);
-              axios
+              axiosToken
                 .get(`/posts/userprofile/${user.coverImgId}`)
                 .then((response) => {
                   if (response?.data?.length !== 0) {
@@ -116,17 +120,15 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
                     );
                   }
                 })
-                .catch ((error: any) => {
+                .catch((error: any) => {
                   const err = error as AxiosError<apiError>;
-                  
+
                   if (!err?.response) {
                     setErrorMessage("Failed to connect to server.");
                     console.log(errorMessage);
-            
                   } else if (err.response?.data?.message) {
                     setErrorMessage(err.response.data.message);
                     console.log(errorMessage);
-            
                   } else {
                     console.log(err);
                     setErrorMessage("Something went wrong.");
@@ -144,23 +146,50 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
             }
           }
         })
-        .catch ((error: any) => {
+        .catch((error: any) => {
           const err = error as AxiosError<apiError>;
-          
+
+
           if (!err?.response) {
             setErrorMessage("Failed to connect to server.");
             console.log(errorMessage);
-    
           } else if (err.response?.data?.message) {
             setErrorMessage(err.response.data.message);
             console.log(errorMessage);
-    
           } else {
             console.log(err);
             setErrorMessage("Something went wrong.");
           }
         });
     }
+
+    //get current user profile pic
+    axiosToken
+      .get(`/profile/thumbnail/${user!.id}`)
+      .then((response) => {
+        setCurrentUserProfileThumb(response?.data);
+      })
+      .catch((error: any) => {
+        const err = error as AxiosError<apiError>;
+
+        if (!err?.response) {
+          setErrorMessage("Failed to connect to server.");
+          console.log(errorMessage);
+
+        } else if (err.response?.data?.message) {
+          setErrorMessage(err.response.data.message);
+          console.log(errorMessage);
+
+        } else {
+          console.log(err);
+          setErrorMessage("Something went wrong.");
+        }
+
+        setCurrentUserProfileThumb(
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
+        );
+      });
+
   }, [axiosToken, id, navigate, user, userId]);
 
   const renderMainPanelContent = () => {
@@ -171,6 +200,8 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
             profileThumb={profileThumb}
+            userId={userId}
+            currentUserProfileThumb={currentUserProfileThumb}
           />
         );
       case `/profile/${id}/about`:
@@ -192,12 +223,14 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
             profileThumb={profileThumb}
+            userId={userId}
+            currentUserProfileThumb={currentUserProfileThumb}
           />
         );
     }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <div>
