@@ -38,7 +38,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   // const [posts, setPosts] = useState<Post[] | null>(null);
   let navigate = useNavigate();
   const { id } = useParams();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (user == null) {
@@ -46,7 +46,9 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     }
     setUserId(user?.id);
     if (user != null) {
-        axiosToken.get(`/profile/view/${id}`).then((response) => {
+      axiosToken
+        .get(`/profile/view/${id}`)
+        .then((response) => {
           if (response.data.error) {
             console.log("====Error receiving response.data=====");
           } else {
@@ -77,17 +79,15 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
                     setProfileThumb(response.data.thumbnailUrl);
                   }
                 })
-                .catch ((error: any) => {
+                .catch((error: any) => {
                   const err = error as AxiosError<apiError>;
-                  
+
                   if (!err?.response) {
                     setErrorMessage("Failed to connect to server.");
                     console.log(errorMessage);
-            
                   } else if (err.response?.data?.message) {
                     setErrorMessage(err.response.data.message);
                     console.log(errorMessage);
-            
                   } else {
                     console.log(err);
                     setErrorMessage("Something went wrong.");
@@ -116,17 +116,15 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
                     );
                   }
                 })
-                .catch ((error: any) => {
+                .catch((error: any) => {
                   const err = error as AxiosError<apiError>;
-                  
+
                   if (!err?.response) {
                     setErrorMessage("Failed to connect to server.");
                     console.log(errorMessage);
-            
                   } else if (err.response?.data?.message) {
                     setErrorMessage(err.response.data.message);
                     console.log(errorMessage);
-            
                   } else {
                     console.log(err);
                     setErrorMessage("Something went wrong.");
@@ -144,17 +142,15 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
             }
           }
         })
-        .catch ((error: any) => {
+        .catch((error: any) => {
           const err = error as AxiosError<apiError>;
-          
+
           if (!err?.response) {
             setErrorMessage("Failed to connect to server.");
             console.log(errorMessage);
-    
           } else if (err.response?.data?.message) {
             setErrorMessage(err.response.data.message);
             console.log(errorMessage);
-    
           } else {
             console.log(err);
             setErrorMessage("Something went wrong.");
@@ -171,6 +167,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
             profileThumb={profileThumb}
+            userId={userId}
           />
         );
       case `/profile/${id}/about`:
@@ -192,6 +189,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
             profileThumb={profileThumb}
+            userId={userId}
           />
         );
     }

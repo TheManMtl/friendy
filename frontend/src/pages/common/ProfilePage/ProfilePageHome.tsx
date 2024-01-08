@@ -13,12 +13,14 @@ interface ProfileHomeProps {
   userProfile: IUser | null;
   isPrivateProfile: boolean;
   profileThumb: string | null;
+  userId: number | undefined;
 }
 
 const ProfilePageHome: React.FC<ProfileHomeProps> = ({
   userProfile,
   isPrivateProfile,
   profileThumb,
+  userId,
 }) => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const axiosToken = useAxiosToken();
@@ -103,7 +105,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
           />
-          <PhotoGallery />
+          <PhotoGallery userId={userId} />
         </div>
         {/* right content */}
         <div className="rightContent col-md-7">
