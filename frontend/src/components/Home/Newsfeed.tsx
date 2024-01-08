@@ -88,6 +88,7 @@ const Newsfeed: React.FC = () => {
                             likeCount={post.likeCount}
                             commentCount={post.commentCount}
                             comments={post.comments}
+                            type={post.type}
                         />
                     </div>
                 ))

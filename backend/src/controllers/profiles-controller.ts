@@ -145,7 +145,7 @@ export const viewProfile = async (
       ],
     });
     if (!profile) {
-      return res.status(400).send({ message: "user does not exist" });
+      return res.status(404).send({ message: "User not found" });
     }
 
     // image
@@ -208,7 +208,7 @@ export const updateProfile = async (
     });
 
     if (!user) {
-      return res.status(400).send({ message: "User could not be found." });
+      return res.status(404).send({ message: "User could not be found." });
     }
 
     if (request.location != null) {

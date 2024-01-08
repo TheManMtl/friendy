@@ -22,13 +22,31 @@ export const createPost = async (req: any, res: Response) => {
   console.log("========this is in the createPost=========");
   const imageFile = req.file;
   let image = null;
+
   try {
+
+    const user = await User.findByPk(req.id);
+
+    if (!user) {
+        return res.status(404).send({ message: "User not found" });
+    }
+
+    if (req.body.profileId != null) {
+
+      const user = await User.findByPk(req.body.profileId);
+
+      if (!user) {
+        return res.status(404).send({ message: "User not found"});
+      }
+    }
+
     if (imageFile) {
       console.log("========there is imageFile=========");
       image = await imageController.addOne(req);
     }
+    //FIXME: validate type, content length
     const post = await Post.create({
-      authorId: req.body.authorId,
+      authorId: user.id, 
       profileId: req.body.profileId,
       type: req.body.type,
       content: req.body.content,
@@ -124,7 +142,14 @@ export const getTimeline = async (req: any, res: Response) => {
                 authorId: req.params.id,
               },
               {
-                profileId: null,
+                [Op.or]: [
+                  {
+                    profileId: req.params.id
+                  },
+                  {
+                    profileId: null
+                  },
+                ]
               },
             ],
           },
