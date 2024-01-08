@@ -123,19 +123,20 @@ export const likeCommentToggle = async (
 
     //transaction to add/delete like and update comment accordingly
     const t = await sequelize.transaction();
-
-    await Comment.decrement(
-      "likeCount",
-      {
-        where: {
-          id: comment.id,
-        },
-      },
-      { transaction: t }
-    );
-
     if (likeExists) {
       try {
+
+        await Comment.decrement(
+          "likeCount",
+          {
+            where: {
+              id: comment.id,
+            },
+          },
+          { transaction: t }
+        );
+
+
         await Like.destroy(
           {
             where: {
