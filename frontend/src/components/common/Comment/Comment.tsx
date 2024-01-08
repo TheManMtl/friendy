@@ -37,6 +37,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
   };
 
   useEffect(() => {
+    console.log("comment changed");
     const fetchLikes = async () => {
       await axiosToken
         .get(`${process.env.REACT_APP_HOST_URL}/likes/comment/${comment.id}`)
@@ -50,7 +51,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
     };
 
     fetchLikes();
-  });
+  }, [commentChanged]);
 
   useEffect(() => {
     const fetchComments = async () => {

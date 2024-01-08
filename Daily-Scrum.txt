@@ -731,6 +731,92 @@ Xuerun:
   -create editalbum page
   -implement add a post to an album
   -make the image as profile image or cover photo
+
+
+Date: Jan 08
+
+
+Alex:
+Finished:
+- continued working on post display for images 
+- added comment nesting
+- ability to open comment replies
+Working on: 
+- finishing post display
+- see upvotes
+- upvote comment
+- make comment
+-upvote post 
+- delete your comment
+- edit your comment
+- change password (backend)
+- x takes you back
+Challenges:
+N/A
+
+Ehsan:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Meredith:
+ Finished: 
+  - newsfeed display
+  - post to other user timelines
+  - edit timeline
+  - back end delete comments
+  - view comments on post card (partial, needs modification)
+ Working On: 
+  - delete posts
+  - add post input to home page
+  - full size imgs for timeline
+  - add profile links to post authors
+  - update post feeds after create/edit
+  - 404 page
+ Challenges: 
+  - 
+
+Nick:
+ Finished: 
+  - 
+ Working On: 
+  - 
+ Challenges: 
+  - 
+
+Shiyu:
+Finished:
+-hooked nav bar and post modal profile image 
+-hooked data in About page
+-implemented change cover image function
+-implemented edit function in About page
+-created edit component 
+Working on
+-hook photos in photo gallery
+-finish editing function in about page
+-implement changing password
+-start working on friends subpage
+Challenges
+-NA
+
+Xuerun:
+ Finished: 
+  -createalbum
+  -display preview image in create album
+  -redirect back to album list after create or edit album
+  -fix url for edit and create album
+  -editalbum
+  -display posts in album
+  -delete album
+  -edit post list css
+  -fixed a bug: fetch only image posts on the post list page, rather than all the posts
+ Working On: 
+  -display the most recent image of the album in album card
+  -link postdetail page to the post list
+  -set a photo as profile photo and cover photo
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------

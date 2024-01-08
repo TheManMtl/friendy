@@ -1,9 +1,9 @@
-import { RequestHandler } from "express";
+import { NextFunction, RequestHandler, Response } from "express";
 import models from "../db/models";
 import bcrypt from "bcrypt";
 import validator from "validator";
 import jwt from "jsonwebtoken";
-import { DecodedToken } from "../middleware/auth";
+import { CustomRequest, DecodedToken } from "../middleware/auth";
 
 const User = models.User;
 
@@ -25,6 +25,12 @@ interface ReturnedUser {
   email: string;
   id: number;
   role: string;
+}
+
+interface ChangedPassword {
+  oldPassword: string;
+  newPassword: string;
+  newPasswordCopy: string;
 }
 
 // token: accessToken,
@@ -207,11 +213,9 @@ export const refresh: RequestHandler<
     return res.status(200).send(theUser);
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      return res
-        .status(401)
-        .send({
-          message: "You have been logged out. Please login to continue.",
-        });
+      return res.status(401).send({
+        message: "You have been logged out. Please login to continue.",
+      });
     }
     next(error);
   }
@@ -226,6 +230,61 @@ export const all: RequestHandler = async (req, res, next) => {
 
     // Return the list of users
     return res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changedPassword = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  if (!req.id) {
+    return res.status(400).send({ message: "not authorized" });
+  }
+  if (
+    !req.body.oldPassword ||
+    !req.body.newPassword ||
+    !req.body.newPasswordCopy
+  ) {
+    return res.status(400).send({ message: "please provide all parameters" });
+  }
+  if (req.body.newPassword != req.body.newPasswordCopy) {
+    return res.status(400).send({ message: "new passwords must match" });
+  }
+  if (
+    validator.isStrongPassword(req.body.newPassword, {
+      returnScore: true,
+      pointsPerRepeat: 0,
+      pointsPerUnique: 0,
+      pointsForContainingLower: 10,
+      pointsForContainingUpper: 10,
+      pointsForContainingNumber: 5,
+      pointsForContainingSymbol: 5,
+    }) < 25
+  ) {
+    return res.status(400).send({
+      message:
+        "Password must contain at least one uppercase letter, one lower case letter, and one number or special character.",
+    });
+  }
+
+  try {
+    const user = await User.findByPk(req.id);
+
+    const passwordMatch = await bcrypt.compare(
+      req.body.oldPassword!,
+      user!.password
+    );
+
+    if (!passwordMatch) {
+      console.log("password wrong");
+      return res.status(401).send({ message: "Invalid credentials" });
+    }
+    user.password = await bcrypt.hash(req.body.newPassword!, 10);
+    await user.save();
+    return res.status(200).send({ message: "Password changed successfully" });
   } catch (error) {
     next(error);
   }
