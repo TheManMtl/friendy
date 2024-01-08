@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { IPost } from "../../pages/shared/interface/post.interface";
 import PostCard from "../common/PostCard/PostCard";
 import useAxiosToken from "../../hooks/useAxiosToken";
+import { AxiosError } from "axios";
+import { apiError } from "../../types/common";
 
 const Newsfeed: React.FC = () => {
 
     const [posts, setPosts] = useState<IPost[]>([]);
     const axiosToken = useAxiosToken();
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         getPosts();
@@ -20,33 +23,37 @@ const Newsfeed: React.FC = () => {
 
             if (list[0]) {
                 const updatedList = await Promise.all(
-                    list.map(async (post) => {
-                        if (post.author.profileImg) {
-                            const url = await getImgUrl(
-                                post.author.profileImg?.Image.thumbnail ?? "default.jpg"
-                            );
-                            console.log("profile img url: " + url);
-
-                            if (url) {
-                                post.author.profileImg!.Image.thumbnail = url;
-                            }
+                  list.map(async (post) => {
+                    //get user profile pic
+                    try {
+                      const response = await axiosToken.get(`/profile/thumbnail/${post.authorId}`);
+                      console.log(response.data);
+                      post.author.profileImg = (response.data);
+                      console.log("post thumbnail url: " + post.author.profileImg)
+                      return post;
+        
+                    } catch (error: any) {
+                        const err = error as AxiosError<apiError>;
+                        if (!err?.response) {
+                          setErrorMessage("Failed to connect to server.");
+                          console.log(errorMessage);
+        
+                        } else if (err.response?.data?.message) {
+                          setErrorMessage(err.response.data.message);
+                          console.log(errorMessage);
+        
                         } else {
-                            post.author.defaultAvatarUrl = await getDefaultAvatar() as unknown as string;
-                            console.log("default url: " + post.author.defaultAvatarUrl);
+                          console.log(err);
+                          setErrorMessage("Something went wrong.");
                         }
-                        if (post.Image) {
-                            const url = await getImgUrl(post.Image.fileName);
-                            console.log("post img url: " + url);
-
-                            if (url) {
-                                post.thumbnailUrl = url;
-                            }
-                        }
-                        return post;
-                    })
+                        post.author.profileImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s";
+                        console.log("post thumbnail url: " + post.author.profileImg)
+                        return post
+                      }
+                  })
                 );
                 setPosts(updatedList);
-            }
+              }
         } catch (error) {
             //TODO
             console.log(error);
@@ -78,8 +85,9 @@ const Newsfeed: React.FC = () => {
                     <div key={`post-${post.id}`} className="mt-2">
                         <PostCard
                             id={post.id}
+                            authorId={post.authorId}
                             profileImageSrc={
-                                post.author.profileImg?.Image?.thumbnail as string ?? post.author.defaultAvatarUrl
+                                post.author.profileImg as string
                             }
                             time={post.createdAt}
                             username={post.author.name}

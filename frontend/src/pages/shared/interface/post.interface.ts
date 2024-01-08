@@ -22,6 +22,5 @@ export interface IPost {
 interface IPostAuthor {
   id: number;
   name: string;
-  profileImg?: IPost;
-  defaultAvatarUrl?: string;
+  profileImg?: string;
 }

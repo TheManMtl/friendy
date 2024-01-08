@@ -8,14 +8,20 @@ import { Button } from "../../../components/common";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import CommentContainer from "../Comment/CommentContainer";
 import Comment from "../Comment/Comment";
+import useAuth from "../../../hooks/useAuth";
+import PostModal from "../PostInput/PostModal";
 import {
   HandThumbsUp,
   SendFill,
-  PlayFill
+  PlayFill,
+  ThreeDots,
+  Trash,
+  Pencil
 } from "react-bootstrap-icons";
 
 type PostCardProps = {
-  id: number
+  id: number;
+  authorId: number;
   profileImageSrc: string;
   time: string;
   username: string;
@@ -25,6 +31,9 @@ type PostCardProps = {
   commentCount: number;
   comments?: IComment[];
   type: string
+  currentUserProfileThumb?: string | null;
+  openEdit?: () => void;
+
 }
 
 interface input {
@@ -37,7 +46,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [success, setSuccess] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [refresh, setRefresh] = useState(0);
-
+  const { user } = useAuth();
   const handleFocus = () => {
     setIsFocused(true);
   };
@@ -46,6 +55,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     setIsFocused(false);
   };
 
+  
   const validationSchema = Yup.object().shape({
     body: Yup.string().max(1500).required("Comment body must be between 1 and 1500 characters."),
   });
@@ -132,6 +142,30 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     //TODO
   }
 
+    //Post modal for editing
+    const [showPostModal, setShowPostModal] = useState<boolean>(false);
+    const closePost = () => {
+      setShowPostModal(false);
+    };
+    const openEdit = () => setShowPostModal(true);
+    //end edit modal section
+
+
+  const openDelete = () => {
+    
+  }
+
+  const handleDeletePost = async () => {
+    console.log("handleDeletePost called");
+    try {
+      await axiosToken.delete(`/posts/${props.id}`);
+      setSuccess(true);
+      setRefresh((prev) => prev + 1);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div key={refresh}>
       <div className="card">
@@ -144,24 +178,40 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                 size="small"
               />
             </div>
-            <div className="col-11 ">
+            <div className="col-10">
               <div className="d-flex justify-content-start">
-                <h5> {props.username} </h5>
-                  {
-                    props.type === "profilePic" ? (
-                      <> updated their profile picture</>
-                    ) : (<></>)
-                  }
-                  {
-                    props.type === "coverPhoto" ? (
-                      <> changed their cover photo</>
-                    ) : (<></>)
-                  }
-           
+                <span className="fw-bold"> {props.username} </span>
+                {
+                  props.type === "profilePic" ? (
+                    <span className="text-secondary"> &nbsp;updated their profile picture.</span>
+                  ) : (<></>)
+                }
+                {
+                  props.type === "coverPhoto" ? (
+                    <span className="text-secondary"> &nbsp;changed their cover photo.</span>
+                  ) : (<></>)
+                }
               </div>
               <div className="d-flex justify-content-start">
-                <p className="smallText">{getPostTime(props.time)}</p>
+                <small className="text-secondary">{getPostTime(props.time)}</small>
               </div>
+            </div>
+            <div className="col-1">
+              {
+                props.authorId === user!.id ? (
+                  <div className="dropdown">
+                    <div data-bs-toggle="dropdown" aria-expanded="false">
+                      <ThreeDots />
+                    </div>
+                    <ul className="dropdown-menu">
+                      <li className="dropdown-item" onClick={openEdit}><Pencil /> Edit post</li>
+                      <li className="dropdown-item" onClick={openDelete}><Trash /> Move to trash</li>
+                    </ul>
+                  </div>
+                ) : (
+                  <></>
+                )
+              }
             </div>
           </div>
           <div className="card-content container">
@@ -223,11 +273,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
               {/* TODO buttons */}
               <span className="text-secondary px-3">Like</span>
             </div>
-            <div className="col-4">
+            <div className="col-4 offset-4">
               <span className="text-secondary px-3">Comment</span>
-            </div>
-            <div className="col-4">
-              <span className="text-secondary px-3">Share</span>
             </div>
           </div>
           <hr />
@@ -279,6 +326,22 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           </Formik>
         </div>
       </div>
+      <PostModal
+        showPostModal={showPostModal}
+        closePost={closePost}
+        src={
+          props.currentUserProfileThumb
+            ? props.currentUserProfileThumb
+            : 
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
+        }
+        alt={"profile"}
+        size={"small"}
+        username={user!.name}
+        profileId={user!.id.toString()}
+        postId={props.id}
+        postBody={props.content}
+      />
     </div>
   );
 };
