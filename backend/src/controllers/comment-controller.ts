@@ -150,8 +150,6 @@ export const commentOnComment = async (
         { transaction: t }
       );
 
-      await t.commit();
-
       await Comment.create(
         {
           userId: user.id,
@@ -161,6 +159,9 @@ export const commentOnComment = async (
         },
         { transaction: t }
       );
+
+      await t.commit();
+      
     } catch (error) {
       await t.rollback();
       console.log("ERROR" + error);
