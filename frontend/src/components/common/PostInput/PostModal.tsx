@@ -16,6 +16,7 @@ interface PostModalProps {
   alt: string;
   size?: string;
   username?: string;
+  profileId: string | null;
 }
 
 const PostModal: React.FC<PostModalProps> = ({
@@ -25,6 +26,8 @@ const PostModal: React.FC<PostModalProps> = ({
   showPostModal,
   closePost,
   username,
+  profileId
+
 }) => {
   const authContext = useContext(AuthContext);
   const [file, setFile] = useState<any>();
@@ -47,14 +50,15 @@ const PostModal: React.FC<PostModalProps> = ({
     const formData = new FormData();
     formData.append("image", file);
     formData.append("content", content);
-    formData.append("authorId", authContext?.user?.id.toString() ?? "");
-    formData.append("profileId", authContext?.user?.id.toString() ?? "");
+    // formData.append("authorId", authContext?.user?.id.toString() ?? "");
+    formData.append("profileId", profileId ?? "");
     formData.append("type", PostType.timeline);
     await axiosToken.post("/posts", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   };
 
+  //FIXME: trigger update to parent component
   const onSubmit = (data: Post) => {
     console.log("====submit button clicked=====");
     try {

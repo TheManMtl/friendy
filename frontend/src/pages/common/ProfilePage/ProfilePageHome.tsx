@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import PostModal from "../../../components/common/PostInput/PostModal";
 import { IUser } from "../../shared/interface/user.interface";
-import { AuthContext } from "../../../context/AuthProvider";
 
 interface ProfileHomeProps {
   userProfile: IUser | null;
@@ -33,13 +32,16 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
 
   //end Modal section
 
+  //FIXME: handle 404 with custom page
   const { id } = useParams();
+
   useEffect(() => {
     console.log("line 33!!");
     getPosts();
     console.log("line 35!!");
   }, [id]);
 
+  //FIXME: when url param changes, old user's posts are not removed unless new user has posts on timeline
   const getPosts = async () => {
     // if (props.userProfile) { //FIXME
     console.log("line 41!!");
@@ -115,6 +117,8 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
               alt={"profile"}
               size={"small"}
               openPost={openPost}
+              userName={userProfile?.name}
+              isOtherUserProfile={!isPrivateProfile}
             />
           </div>
           {posts[0] ? (
@@ -132,6 +136,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
                   likeCount={post.likeCount}
                   commentCount={post.commentCount}
                   comments={post.comments}
+                  type={post.type}
                 />
               </div>
             ))
@@ -153,6 +158,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
         alt={"profile"}
         size={"small"}
         username={userProfile?.name}
+        profileId={id ? id!.toString() : null}
       />
     </div>
   );

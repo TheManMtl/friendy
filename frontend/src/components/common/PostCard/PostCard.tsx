@@ -11,6 +11,7 @@ import Comment from "../Comment/Comment";
 import {
   HandThumbsUp,
   SendFill,
+  PlayFill
 } from "react-bootstrap-icons";
 
 type PostCardProps = {
@@ -23,6 +24,7 @@ type PostCardProps = {
   likeCount: number;
   commentCount: number;
   comments?: IComment[];
+  type: string
 }
 
 interface input {
@@ -59,7 +61,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
       setSuccess(true);
       setIsFocused(false);
       resetForm();
-      setRefresh((prev) => prev + 1);      
+      setRefresh((prev) => prev + 1);
       console.log("did it work?");
     } catch (error) {
       //TODO
@@ -144,7 +146,18 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             </div>
             <div className="col-11 ">
               <div className="d-flex justify-content-start">
-                <h5>{props.username}</h5>
+                <h5> {props.username} </h5>
+                  {
+                    props.type === "profilePic" ? (
+                      <> updated their profile picture</>
+                    ) : (<></>)
+                  }
+                  {
+                    props.type === "coverPhoto" ? (
+                      <> changed their cover photo</>
+                    ) : (<></>)
+                  }
+           
               </div>
               <div className="d-flex justify-content-start">
                 <p className="smallText">{getPostTime(props.time)}</p>
@@ -193,7 +206,6 @@ const PostCard: React.FC<PostCardProps> = (props) => {
 
                       ) : (
                         <small>comments</small>
-
                       )
                     }
                   </div>
@@ -207,7 +219,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           <hr />
           <div className="row text-center">
             <div className="col-4">
-            <HandThumbsUp />
+              <HandThumbsUp />
               {/* TODO buttons */}
               <span className="text-secondary px-3">Like</span>
             </div>
@@ -224,7 +236,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
               (
                 <div className="row">
                   {/* TODO: display first comment only, toggle full list view */}
-                  <CommentContainer postId={props.id} commentId={0}/>
+                  <CommentContainer postId={props.id} commentId={0} />
                 </div>
 
               ) : (

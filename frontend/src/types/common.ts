@@ -42,3 +42,8 @@ export interface Comment {
   likeCount: number;
   createdAt: string;
 }
+
+//to retrieve error messages from api
+export type apiError = {
+  message: string
+}

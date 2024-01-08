@@ -17,6 +17,9 @@ import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { User, Post } from "../../../types/common";
 import axios from "../../../services/api/axios";
+import { AxiosError } from "axios";
+import { apiError } from "../../../types/common";
+
 interface ProfilPageType {
   userInfo?: IUser;
   postsInfo?: IPost;
@@ -35,6 +38,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   // const [posts, setPosts] = useState<Post[] | null>(null);
   let navigate = useNavigate();
   const { id } = useParams();
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (user == null) {
@@ -42,7 +46,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     }
     setUserId(user?.id);
     if (user != null) {
-      try {
         axiosToken.get(`/profile/view/${id}`).then((response) => {
           if (response.data.error) {
             console.log("====Error receiving response.data=====");
@@ -73,6 +76,22 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
                     //TODO: fetch the profil pic which has the id associated with the user
                     setProfileThumb(response.data.thumbnailUrl);
                   }
+                })
+                .catch ((error: any) => {
+                  const err = error as AxiosError<apiError>;
+                  
+                  if (!err?.response) {
+                    setErrorMessage("Failed to connect to server.");
+                    console.log(errorMessage);
+            
+                  } else if (err.response?.data?.message) {
+                    setErrorMessage(err.response.data.message);
+                    console.log(errorMessage);
+            
+                  } else {
+                    console.log(err);
+                    setErrorMessage("Something went wrong.");
+                  }
                 });
             } else {
               setProfileThumb(
@@ -85,7 +104,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
               axios
                 .get(`/posts/userprofile/${user.coverImgId}`)
                 .then((response) => {
-                  if (response.data.length !== 0) {
+                  if (response?.data?.length !== 0) {
                     //TODO: fetch the profil pic which has the id associated with the user
                     setCoverImageUrl(response.data.imageUrl);
                     console.log(
@@ -95,6 +114,22 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
                     setCoverImageUrl(
                       "https://t4.ftcdn.net/jpg/03/78/40/11/360_F_378401105_9LAka9cRxk5Ey2wwanxrLTFCN1U51DL0.jpg"
                     );
+                  }
+                })
+                .catch ((error: any) => {
+                  const err = error as AxiosError<apiError>;
+                  
+                  if (!err?.response) {
+                    setErrorMessage("Failed to connect to server.");
+                    console.log(errorMessage);
+            
+                  } else if (err.response?.data?.message) {
+                    setErrorMessage(err.response.data.message);
+                    console.log(errorMessage);
+            
+                  } else {
+                    console.log(err);
+                    setErrorMessage("Something went wrong.");
                   }
                 });
             }
@@ -108,10 +143,23 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
               setIsPrivateProfile(true);
             }
           }
+        })
+        .catch ((error: any) => {
+          const err = error as AxiosError<apiError>;
+          
+          if (!err?.response) {
+            setErrorMessage("Failed to connect to server.");
+            console.log(errorMessage);
+    
+          } else if (err.response?.data?.message) {
+            setErrorMessage(err.response.data.message);
+            console.log(errorMessage);
+    
+          } else {
+            console.log(err);
+            setErrorMessage("Something went wrong.");
+          }
         });
-      } catch (error: any) {
-        console.log("error message");
-      }
     }
   }, [axiosToken, id, navigate, user, userId]);
 
