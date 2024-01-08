@@ -31,9 +31,7 @@ const ChangeCoverImageModal: React.FC<ChangeCoverImageModalProps> = ({
     if (file !== undefined && file !== null) {
       const formData = new FormData();
       formData.append("image", file);
-      console.log("=====cover image appended=====");
       if (userId) {
-        console.log("=====There is a userId=====");
         // Append other fields to formData
         formData.append("authorId", userId.toString());
         formData.append("type", PostType.coverPhoto);
@@ -45,20 +43,17 @@ const ChangeCoverImageModal: React.FC<ChangeCoverImageModalProps> = ({
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((response) => {
-          console.log("pictureId for coverImage", response.data.post.id);
-          // TODO:use flash message
-          alert("Cover image successfully uploaded!");
           //update coverPostId in user record
           axiosToken
             .put("/profile/update", { coverPostId: response.data.post.id })
-            .then((response) => {
-              console.log(
-                "===========coverImagePostId for user updated==========="
-              );
-            })
+            .then((response) => {})
             .catch((error) => {
               console.log(error);
             });
+          closeCoverImageModal();
+          // TODO:use flash message
+          alert("Cover image successfully uploaded!");
+          window.location.reload();
         })
         .catch((error) => {
           console.log(error);

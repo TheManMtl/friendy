@@ -242,6 +242,11 @@ export const updateProfile = async (
       updates++;
     }
 
+    if (request.coverPostId != null) {
+      user.coverPostId = request.coverPostId;
+      updates++;
+    }
+
     if (request.birthday != null) {
       if (!(request.birthday instanceof Date)) {
         return res

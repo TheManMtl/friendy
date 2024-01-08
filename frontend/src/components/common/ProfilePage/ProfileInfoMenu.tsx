@@ -96,13 +96,13 @@ const ProfileInfoMenu: React.FC<Props> = ({
               </div>
             </div>
           </div>
-          {isPrivateProfile ? (
+          {/* {isPrivateProfile ? (
             <div className="rightInfo col-md-6 d-flex justify-content-end">
               <div className="px-5">
                 <button className="btn btn-secondary">Edit Profile</button>
               </div>
             </div>
-          ) : null}
+          ) : null} */}
         </div>
         <hr />
         <div className="container-nav">

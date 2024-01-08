@@ -23,7 +23,7 @@ const EditAbout: React.FC<ProfileAboutProps> = ({
           <p>Studied at {userProfile?.school}</p>
         </div>
         <div className="col-2 d-flex justify-content-start">
-          <button className="btn btn-secondary">edit</button>
+          <button className="btn btn-secondary">Edit</button>
         </div>
       </div>
       {/* Location panel */}
@@ -35,7 +35,7 @@ const EditAbout: React.FC<ProfileAboutProps> = ({
           <p>Lives in {userProfile?.location}</p>
         </div>
         <div className="col-2 d-flex justify-content-start">
-          <button className="btn btn-secondary">edit</button>
+          <button className="btn btn-secondary">Edit</button>
         </div>
       </div>
       {/* Work panel */}
@@ -47,7 +47,7 @@ const EditAbout: React.FC<ProfileAboutProps> = ({
           <p>Works at {userProfile?.workplace}</p>
         </div>
         <div className="col-2 d-flex justify-content-start">
-          <button className="btn btn-secondary">edit</button>
+          <button className="btn btn-secondary">Edit</button>
         </div>
       </div>
     </div>

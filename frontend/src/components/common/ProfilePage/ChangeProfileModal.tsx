@@ -46,19 +46,15 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((response) => {
-          console.log("pictureId", response.data.post.id);
-          // TODO:use flash message
-          alert("Picture successfully uploaded!");
           axiosToken
             .put("/profile/update", { profilePostId: response.data.post.id })
-            .then((response) => {
-              console.log(
-                "===========profilePostId for user updated==========="
-              );
-            })
+            .then((response) => {})
             .catch((error) => {
               console.log(error);
             });
+          // TODO:use flash message
+          alert("Picture successfully uploaded!");
+          window.location.reload();
         })
         .catch((error) => {
           console.log(error);
