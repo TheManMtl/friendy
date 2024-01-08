@@ -23,37 +23,46 @@ const Newsfeed: React.FC = () => {
 
             if (list[0]) {
                 const updatedList = await Promise.all(
-                  list.map(async (post) => {
-                    //get user profile pic
-                    try {
-                      const response = await axiosToken.get(`/profile/thumbnail/${post.authorId}`);
-                      console.log(response.data);
-                      post.author.profileImg = (response.data);
-                      console.log("post thumbnail url: " + post.author.profileImg)
-                      return post;
-        
-                    } catch (error: any) {
-                        const err = error as AxiosError<apiError>;
-                        if (!err?.response) {
-                          setErrorMessage("Failed to connect to server.");
-                          console.log(errorMessage);
-        
-                        } else if (err.response?.data?.message) {
-                          setErrorMessage(err.response.data.message);
-                          console.log(errorMessage);
-        
-                        } else {
-                          console.log(err);
-                          setErrorMessage("Something went wrong.");
+                    list.map(async (post) => {
+                        //get user profile pic
+                        try {
+                            const response = await axiosToken.get(`/profile/thumbnail/${post.authorId}`);
+                            console.log(response.data);
+                            post.author.profileImg = (response.data);
+                            console.log("post thumbnail url: " + post.author.profileImg)
+
+                            //temporary: replace pic with full size
+                            if (post.Image) {
+                                const url = await getImgUrl(post.Image.fileName);
+                                console.log("post img url: " + url);
+                                if (url) {
+                                    post.thumbnailUrl = url;
+                                }
+                            }
+                            return post;
+
+                        } catch (error: any) {
+                            const err = error as AxiosError<apiError>;
+                            if (!err?.response) {
+                                setErrorMessage("Failed to connect to server.");
+                                console.log(errorMessage);
+
+                            } else if (err.response?.data?.message) {
+                                setErrorMessage(err.response.data.message);
+                                console.log(errorMessage);
+
+                            } else {
+                                console.log(err);
+                                setErrorMessage("Something went wrong.");
+                            }
+                            post.author.profileImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s";
+                            console.log("post thumbnail url: " + post.author.profileImg)
+                            return post
                         }
-                        post.author.profileImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s";
-                        console.log("post thumbnail url: " + post.author.profileImg)
-                        return post
-                      }
-                  })
+                    })
                 );
                 setPosts(updatedList);
-              }
+            }
         } catch (error) {
             //TODO
             console.log(error);
