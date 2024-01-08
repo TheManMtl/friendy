@@ -37,13 +37,6 @@ export const likePostToggle = async (
 
     if (likeExists) {
       try {
-        await Like.destroy(
-          {
-            userId: user.id,
-            postId: post.id,
-          },
-          { transaction: t }
-        );
 
         await Post.decrement(
           "likeCount",
@@ -51,6 +44,16 @@ export const likePostToggle = async (
             where: {
               id: post.id,
             },
+          },
+          { transaction: t }
+        );
+
+        await Like.destroy(
+          {
+            where: {
+              userId: user.id,
+              postId: post.id,
+            }
           },
           { transaction: t }
         );
@@ -65,13 +68,6 @@ export const likePostToggle = async (
     }
 
     try {
-      await Like.create(
-        {
-          userId: user.id,
-          postId: post.id,
-        },
-        { transaction: t }
-      );
 
       await Post.increment(
         "likeCount",
@@ -79,6 +75,14 @@ export const likePostToggle = async (
           where: {
             id: post.id,
           },
+        },
+        { transaction: t }
+      );
+
+      await Like.create(
+        {
+          userId: user.id,
+          postId: post.id,
         },
         { transaction: t }
       );
@@ -119,16 +123,8 @@ export const likeCommentToggle = async (
 
     //transaction to add/delete like and update comment accordingly
     const t = await sequelize.transaction();
-
     if (likeExists) {
       try {
-        await Like.destroy(
-          {
-            userId: user.id,
-            commentId: comment.id,
-          },
-          { transaction: t }
-        );
 
         await Comment.decrement(
           "likeCount",
@@ -136,6 +132,17 @@ export const likeCommentToggle = async (
             where: {
               id: comment.id,
             },
+          },
+          { transaction: t }
+        );
+
+
+        await Like.destroy(
+          {
+            where: {
+              userId: user.id,
+              commentId: comment.id,
+            }
           },
           { transaction: t }
         );
@@ -150,13 +157,6 @@ export const likeCommentToggle = async (
     }
 
     try {
-      await Like.create(
-        {
-          userId: user.id,
-          commentId: comment.id,
-        },
-        { transaction: t }
-      );
 
       await Comment.increment(
         "likeCount",
@@ -164,6 +164,14 @@ export const likeCommentToggle = async (
           where: {
             id: comment.id,
           },
+        },
+        { transaction: t }
+      );
+
+      await Like.create(
+        {
+          userId: user.id,
+          commentId: comment.id,
         },
         { transaction: t }
       );
