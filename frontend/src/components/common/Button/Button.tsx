@@ -2,7 +2,7 @@ import React from "react";
 import "./Button.css";
 
 // we can add/change variants if necessary
-type ButtonVariant = "default" | "blue" | "round" | "transparent" | "color";
+type ButtonVariant = "default" | "blue" | "round" | "transparent" | "color" | "white" | "yellow";
 
 type ButtonProps = {
   label?: string;
@@ -24,6 +24,10 @@ function Button({ label, icon, variant = "default", onClick }: ButtonProps) {
         return "btn-transparent";
       case "color":
         return "btn-color";
+      case "white":
+        return "btn-white";
+      case "yellow":
+        return "btn-yellow";
       default:
         return "btn-default";
     }

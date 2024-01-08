@@ -10,7 +10,7 @@ type FriendList = {
   thumbnail: string;
 };
 
-function FriendsPageList({ userId }: { userId: number}) {
+function FriendsPageList({ userId }: { userId: number }) {
   const [friends, setFriends] = useState<FriendList[]>([]);
   const [sentRequests, setSentRequests] = useState<number[]>([]);
   const axios = useAxiosToken();
@@ -28,22 +28,14 @@ function FriendsPageList({ userId }: { userId: number}) {
     fetchData();
   }, [userId, axios]);
 
-  const addFriend = async (friendId: number, userId: number) => {
+  const removeFriend = async (userId: number) => {
     try {
-      if (sentRequests.includes(friendId)) {
-        await axios.delete(`/remove`, {
-          data: { rid: userId, id: friendId }
-        });
-        setSentRequests((prevRequests) => prevRequests.filter((id) => id !== friendId));
-      } else {
-        const response = await axios.post('/friends/request', {
-          rid: userId,
-          id: friendId,
-        });
-        setSentRequests((prevRequests) => [...prevRequests, friendId]);
-      }
+      await axios.delete(`/friends/remove`, {
+        data: { id: userId }
+      });
+      setFriends((prevFriends) => prevFriends.filter((friend) => friend.userId !== userId));
     } catch (error) {
-      console.error('Error sending/undoing friend request:', error);
+      console.error('Error removing friend:', error);
     }
   };
 
@@ -58,8 +50,8 @@ function FriendsPageList({ userId }: { userId: number}) {
             <FriendPanel
               key={index}
               friend={friend}
-              buttonText={sentRequests.includes(friend.userId) ? 'Undo Request' : 'Add Friend'}
-              onClick={() => addFriend(friend.userId, userId)}
+              buttonText="Remove Friend"
+              onClick={() => removeFriend(friend.userId)}
             />
           ))}
         </div>
