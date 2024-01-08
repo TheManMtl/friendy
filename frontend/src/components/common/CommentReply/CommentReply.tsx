@@ -7,13 +7,12 @@ import { SendFill } from "react-bootstrap-icons";
 import FormData from "form-data";
 import { useForm } from "react-hook-form";
 
-
 type Reply = {
-  body: string
-}
-type CommentReplyProps = {};
- 
-const CommentReply: React.FC<CommentReplyProps> = ({}) => {
+  body: string;
+};
+type CommentReplyProps = { commentId: number };
+
+const CommentReply: React.FC<CommentReplyProps> = ({ commentId }) => {
   const axiosToken = useAxiosToken();
 
   const handleTextareaInput = (
@@ -32,8 +31,25 @@ const CommentReply: React.FC<CommentReplyProps> = ({}) => {
   } = useForm<Reply>();
 
   async function onSubmit(input: Reply) {
-   console.log(input.body);
-   console.log("submitting")
+    console.log(input.body);
+    console.log("submitting");
+    if (input.body.length < 1 || input.body.length > 1500) {
+      return;
+    }
+    // const parent = await Comment.findByPk(req.params.id, {
+    // url = `${process.env.REACT_APP_HOST_URL}/comments/comment/${commentId}`;
+    // router.post("/comment/:id([0-9]+)", authUser, comments.commentOnComment);
+    console.log(commentId + " tis is the comment id");
+    await axiosToken
+      .post(`${process.env.REACT_APP_HOST_URL}/comments/comment/${commentId}`, {
+        body: input.body,
+      })
+      .then((response) => {
+        console.log("success!!");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return (
@@ -48,18 +64,26 @@ const CommentReply: React.FC<CommentReplyProps> = ({}) => {
         />
       </div>
       <div className=" flex-grow-1 ">
-        <form className={`form-row`} id="commentForm" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className={`form-row`}
+          id="commentForm"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <textarea
-         onChange={handleTextareaInput}
+            onChange={handleTextareaInput}
             className="comment-reply mt-2"
-            rows={1} 
+            rows={1}
             aria-label="Comment Reply"
             style={{ overflow: "break-word", resize: "none" }}
           />
         </form>
       </div>
-      <button className=" flex-column comment-submit" id="submitBtn"        type="submit"
-          form="commentForm">
+      <button
+        className=" flex-column comment-submit"
+        id="submitBtn"
+        type="submit"
+        form="commentForm"
+      >
         <SendFill />
       </button>
     </div>
