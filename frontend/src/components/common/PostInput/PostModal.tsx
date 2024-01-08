@@ -54,37 +54,43 @@ const PostModal: React.FC<PostModalProps> = ({
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-    if (!postId){
-      const formData = new FormData();
-      formData.append("image", file);
-      formData.append("content", content);
-      // formData.append("authorId", authContext?.user?.id.toString() ?? "");
-      formData.append("profileId", profileId ?? "");
-      formData.append("type", PostType.timeline);
-      await axiosToken.post("/posts", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-    } else {
-      console.log("attempting edit submission");
-      await axiosToken.put(`/posts/${postId}`, { content: content });
+      if (!postId) {
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("content", content);
+        // formData.append("authorId", authContext?.user?.id.toString() ?? "");
+        formData.append("profileId", profileId ?? "");
+        formData.append("type", PostType.timeline);
+        await axiosToken.post("/posts", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        console.log("attempting edit submission");
+        await axiosToken.put(`/posts/${postId}`, { content: content });
+      }
+      handleClose();
+    } catch (error: unknown) {
+      const err = error as AxiosError<apiError>;
+
+      if (!err?.response) {
+        setErrorMessage("Failed to connect to server.");
+        console.log(errorMessage);
+
+      } else if (err.response?.data?.message) {
+        setErrorMessage(err.response.data.message);
+        console.log(errorMessage);
+
+      } else {
+        console.log(err);
+        setErrorMessage("Something went wrong.");
+      }
     }
-  } catch (error: any) {
-    const err = error as AxiosError<apiError>;
-
-    if (!err?.response) {
-      setErrorMessage("Failed to connect to server.");
-      console.log(errorMessage);
-
-    } else if (err.response?.data?.message) {
-      setErrorMessage(err.response.data.message);
-      console.log(errorMessage);
-
-    } else {
-      console.log(err);
-      setErrorMessage("Something went wrong.");
-    }
-  }
   };
+
+  const handleClose = () => {
+    closePost();
+    setErrorMessage("");
+  }
 
   //FIXME: trigger update to parent component
   const onSubmit = (data: Post) => {
@@ -102,7 +108,6 @@ const PostModal: React.FC<PostModalProps> = ({
       });
     } catch (error: any) {
       console.error("Error posting post:", error.message);
-      alert("An error occurred during posting. Please try again.");
     }
   };
   //   const validationSchema = Yup.object().shape({
@@ -136,7 +141,7 @@ const PostModal: React.FC<PostModalProps> = ({
   return (
     <div>
       {/* Post Modal */}
-      <Modal centered show={showPostModal} onHide={closePost} size="lg">
+      <Modal centered show={showPostModal} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>{postId ? "Edit post" : "Create post"}</Modal.Title>
         </Modal.Header>
@@ -153,6 +158,7 @@ const PostModal: React.FC<PostModalProps> = ({
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              onFocus={() => setErrorMessage("")}
               rows={8}
               placeholder="content"
               style={{ width: "165%", fontSize: "40px" }}
@@ -162,63 +168,25 @@ const PostModal: React.FC<PostModalProps> = ({
               type="file"
               accept="image/*"
             ></input>
+          <div className="row mb-3 px-2">
+            <div className="col">
+            {
+              errorMessage ? (
+                <div className="mt-5 mb-3">Error: {errorMessage}</div>
 
-            <ButtonF
-              type="submit"
-              variant="color"
-              label={postId ? "Save changes " : "Post"}
-              onClick={closePost}
-            ></ButtonF>
-          </form>
-          <div className="row">
-            {/* <Formik
-              initialValues={initialValues}
-              onSubmit={onSubmit}
-            // validationSchema={validationSchema}
-            >
-              {(formikprops) => (
-                <Form encType="multipart/form-data">
-                  <div>
-                    <Field
-                      as="textarea"
-                      type="content"
-                      id="content"
-                      name="content"
-                      placeholder="Share your thoughts here..."
-                      rows={8}
-                      style={{ width: "165%", fontSize: "40px" }}
-                    />
-                  </div>
-                  <div>
-                    <Field
-                      type="file"
-                      id="image"
-                      name="image"
-                      accept="image/*" */}
-            {/* // onChange={(event: HTMLInputElement) => {
-                    //   const file = event.currentTarget.files[0];
-                    //   setFieldValue("image", file);
-                    // }}
-                    />
-                  </div>
-                  {/* Buttons inside the Form */}
-            {/* <div className="mt-3">
-                    <Button variant="secondary" onClick={closePost}>
-                      Close
-                    </Button>
-                    <ButtonF
-                      type="submit"
-                      variant="color"
-                      label="Create Post"
-                      onClick={closePost}
-                    ></ButtonF>
-                  </div>
-                </Form>
-              )}
-            </Formik> */}
+              ) : (
+                <ButtonF
+                  type="submit"
+                  variant="color"
+                  label={postId ? "Save changes " : "Post"}
+                ></ButtonF>
+              )
+            }
+            </div>
           </div>
+          </form>
+          <div className="row"></div>
         </Modal.Body>
-        {/* Modal.Footer is not needed in this case */}
       </Modal>
     </div>
   );
