@@ -50,8 +50,10 @@ export const likePostToggle = async (
 
         await Like.destroy(
           {
-            userId: user.id,
-            postId: post.id,
+            where: {
+              userId: user.id,
+              postId: post.id,
+            }
           },
           { transaction: t }
         );
@@ -136,8 +138,10 @@ export const likeCommentToggle = async (
       try {
         await Like.destroy(
           {
-            userId: user.id,
-            commentId: comment.id,
+            where: {
+              userId: user.id,
+              commentId: comment.id,
+            }
           },
           { transaction: t }
         );
