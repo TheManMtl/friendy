@@ -158,12 +158,13 @@ export const login: RequestHandler<
       id: user.id,
       role: user.role,
     };
-    return res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      //sameSite: "strict",
-    })
-    .status(200)
-    .send(theUser);
+    return res
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        //sameSite: "strict",
+      })
+      .status(200)
+      .send(theUser);
   } catch (error) {
     next(error);
   }
@@ -205,9 +206,12 @@ export const refresh: RequestHandler<
     req.session.name = user.name;
     return res.status(200).send(theUser);
   } catch (error) {
-
     if (error instanceof jwt.TokenExpiredError) {
-      return res.status(401).send({ message: "You have been logged out. Please login to continue." });
+      return res
+        .status(401)
+        .send({
+          message: "You have been logged out. Please login to continue.",
+        });
     }
     next(error);
   }
@@ -217,7 +221,7 @@ export const all: RequestHandler = async (req, res, next) => {
   try {
     // Fetch all users
     const users = await User.findAll({
-      attributes: { exclude: ['password'] }, // Exclude the password field from the response
+      attributes: { exclude: ["password"] }, // Exclude the password field from the response
     });
 
     // Return the list of users

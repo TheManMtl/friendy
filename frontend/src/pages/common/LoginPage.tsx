@@ -6,6 +6,7 @@ import { useState, useContext } from "react";
 import axios from "../../services/api/axios";
 import { AuthContext } from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { error } from "console";
 
 interface loginInfo {
   email: string;
@@ -15,7 +16,7 @@ interface loginInfo {
 function LoginPage() {
   //Access authentication context
   const authContext = useContext(AuthContext);
-
+  const [errorMessage, setErrorMessage] = useState<string | null>();
   let navigate = useNavigate();
 
   const initialValues = {
@@ -55,9 +56,13 @@ function LoginPage() {
           }
         })
         .catch((error: any) => {
-          console.log(error + "ERRRRROR");
-          console.log(error.code + "ERRRRROR");
-          // handle error
+          // Check if the error has a response and a data property
+          if (error.response && error.response.data) {
+            setErrorMessage(error.response.data.message);
+          } else {
+            // If no specific error message is available, set a generic one
+            setErrorMessage("An error occurred during login.");
+          }
         });
     } catch (error: any) {
       console.error("Error during login:", error.message);
@@ -111,7 +116,9 @@ function LoginPage() {
                         />
                         <ErrorMessage name="password" component="div" />
                       </div>
-
+                      {errorMessage && (
+                        <div className="red"> {errorMessage}</div>
+                      )}
                       <div className="row justify-content-center my-3 px-3">
                         <button className="btn-block btn-color">
                           Login to Friendy
