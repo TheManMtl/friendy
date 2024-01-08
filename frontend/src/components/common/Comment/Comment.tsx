@@ -18,7 +18,7 @@ type CommentProps = {
   isNested: boolean;
   comment: Comments;
 };
- 
+
 const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
   const [viewReplies, setViewReplies] = useState<boolean>(false);
   const [makeComment, setMakeComment] = useState<boolean>(false);
@@ -77,7 +77,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
               )}
             </div>
           )}
-          {makeComment && <CommentReply />}
+          {makeComment && <CommentReply commentId={comment.id} />}
           {comment.childCount > 0 && viewReplies && (
             <CommentContainer commentId={comment.id} postId={comment.postId} />
           )}
