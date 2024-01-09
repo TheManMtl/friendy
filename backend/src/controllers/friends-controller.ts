@@ -304,7 +304,7 @@ export const viewAllFriends = async (
           thumbnail = "default.jpg";
         }
         thumbnail = (await getPicUrlFromS3(req, thumbnail!)) || "";
-
+        // frontend/src/pages/common/ProfilePage/ProfilePageHome.tsx around line 60
         return {
           friendId: friend.id,
           name: theFriends.name,

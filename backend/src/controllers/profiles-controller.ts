@@ -72,6 +72,7 @@ export const viewProfile = async (
   next: NextFunction
 ): Promise<any> => {
   try {
+    console.log("\n\n\n\n\n\n\n\n VIEWING PROFILIE \n\n\n\n\n\n\n");
     let isFriend;
     const currentUserId = req.id;
     const profileId = req.params.id;
@@ -154,7 +155,6 @@ export const viewProfile = async (
 
     if (profile.profileImg) {
       thumbnail = profile.profileImg?.Image?.thumbnail;
-      console.log("\n\n\n\nEMILY\n\n\n");
     } else {
       thumbnail = "default_thumbnail.jpg";
     }
@@ -162,12 +162,12 @@ export const viewProfile = async (
     // default-cover_thumbnail.jpg
 
     if (profile.coverImg) {
-      coverPic = profile.coverImgId?.Image?.fileName;
+      coverPic = profile.coverImg?.Image?.dataValues.fileName;
+      console.log("\n\n\n\n\n\n EMILY COVER PIC " + coverPic);
     } else {
       coverPic = "default-cover.jpg";
     }
     coverPic = await getPicUrlFromS3(req, coverPic!);
-    // coverImgFileName
 
     const profileInfo: userProfile = {
       name: profile.name,
@@ -187,6 +187,7 @@ export const viewProfile = async (
       relationName: profile.relationshipWith?.name || null,
       isFriend: isFriend,
     };
+    console.log(profileInfo.coverImgFileName + " COVER IMG FLENAME");
     res.status(200).send({ profileInfo });
   } catch (error) {
     next(error);
