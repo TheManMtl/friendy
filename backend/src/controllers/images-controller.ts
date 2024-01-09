@@ -41,7 +41,7 @@ export const addOneImage = async (req: any, imageFile: any): Promise<any> => {
   try {
     const originalFileBuffer = await sharp(imageFile.buffer).toBuffer();
     const resizedFileBuffer = await sharp(imageFile.buffer)
-      .resize({ height: 1920, width: 1080, fit: "contain" })
+      .resize({ height: 300, width: 300, fit: "cover" })
       .toBuffer();
     const fileName = randomFileName();
 

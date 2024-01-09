@@ -546,7 +546,7 @@ export const moveToAlbum = async (req: any, res: Response) => {
         id: req.params.postId,
         authorId: req.id,
         isDeleted: false,
-      },
+            },
     });
 
     if (!post) {
@@ -660,6 +660,57 @@ export const getPhotosByUserId = async (req: any, res: Response) => {
     }
       res.json(resData);
     
+  } catch (error) {
+    console.error("Error fetching post images:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+//get the most recent post image from an album
+export const getPostFromAlbum = async (req: any, res: Response) => {
+  try{
+    const posts = await Post.findAll({
+      where: {
+        
+        albumId: req.params.albumId,
+        isDeleted: false,
+      },
+      include: [
+        {
+          model: Image,
+          attributes: ["id", "fileName", "thumbnail"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+      limit: 1,
+    });
+    //check if the posts exist
+    if (posts.length === 0) {
+      return res.status(404).json("No posts found");
+    }
+    const post = posts[0];
+
+    const resData: PostWithUrl[] = [];
+  
+      let url = null;
+      let thumbnailUrl = null;
+
+      if (post.Image) {
+        url = await imageController.getPicUrlFromS3(req, post.Image.fileName);
+        thumbnailUrl = await imageController.getPicUrlFromS3(
+          req,
+          post.Image.thumbnail
+
+        );
+      }
+
+      const resPost: PostWithUrl = {
+        ...post.toJSON(),
+        imageUrl: url,
+        thumbnailUrl: thumbnailUrl,
+      };
+      resData.push(resPost);
+    
+      res.json(resData);
   } catch (error) {
     console.error("Error fetching post images:", error);
     return res.status(500).json({ error: "Internal Server Error" });
