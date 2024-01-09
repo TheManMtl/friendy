@@ -5,15 +5,13 @@ FROM node:latest
 WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json
-# COPY package*.json ./
-
-# Bundle app source
-COPY . /usr/src/app
+COPY package.json /usr/src/app
 
 # Install any needed packages
 RUN npm install
 
-
+# Bundle app source
+COPY . .
 
 # Build your TypeScript files
 RUN npm run build
