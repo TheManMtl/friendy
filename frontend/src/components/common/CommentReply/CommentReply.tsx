@@ -70,14 +70,21 @@ const CommentReply: React.FC<CommentReplyProps> = ({
       return;
     }
     let url: string;
+    let method: "post" | "patch";
     if (isNewComment) {
       url = `${process.env.REACT_APP_HOST_URL}/comments/comment/${commentId}`;
+      method = "post";
     } else {
       url = `${process.env.REACT_APP_HOST_URL}/comments/${commentId}`;
+      method = "patch";
     }
     await axiosToken
-      .post(url, {
-        body: input.body,
+      .request({
+        url,
+        method,
+        data: {
+          body: input.body,
+        },
       })
       .then((response) => {
         console.log("success!!");
