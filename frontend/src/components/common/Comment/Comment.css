@@ -11,9 +11,9 @@
 }
 
 
-.nested-true {
+/* .nested-true {
     margin-left: -4em;
-}
+} */
 .view-replies {
     margin-left: 8px;
     font-size: .9em;
@@ -43,4 +43,17 @@
 
 .comment-true {
     font-weight: 600;
+}
+
+.user-liked-true {
+    font-weight: 800;
+}
+
+.nested-in-comment {
+    padding-left: 20px;
+}
+
+.cancel-edit {
+    margin-top: -20px!important;
+    padding-right: 30px!important;
 }
