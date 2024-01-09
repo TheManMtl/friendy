@@ -20,6 +20,7 @@ type CommentReplyProps = {
   isNewComment: boolean;
   commentChanged: boolean;
   setCommentChanges: any;
+  value: string | null;
 };
 
 const CommentReply: React.FC<CommentReplyProps> = ({
@@ -29,6 +30,7 @@ const CommentReply: React.FC<CommentReplyProps> = ({
   isNewComment,
   commentChanged,
   setCommentChanges,
+  value,
 }) => {
   const axiosToken = useAxiosToken();
   const { user } = useAuth();
@@ -92,9 +94,8 @@ const CommentReply: React.FC<CommentReplyProps> = ({
         setMakeComment(false);
         if (isNewComment) {
           newComment(response.data.id);
-        } else {
-          setCommentChanges(!setCommentChanges);
         }
+        setCommentChanges(!commentChanged);
       })
       .catch((error) => {
         console.log(error);
@@ -124,6 +125,7 @@ const CommentReply: React.FC<CommentReplyProps> = ({
             rows={1}
             aria-label="Comment Reply"
             style={{ overflow: "break-word", resize: "none" }}
+            defaultValue={value ? value : ""}
           />
         </form>
       </div>
