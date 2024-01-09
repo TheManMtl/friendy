@@ -72,6 +72,14 @@ const PostImage: React.FC<PostImageProps> = (props) => {
   const displayPostDetail = () => {
     navigate(`/display?postid=${props.postId}`)
   };
+  const handleProfilePicture = () => {
+    try {
+      axiosToken.put("/profile/update",{profilePictureId:props.postId});
+      console.log("Profile picture updated successfully");
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
 
@@ -105,7 +113,7 @@ const PostImage: React.FC<PostImageProps> = (props) => {
               </a>
             </li>
             <li>
-              <a className="dropdown-item" href="#">
+              <a className="dropdown-item" onClick={()=> handleProfilePicture()}>
                 Make profile picture
               </a>
             </li>
