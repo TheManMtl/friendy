@@ -31,7 +31,7 @@ export const createPost = async (req: any, res: Response) => {
         return res.status(404).send({ message: "User not found" });
     }
 
-    if (req.body.profileId != null) {
+    if (req.body.profileId) {
 
       const user = await User.findByPk(req.body.profileId);
 
@@ -51,7 +51,7 @@ export const createPost = async (req: any, res: Response) => {
     //FIXME: validate type
     const post = await Post.create({
       authorId: user.id, 
-      profileId: req.body.profileId,
+      profileId: req.body.profileId ?? null,
       type: req.body.type,
       content: req.body.content,
       imageId: image ? image.id : null,

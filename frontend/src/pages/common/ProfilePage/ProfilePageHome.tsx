@@ -17,7 +17,7 @@ interface ProfileHomeProps {
   isPrivateProfile: boolean;
   profileThumb: string | null;
   userId: number | undefined;
-  currentUserProfileThumb: string | null;
+  currentUserProfileThumb: string;
 }
 
 const ProfilePageHome: React.FC<ProfileHomeProps> = ({
@@ -32,15 +32,8 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
   const { user } = useAuth();
   //start Post modal section
   const [showPostModal, setShowPostModal] = useState<boolean>(false);
-  // const [showEditPostModal, setShowEditPostModal] = useState<boolean>(false);
-
-  const closePost = () => {
-    setShowPostModal(false);
-    // setShowEditPostModal(false);
-  };
   const openPost = () => setShowPostModal(true);
-  // const openEditPost = () => setShowEditPostModal(true);
-
+  const closePost = () => setShowPostModal(false);
   //end Modal section
 
   //FIXME: handle 404 with custom page
@@ -134,11 +127,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
         <div className="rightContent col-md-7">
           <div className="">
             <PostInput
-              src={
-                profileThumb
-                  ? profileThumb
-                  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
-              }
+              src={currentUserProfileThumb}
               alt={"profile"}
               size={"small"}
               openPost={openPost}
@@ -177,11 +166,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
       <PostModal
         showPostModal={showPostModal}
         closePost={closePost}
-        src={
-          currentUserProfileThumb
-            ? currentUserProfileThumb
-            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
-        }
+        src={currentUserProfileThumb}
         alt={"profile"}
         size={"small"}
         username={user!.name}

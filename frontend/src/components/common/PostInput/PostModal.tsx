@@ -59,7 +59,9 @@ const PostModal: React.FC<PostModalProps> = ({
         formData.append("image", file);
         formData.append("content", content);
         // formData.append("authorId", authContext?.user?.id.toString() ?? "");
-        formData.append("profileId", profileId ?? "");
+        if (profileId) {
+          formData.append("profileId", profileId);
+        }
         formData.append("type", PostType.timeline);
         await axiosToken.post("/posts", formData, {
           headers: { "Content-Type": "multipart/form-data" },
