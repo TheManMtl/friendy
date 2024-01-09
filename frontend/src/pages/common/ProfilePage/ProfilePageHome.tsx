@@ -32,20 +32,24 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
   const { user } = useAuth();
   //start Post modal section
   const [showPostModal, setShowPostModal] = useState<boolean>(false);
+  const [paramId, setParamId] = useState<string | undefined>();
   const openPost = () => setShowPostModal(true);
   const closePost = () => setShowPostModal(false);
   //end Modal section
 
   //FIXME: handle 404 with custom page
   const { id } = useParams();
-
-  const [errorMessage, setErrorMessage] = useState('');
+  const paramIdVariable = id;
+  console.log("===the id from params====" + paramIdVariable);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    setParamId(id);
+    console.log("===the id after setParamaId===" + paramIdVariable);
     console.log("line 33!!");
     getPosts();
     console.log("line 35!!");
-  }, [id]);
+  }, []);
 
   //FIXME: when url param changes, old user's posts are not removed unless new user has posts on timeline
   const getPosts = async () => {
@@ -59,9 +63,11 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
           list.map(async (post) => {
             //get user profile pic
             try {
-              const response = await axiosToken.get(`/profile/thumbnail/${post.authorId}`);
+              const response = await axiosToken.get(
+                `/profile/thumbnail/${post.authorId}`
+              );
               console.log(response.data);
-              post.author.profileImg = (response.data);
+              post.author.profileImg = response.data;
 
               //temporary: replace pic with full size
               if (post.Image) {
@@ -72,24 +78,22 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
                 }
               }
               return post;
-
             } catch (error: any) {
               const err = error as AxiosError<apiError>;
               if (!err?.response) {
                 setErrorMessage("Failed to connect to server.");
                 console.log(errorMessage);
-
               } else if (err.response?.data?.message) {
                 setErrorMessage(err.response.data.message);
                 console.log(errorMessage);
-
               } else {
                 console.log(err);
                 setErrorMessage("Something went wrong.");
               }
-              post.author.profileImg = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s";
-              console.log("post thumbnail url: " + post.author.profileImg)
-              return post
+              post.author.profileImg =
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s";
+              console.log("post thumbnail url: " + post.author.profileImg);
+              return post;
             }
           })
         );
@@ -121,7 +125,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
           />
-          <PhotoGallery userId={userId} />
+          <PhotoGallery userParamId={paramIdVariable} />
         </div>
         {/* right content */}
         <div className="rightContent col-md-7">
@@ -141,9 +145,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
                 <PostCard
                   id={post.id}
                   authorId={post.authorId}
-                  profileImageSrc={
-                    post.author.profileImg as string
-                  }
+                  profileImageSrc={post.author.profileImg as string}
                   time={post.createdAt}
                   username={post.author.name}
                   content={post.content}

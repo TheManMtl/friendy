@@ -5,18 +5,18 @@ import Axios from "axios";
 import { IPost } from "../../../pages/shared/interface/post.interface";
 
 interface PhotoGalleryProps {
-  userId: number | undefined;
+  userParamId: string | undefined;
 }
 
-const PhotoGallery: React.FC<PhotoGalleryProps> = (userId) => {
+const PhotoGallery: React.FC<PhotoGalleryProps> = ({ userParamId }) => {
   const axiosToken = useAxiosToken();
   const [imageUrlArr, setImageUrlArr] = useState<string[]>();
   const [thumbUrlArr, setThumbUrlArr] = useState<string[]>();
   //fetch first 9 posts with the authroId=userId imageId !=null
   useEffect(() => {
-    if (userId !== undefined) {
+    if (userParamId !== undefined) {
       axiosToken
-        .get(`/posts/user/103/photos`)
+        .get(`/posts/user/${userParamId}/photos`)
         .then((response) => {
           if (response.data.length > 0) {
             //Take the first 9 imageUrl
