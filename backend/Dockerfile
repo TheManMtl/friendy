@@ -15,11 +15,10 @@ RUN npm install
 
 
 # Build your TypeScript files
-RUN npm run build
 
 # Your app binds to port 3000 - use the EXPOSE instruction to have it mapped
 EXPOSE 3000
 
 # Define the command to run your app
-CMD [ "node", "/src/app.ts" ]
+CMD [ "npm", "start" ]
  # replace 'src/app.js' with the path to your compiled app.js file
