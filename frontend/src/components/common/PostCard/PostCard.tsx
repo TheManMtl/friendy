@@ -174,7 +174,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             </div>
             <div className="col-10">
               <div className="d-flex justify-content-start">
-                <span className="fw-bold"> {props.username} </span>
+                {/* TODO handle route hashing? */}
+                <a href={`#/profile/${props.authorId}`} className="fw-bold"> {props.username} </a>
                 {
                   props.type === "profilePic" ? (
                     <span className="text-secondary"> &nbsp;updated their profile picture.</span>

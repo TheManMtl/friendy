@@ -31,6 +31,7 @@ import SearchPage from "./pages/common/Search/SearchPage";
 import ImagePostDisplay from "./pages/common/ImagePostDisplay/ImagePostDisplay";
 import EditAlbum from "./pages/common/ProfilePage/EditAlbum";
 import AlbumDetail from "./pages/common/ProfilePage/AlbumDetail";
+import NotFound from "./pages/common/404";
 
 function App() {
   // Determine if the current route is an admin route
@@ -49,6 +50,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/404" element={<NotFound />} />
             {/* <Route path="/photos" element={<PhotoPage />} />
            <Route path="/posts" element={<PostPage />} /> */}
             <Route
