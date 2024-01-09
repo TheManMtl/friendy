@@ -708,16 +708,18 @@ export const getPostFromAlbum = async (req: any, res: Response) => {
       order: [["createdAt", "DESC"]],
       limit: 1,
     });
+    let url = null;
+    let thumbnailUrl = null;
     //check if the posts exist
     if (posts.length === 0) {
-      return res.status(404).json("No posts found");
+      thumbnailUrl=(await imageController.getPicUrlFromS3(req, "default.jpg"))
+      return res.status(200).json([{ thumbnailUrl }]);
     }
     const post = posts[0];
 
     const resData: PostWithUrl[] = [];
   
-      let url = null;
-      let thumbnailUrl = null;
+     
 
       if (post.Image) {
         url = await imageController.getPicUrlFromS3(req, post.Image.fileName);

@@ -6,6 +6,7 @@ import axios from "../../../services/api/axios";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { AuthContext } from "../../../context/AuthProvider";
 import { IAlbum } from "../../../pages/shared/interface/album.interface";
+import { useNavigate } from "react-router-dom";
 
 type PostImageProps = {
   postId: number;
@@ -19,6 +20,7 @@ const PostImage: React.FC<PostImageProps> = (props) => {
   const [albums, setAlbums] = useState<IAlbum[]>([]);
   const axiosToken = useAxiosToken();
   const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
   const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
   const handleDeleteModal = () => {
 
@@ -67,6 +69,9 @@ const PostImage: React.FC<PostImageProps> = (props) => {
       console.log("Please select an album");
     }
   };
+  const displayPostDetail = () => {
+    navigate(`/display?postid=${props.postId}`)
+  };
 
   return (
 
@@ -75,6 +80,7 @@ const PostImage: React.FC<PostImageProps> = (props) => {
         src={props.thumbnailUrl}
         className="w-100 shadow-1-strong rounded mb-4"
         alt={"Post Thumbnail"}
+        onClick={displayPostDetail}
       />
 
       <div className="position-absolute top-0 pt-2 end-0 m-3">
