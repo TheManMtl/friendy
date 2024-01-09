@@ -70,15 +70,16 @@ const ProfileInfoMenu: React.FC<Props> = ({
                           size={"medium"}
                         />
                       </Dropdown.Toggle>
-
-                      <Dropdown.Menu>
-                        <Dropdown.Item onClick={showChangeProfileModal}>
-                          Change profile image
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#">
-                          See profile image
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
+                      {isPrivateProfile ? (
+                        <Dropdown.Menu>
+                          <Dropdown.Item onClick={showChangeProfileModal}>
+                            Change profile image
+                          </Dropdown.Item>
+                          <Dropdown.Item href="#">
+                            See profile image
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      ) : null}
                     </Dropdown>
                   </div>
                 </div>

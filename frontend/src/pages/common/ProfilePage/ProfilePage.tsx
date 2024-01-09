@@ -30,7 +30,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
   const { user } = useAuth();
   const axiosToken = useAxiosToken();
-  const [profileThumb, setProfileThumb] = useState<string | null>("");
+  const [profileThumb, setProfileThumb] = useState<string>("");
   const [currentUserProfileThumb, setCurrentUserProfileThumb] =
     useState<string>("");
   const [userProfile, setUserProfile] = useState<IUser | null>(null);
@@ -209,7 +209,12 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
           />
         );
       case `/profile/${id}/friend`:
-        return <ProfilePageFriend />;
+        return (
+          <ProfilePageFriend
+            isPrivateProfile={isPrivateProfile}
+            paramUserId={id}
+          />
+        );
       case `/profile/${id}/photo`:
         return <ProfilePagePhoto />;
       case `/profile/${id}/album`:
