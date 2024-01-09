@@ -18,9 +18,9 @@ const HomeFriendList: React.FC<HomeFriendListProps> = ({ toggle }) => {
       axiosToken
         .get(`${process.env.REACT_APP_HOST_URL}/friends/all/${user!.id}`)
         .then((response: any) => {
-          // console.log(
-          //   JSON.stringify(response.data, null, 2) + "friendsresp -> \n\n\n\n"
-          // );
+          console.log(
+            JSON.stringify(response.data, null, 2) + "friendsresp -> \n\n\n\n"
+          );
           setFriends(response.data);
         });
     } catch (error: any) {

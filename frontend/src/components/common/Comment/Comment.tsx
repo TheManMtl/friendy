@@ -147,7 +147,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
                   commentId={theComment.id}
                   newComment={newComment}
                   setMakeComment={setEditComment}
-                  isNewComment={true}
+                  isNewComment={false}
                   commentChanged={commentChanged}
                   setCommentChanges={setCommentChanges}
                 />
@@ -228,7 +228,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
             commentId={theComment.id}
             newComment={newComment}
             setMakeComment={setMakeComment}
-            isNewComment={false}
+            isNewComment={true}
             commentChanged={commentChanged}
             setCommentChanges={setCommentChanges}
           />

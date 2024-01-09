@@ -154,6 +154,7 @@ export const viewProfile = async (
 
     if (profile.profileImg) {
       thumbnail = profile.profileImg?.Image?.thumbnail;
+      console.log("\n\n\n\nEMILY\n\n\n");
     } else {
       thumbnail = "default_thumbnail.jpg";
     }
@@ -598,10 +599,9 @@ const sortSearch = async (
 //get current user profile pic thumbnail
 export const getProfilePicThumbnail = async (
   req: CustomRequest,
-  res: Response,
+  res: Response
 ): Promise<any> => {
   try {
-
     const user = await User.findByPk(req.params.id);
     if (!user) {
       return res.status(404).send({ message: "User not found" });
@@ -628,7 +628,6 @@ export const getProfilePicThumbnail = async (
     console.log("profile pic thumbnail url: ");
     console.log(url);
     return res.status(200).json(url);
-
   } catch (error) {
     console.error("Error fetching post images:", error);
     return res.status(500).json({ error: "Internal Server Error" });
