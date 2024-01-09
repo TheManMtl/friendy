@@ -4,7 +4,7 @@ import { PostAttributes } from "../db/models/post";
 import * as imageController from "./images-controller";
 import { Op } from "sequelize";
 import { CustomRequest } from "../middleware/auth";
-
+const sequelize = models.sequelize;
 const Post = models.Post;
 const User = models.User;
 const Image = models.Image;
@@ -355,7 +355,19 @@ export const editPostContent = async (req: CustomRequest, res: Response) => {
 };
 
 export const deletePost = async (req: CustomRequest, res: Response) => {
+
   try {
+
+    const user = await User.findByPk(req.id, {
+      where: {
+        isDeleted: false,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found." });
+    }
+
     const post = await Post.findOne({
       where: {
         id: req.params.id,
@@ -368,6 +380,9 @@ export const deletePost = async (req: CustomRequest, res: Response) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
+    const t = await sequelize.transaction();
+
+    try {
     // else update by id
     await Post.update(
       {
@@ -377,15 +392,55 @@ export const deletePost = async (req: CustomRequest, res: Response) => {
         where: {
           id: req.params.id,
         },
-      }
+      },
+      { transaction: t }
     );
 
+    if (user.profilePostId && user.profilePostId === post.id) {
+
+      await User.update(
+        {
+          profilePostId: null
+        },
+        {
+          where: {
+            id: user.id
+          }
+        },
+        { transaction: t }
+      );
+    }
+
+    if (user.coverPostId && user.coverPostId === post.id) {
+
+      await User.update(
+        {
+          coverPostId: null
+        },
+        {
+          where: {
+            id: user.id
+          }
+        },
+        { transaction: t }
+      );
+    }
+
     if (post.imageId) {
+
       // delete image from database and s3 bucket
       const success = await imageController.remove(req, post.imageId);
+
       if (!success) {
-        return res.status(500).json({ message: "Something went wrong" });
+        await t.rollback();
+        return res.status(500).json({ message: "Something went wrong deleting image file" });
       }
+    }
+
+    await t.commit();
+
+    } catch {
+      res.status(500).json({ message: "Something went wrong in transaction" });
     }
 
     res.status(200).json({ message: "Successfully deleted post" });
