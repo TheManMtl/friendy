@@ -40,11 +40,15 @@ export const createPost = async (req: any, res: Response) => {
       }
     }
 
+    if (!imageFile && (!req.body.content || (req.body?.content as string).length < 1)) {
+      return res.status(400).json({ message: "Post content cannot be empty" });
+    }
+
     if (imageFile) {
       console.log("========there is imageFile=========");
       image = await imageController.addOne(req);
     }
-    //FIXME: validate type, content length
+    //FIXME: validate type
     const post = await Post.create({
       authorId: user.id, 
       profileId: req.body.profileId,
@@ -460,6 +464,7 @@ export const getNewsfeed = async (req: any, res: Response) => {
         profileId: {
           [Op.or]: [null, authorIds],
         },
+        isDeleted: false,
       },
       include: [
         {

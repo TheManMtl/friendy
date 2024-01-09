@@ -10,6 +10,8 @@ import CommentContainer from "../Comment/CommentContainer";
 import Comment from "../Comment/Comment";
 import useAuth from "../../../hooks/useAuth";
 import PostModal from "../PostInput/PostModal";
+import DeletePostModal from "./DeletePostModal";
+
 import {
   HandThumbsUp,
   SendFill,
@@ -47,10 +49,13 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [isFocused, setIsFocused] = useState(false);
   const [refresh, setRefresh] = useState(0);
   const { user } = useAuth();
+  // const formik = useFormikContext();
+
   const handleFocus = () => {
     setIsFocused(true);
   };
 
+  //FIXME: clear validation error message on blur after attempting submit with empty input val (check if error message and input val)
   const handleBlur = () => {
     setIsFocused(false);
   };
@@ -138,9 +143,6 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     }
     return result;
   }
-  const getCommentTime = (datetime: string) => {
-    //TODO
-  }
 
     //Post modal for editing
     const [showPostModal, setShowPostModal] = useState<boolean>(false);
@@ -150,21 +152,13 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     const openEdit = () => setShowPostModal(true);
     //end edit modal section
 
-
-  const openDelete = () => {
-    
-  }
-
-  const handleDeletePost = async () => {
-    console.log("handleDeletePost called");
-    try {
-      await axiosToken.delete(`/posts/${props.id}`);
-      setSuccess(true);
-      setRefresh((prev) => prev + 1);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    //confirm delete modal
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const closeDeleteModal = () => {
+      setShowDeleteModal(false);
+    };
+    const openDelete = () => setShowDeleteModal(true);
+    //end confirm delete modal section
 
   return (
     <div key={refresh}>
@@ -296,7 +290,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             initialValues={initialValues}
             onSubmit={handleCommentOnPost}
             validationSchema={validationSchema}
-            validateOnChange={true}
+            validateOnChange={false}
+            validateOnBlur={false}
           >
             {(formikprops) => (
               <Form>
@@ -316,7 +311,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                   </div>
                   {/* <Button type="submit" variant="color" label="Post comment"></Button> */}
                   {/* {isFocused && ( */}
-                  <button className="btn-block btn-color submit-button" type="submit" onClick={() => console.log("Button clicked")}><SendFill /></button>
+                  <button className="btn-block btn-color submit-button p-0 px-1" type="submit" onClick={() => console.log("Button clicked")}><SendFill /></button>
                   {/* )}  */}
 
                 </div>
@@ -342,6 +337,12 @@ const PostCard: React.FC<PostCardProps> = (props) => {
         postId={props.id}
         postBody={props.content}
       />
+
+      <DeletePostModal
+        showDeleteModal={showDeleteModal}
+        closeDeleteModal={closeDeleteModal}
+        postId={props.id}
+        />
     </div>
   );
 };
