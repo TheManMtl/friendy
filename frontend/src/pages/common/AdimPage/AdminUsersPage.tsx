@@ -12,6 +12,7 @@ interface User {
   birthday: Date;
   isActive: boolean;
   role: string;
+  imageUrl?: string;
 }
 
 //define colors for role
@@ -35,7 +36,7 @@ function AdminUsersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  // Determine the index of the last and first user on the current page
+  // last and first user on the current page
   const indexOfLastUser = currentPage * itemsPerPage;
   const indexOfFirstUser = indexOfLastUser - itemsPerPage;
 
@@ -48,10 +49,16 @@ function AdminUsersPage() {
   }, []);
 
 
-  // Slice the users array to get only the users for the current page
+  //users for the current page
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const viewUser = (userId: number) => {
+    //TODO: User detail page
+    console.log("View user with ID:", userId);
+    
+  };
   return (
     <>
       <div className="row bg-pink">
@@ -75,17 +82,22 @@ function AdminUsersPage() {
           <thead>
             <tr>
               <th>ID</th>
+              <th>Image</th>
               <th>Name</th>
               <th>Email</th>
               <th>Location</th>
               <th>DOB</th>
               <th>role</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {currentUsers.map(user => (
               <tr key={user.id} className={getColorByRole(user.role)}>
                 <td >{user.id}</td>
+                <td>
+                  {user.imageUrl ? <img src={user.imageUrl} alt={user.name} style={{ width: '50px', height: '50px' }} /> : 'No image'}
+                </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.location}</td>
@@ -93,19 +105,22 @@ function AdminUsersPage() {
                 <td>
                   {user.role}
                 </td>
+                <td>
+          <button className='btn btn-warning' onClick={() => viewUser(user.id)}>View</button>
+        </td>
               </tr>
             ))}
           </tbody>
         </table>
 
         <div>
-  <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
-    Previous
-  </button>
-  <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(users.length / itemsPerPage)}>
-    Next
-  </button>
-</div>
+          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(users.length / itemsPerPage)}>
+            Next
+          </button>
+        </div>
       </div>
     </>
   );
