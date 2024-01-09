@@ -27,13 +27,15 @@ const HomeSingleFriend: React.FC<HomeSingleFriendProps> = ({
           className="friend-container col-12"
         >
           {friend.thumbnail && (
-            <span className="my-auto">
-              <ProfileImage
-                src={friend.thumbnail}
-                alt={"testing"}
-                size={"small"}
-              />
-            </span>
+            <>
+              <span className="my-auto">
+                <ProfileImage
+                  src={friend.thumbnail}
+                  alt={"testing"}
+                  size={"small"}
+                />
+              </span>
+            </>
           )}
 
           <span className="my-auto">{friend.name}</span>

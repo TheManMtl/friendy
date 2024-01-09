@@ -290,7 +290,7 @@ export const viewAllFriends = async (
                 {
                   model: Image,
                   as: "Image",
-                  attributes: ["id", "fileName"],
+                  attributes: ["id", "fileName", "thumbnail"],
                 },
               ],
             },
@@ -299,14 +299,12 @@ export const viewAllFriends = async (
         let thumbnail: string;
 
         if (theFriends.profileImg != null) {
-          thumbnail =
-            (await getPicUrlFromS3(
-              req,
-              theFriends.profileImg.Image.thumbnail
-            )) || "";
+          thumbnail = theFriends.profileImg.Image.thumbnail;
         } else {
-          thumbnail = (await getPicUrlFromS3(req, "default.jpg")) || "";
+          thumbnail = "default.jpg";
         }
+        thumbnail = (await getPicUrlFromS3(req, thumbnail!)) || "";
+
         return {
           friendId: friend.id,
           name: theFriends.name,
@@ -518,7 +516,6 @@ export const viewSuggestedFriendsByLocation = async (
     next(error);
   }
 };
-
 
 export const findMutualFriends = async (
   user1id: number,

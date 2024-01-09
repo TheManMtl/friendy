@@ -7,7 +7,12 @@ const router = express.Router();
 
 router.get("/view/:id", authUser, attachS3Info, profiles.viewProfile);
 router.get("/search", authUser, attachS3Info, profiles.findPeople);
-router.get("/thumbnail/:id([0-9]+)", authUser, attachS3Info, profiles.getProfilePicThumbnail);
+router.get(
+  "/thumbnail/:id([0-9]+)",
+  authUser,
+  attachS3Info,
+  profiles.getProfilePicThumbnail
+);
 router.put("/update", authUser, profiles.updateProfile);
 
 export default router;
