@@ -1,6 +1,5 @@
 import express from "express";
 import * as s3Middleware from "../middleware/S3Middleware";
-import * as multer from "../middleware/MulterMiddleware";
 import * as albums from "../controllers/album-controller";
 import { authUser } from "../middleware/auth";
 const router=express.Router();

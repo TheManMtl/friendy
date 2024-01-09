@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import "./ProfilePage.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { IPost } from "../../shared/interface/post.interface";
@@ -15,8 +15,6 @@ import ProfilePageFriend from "./ProfilePageFriend";
 import ProfilePageAlbum from "./ProfilePageAlbum";
 import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
-import { User, Post } from "../../../types/common";
-import axios from "../../../services/api/axios";
 import { AxiosError } from "axios";
 import { apiError } from "../../../types/common";
 
@@ -26,18 +24,17 @@ interface ProfilPageType {
 }
 
 const ProfilePage: React.FC<ProfilPageType> = () => {
+
   const [userId, setUserId] = useState<number>();
-  // TODO: get current user id from auth
   const { selectedRoute } = useProfilePageContext();
   const [isPrivateProfile, setIsPrivateProfile] = useState<boolean>(false);
   const [coverImageUrl, setCoverImageUrl] = useState<string>("");
   const { user } = useAuth();
   const axiosToken = useAxiosToken();
   const [profileThumb, setProfileThumb] = useState<string | null>("");
-  const [currentUserProfileThumb, setCurrentUserProfileThumb] = useState<string | null>("");
+  const [currentUserProfileThumb, setCurrentUserProfileThumb] = useState<string>("");
   const [userProfile, setUserProfile] = useState<IUser | null>(null);
-  // const [posts, setPosts] = useState<Post[] | null>(null);
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const { id } = useParams();
   const [errorMessage, setErrorMessage] = useState("");
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Import axios
+import useAxiosToken from '../../../hooks/useAxiosToken';
 import AdminNavbarTop from './AdminComponents/AdminNavbarTop';
 import "./AdminStyle.css";
 
@@ -11,6 +12,7 @@ interface User {
   birthday: Date;
   isActive: boolean;
   role: string;
+  imageUrl?: string;
 }
 
 //define colors for role
@@ -30,14 +32,33 @@ function getColorByRole(role: string): string {
 function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
 
-  const baseUrl = "/api/";
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // last and first user on the current page
+  const indexOfLastUser = currentPage * itemsPerPage;
+  const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+
+  const axiosToken = useAxiosToken();
   useEffect(() => {
     // Fetch users 
-    axios.get(baseUrl +"users/admin")
+    axiosToken.get("users/admin")
       .then(response => setUsers(response.data))
       .catch(error => console.error('Error fetching users:', error));
   }, []);
 
+
+  //users for the current page
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const viewUser = (userId: number) => {
+    //TODO: User detail page
+    console.log("View user with ID:", userId);
+    
+  };
   return (
     <>
       <div className="row bg-pink">
@@ -48,7 +69,7 @@ function AdminUsersPage() {
       <div className="container mt-3">
         <h2>Users List Updated</h2>
         <div className="row">
-        <div className="col-md-2">
+          <div className="col-md-2">
             <div className="color-box" style={{ backgroundColor: getColorByRole('admin') }}></div>
             <p className="text-center">Admin</p>
           </div>
@@ -61,17 +82,22 @@ function AdminUsersPage() {
           <thead>
             <tr>
               <th>ID</th>
+              <th>Image</th>
               <th>Name</th>
               <th>Email</th>
               <th>Location</th>
               <th>DOB</th>
               <th>role</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
-              <tr key={user.id} className={ getColorByRole(user.role) }>
+            {currentUsers.map(user => (
+              <tr key={user.id} className={getColorByRole(user.role)}>
                 <td >{user.id}</td>
+                <td>
+                  {user.imageUrl ? <img src={user.imageUrl} alt={user.name} style={{ width: '50px', height: '50px' }} /> : 'No image'}
+                </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.location}</td>
@@ -79,10 +105,22 @@ function AdminUsersPage() {
                 <td>
                   {user.role}
                 </td>
+                <td>
+          <button className='btn btn-warning' onClick={() => viewUser(user.id)}>View</button>
+        </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        <div>
+          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(users.length / itemsPerPage)}>
+            Next
+          </button>
+        </div>
       </div>
     </>
   );

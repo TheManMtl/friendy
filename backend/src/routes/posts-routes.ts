@@ -15,6 +15,8 @@ router.get(
 );
 router.get("/newsfeed", authUser, s3Middleware.attachS3Info, posts.getNewsfeed);
 router.get("/album/:albumId([0-9]+)", s3Middleware.attachS3Info, posts.getPostsByAlbumId);
+//get the most recent post iamge from an album
+router.get("/album/:albumId([0-9]+)/post", s3Middleware.attachS3Info, posts.getPostFromAlbum);
 router.post(
   "/",
   authUser,

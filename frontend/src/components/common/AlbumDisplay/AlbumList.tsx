@@ -1,5 +1,5 @@
 'use client'
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import {Card} from 'flowbite-react'
@@ -14,24 +14,40 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 type AlbumListProps = {
   albumId: number
   title:string
-  thumbnailUrl?: string;
-
+   onAlbumDeleted: () => void;
 }
+
 const AlbumList: React.FC <AlbumListProps>= (props) => {
   const axiosToken = useAxiosToken();
     const [deleteModal, setDeleteModal] = useState(false);
     const navigate = useNavigate();
     const authContext = useContext(AuthContext);
     const userId = authContext?.user?.id;
-    const handleDeleteModal = () =>{
-   
+    const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
+    useEffect(() => {
+      const fetchAlbumThumbnail = async () => {
+        try {
+          const response = await axiosToken.get(`posts/album/${props.albumId}/post`);
+          console.log("Response data:", response.data); // Check the response structure
+          setThumbnailUrl(response.data[0].thumbnailUrl);
+          console.log("Thumbnail url:", thumbnailUrl);
+        } catch (err) {
+          console.log('Error fetching recent post image:',err);
+        }
+      };
+      fetchAlbumThumbnail();
+    }, [props.albumId, axiosToken]);
+    const handleDeleteModal = async () =>{
       try{
-         axiosToken.delete(`/albums/${props.albumId}`);
+         await axiosToken.delete(`/albums/${props.albumId}`);
          setDeleteModal(false);
          console.log("Album deleted successfully");
+         setDeleteModal(false);
+         props.onAlbumDeleted();
       }catch(err){
          console.log(err);
       }
+     
     } 
     const displayAlbumDetail = () => {
       navigate(`/profile/${userId}/album/${props.albumId}`);
@@ -39,13 +55,20 @@ const AlbumList: React.FC <AlbumListProps>= (props) => {
     const handleEditAlbumClick = () => {
       navigate(`/profile/${userId}/editalbum/${props.albumId}`);
     }
+    
   return (
  <div className="album-card">
-{/* <img
-  src={props.thumbnailUrl} 
-  className="w-100 shadow-1-strong rounded mb-4"
-  alt={"Post Thumbnail"}
-/> */}
+  
+  {thumbnailUrl &&(
+    <img
+    src={thumbnailUrl}
+    alt="Album Thumbnail"
+    
+    className="rounded w-100 shadow-1-strong rounded "
+    />
+  )}
+ 
+
 <div className="max-w-sm bg-white border mb-3 border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 <div className="p-5">
          

@@ -49,7 +49,7 @@ function LoginPage() {
               token: response.data.token,
             });
             if (response.data.role !== "Admin") {
-              navigate(`/profile/${response.data.id}`);
+              navigate(`/`);
             } else {
               navigate("/admin");
             }

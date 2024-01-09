@@ -88,7 +88,7 @@ const Newsfeed: React.FC = () => {
     }
 
     return (
-        <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
+        <>
             {posts[0] ? (
                 posts.map((post) => (
                     <div key={`post-${post.id}`} className="mt-2">
@@ -112,7 +112,8 @@ const Newsfeed: React.FC = () => {
             ) : (
                 <></>
             )}
-        </div>
+                    </>
+
     );
 };
 
