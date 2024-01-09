@@ -47,9 +47,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
       axiosToken
         .get(`/profile/view/${id}`)
         .then((response) => {
-          if (response.data.error) {
-            console.log("====Error receiving response.data=====");
-          } else {
             const user = response.data.profileInfo;
             setUserProfile({
               bio: user.bio,
@@ -136,7 +133,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
             //       }
             //     });
             // }
-          }
 
           if (id && userId) {
             // Convert id to a number using parseInt
@@ -149,7 +145,9 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         })
         .catch((error: any) => {
           const err = error as AxiosError<apiError>;
-
+          if (err.response?.status === 404) {
+            navigate("/404");
+          }
           if (!err?.response) {
             setErrorMessage("Failed to connect to server.");
             console.log(errorMessage);
@@ -186,7 +184,10 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         setCurrentUserProfileThumb(
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
         );
+
+
       });
+
   }, [axiosToken, id, navigate, user, userId]);
 
   const renderMainPanelContent = () => {

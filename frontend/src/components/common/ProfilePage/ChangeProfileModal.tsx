@@ -44,7 +44,7 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
 
             formData.append("authorId", userId.toString());
             formData.append("type", PostType.profilePic);
-            formData.append("content", "This is a profile image");
+            //formData.append("content", "This is a profile image");
             formData.append("albumId", profileAlbumId.toString());
 
             axiosToken

@@ -67,6 +67,7 @@ function Navbar() {
     }
   }, [user, refreshTimestamp]);
   return (
+    user ? (
     <div>
       <nav className="navbar navbar-expand-lg nav-custom py-3">
         <div className="container-fluid">
@@ -181,6 +182,7 @@ function Navbar() {
         </div>
       </nav>
     </div>
+    ) : (<></>)
   );
 }
 
