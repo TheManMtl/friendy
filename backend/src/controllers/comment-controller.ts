@@ -98,6 +98,7 @@ export const commentOnComment = async (
   req: CustomRequest,
   res: Response
 ): Promise<any> => {
+  let newComment;
   try {
     //get post and user
     const user = await User.findByPk(req.id);
@@ -106,7 +107,7 @@ export const commentOnComment = async (
         isDeleted: false,
       },
     });
-
+    console.log("comment body: " + req.body.body);
     if (!parent) {
       return res.status(404).send({ message: "Parent comment not found" });
     }
@@ -144,30 +145,32 @@ export const commentOnComment = async (
         "commentCount",
         {
           where: {
-            id: parent.post.id,
+            id: parent.postId,
           },
         },
         { transaction: t }
       );
 
-      await t.commit();
-
-      await Comment.create(
+      newComment = await Comment.create(
         {
           userId: user.id,
-          postId: parent.post.id,
-          parent: parent.id,
+          postId: parent.postId,
+          parentId: parent.id,
           body: req.body.body,
         },
         { transaction: t }
       );
+
+      await t.commit();
     } catch (error) {
       await t.rollback();
+      console.log("ERROR" + error);
       return res.status(500).send({ message: "Something went wrong" });
     }
 
-    return res.status(201).send({ message: "Comment successfully posted" });
+    return res.status(201).send(newComment);
   } catch (error) {
+    console.log("\n\n\n\n" + error);
     return res.status(500).send({ message: "Something went wrong" });
   }
 };
@@ -330,5 +333,277 @@ export const getPostComments = async (
     return res.status(200).send(updatedComments);
   } catch (error) {
     return res.status(500).send({ message: "Something went wrong" });
+  }
+};
+
+export const deleteCommentOnPost = async (
+  req: CustomRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    //get post and user
+    const user = await User.findByPk(req.id);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const comment = await Comment.findByPk(req.params.id, {
+      where: {
+        isDeleted: false,
+        authorId: user.id,
+      },
+    });
+
+    if (!(comment && comment.postId)) {
+      return res.status(404).send({ message: "Comment not found" });
+    }
+
+    const post = await Post.findByPk(comment.postId);
+
+    if (!post) {
+      return res.status(404).send({ message: "Post not found" });
+    }
+
+    //transaction to delete comment and update post accordingly
+    const t = await sequelize.transaction();
+
+    try {
+      await Post.decrement(
+        "commentCount",
+        {
+          where: {
+            id: comment.postId,
+          },
+        },
+        { transaction: t }
+      );
+
+      await Comment.update(
+        {
+          isDeleted: true,
+        },
+        {
+          where: {
+            id: comment.id,
+          },
+        },
+        { transaction: t }
+      );
+
+      await t.commit();
+    } catch (error) {
+      await t.rollback();
+      return res
+        .status(500)
+        .send({ message: "Something went wrong in transaction: " + error });
+    }
+    return res.status(200).send({ message: "Comment successfully deleted" });
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong: " + error });
+  }
+};
+
+export const deleteCommentOnComment = async (
+  req: CustomRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    //get post and user
+    const user = await User.findByPk(req.id);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const comment = await Comment.findByPk(req.params.id, {
+      where: {
+        isDeleted: false,
+        authorId: user.id,
+      },
+    });
+
+    if (!(comment && comment.parentId && comment.postId)) {
+      return res.status(404).send({ message: "Comment not found" });
+    }
+
+    const parent = await Comment.findByPk(comment.parentId);
+
+    if (!parent) {
+      return res.status(404).send({ message: "Parent comment not found" });
+    }
+
+    const post = await Post.findByPk(comment.postId);
+
+    if (!post) {
+      return res.status(404).send({ message: "Original post not found" });
+    }
+
+    //transaction to delete comment and update parent and post accordingly
+    const t = await sequelize.transaction();
+
+    try {
+      await Comment.decrement(
+        "childCount",
+        {
+          where: {
+            id: parent.id,
+          },
+        },
+        { transaction: t }
+      );
+
+      await Post.decrement(
+        "commentCount",
+        {
+          where: {
+            id: comment.postId,
+          },
+        },
+        { transaction: t }
+      );
+
+      await t.commit();
+
+      await Comment.update(
+        {
+          isDeleted: true,
+        },
+        {
+          where: {
+            id: comment.id,
+          },
+        },
+        { transaction: t }
+      );
+    } catch (error) {
+      await t.rollback();
+      return res.status(500).send({ message: "Something went wrong" });
+    }
+
+    return res.status(200).send({ message: "Comment successfully deleted" });
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong" });
+  }
+};
+
+export const updateComment = async (
+  req: CustomRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    //get post and user
+    const user = await User.findByPk(req.id);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const comment = await Comment.findByPk(req.params.id, {
+      where: {
+        isDeleted: false,
+        authorId: user.id,
+      },
+    });
+
+    if (!comment) {
+      return res.status(404).send({ message: "Comment not found" });
+    }
+
+    if (!req.body.body) {
+      return res.status(404).send({ message: "Comment body cannot be null." });
+    }
+
+    if ((req.body.body as string).length > 1500) {
+      return res
+        .status(404)
+        .send({ message: "Comment body cannot exceed 1500 characters." });
+    }
+
+    await Comment.update(
+      {
+        body: req.body.body,
+      },
+      {
+        where: {
+          id: comment.id,
+        },
+      }
+    );
+
+    return res.status(201).send({ message: "Comment successfully updated" });
+  } catch (error) {
+    return res.status(500).send({ message: "Something went wrong: " + error });
+  }
+};
+
+export const getSingleComment = async (
+  req: CustomRequest,
+  res: Response
+): Promise<any> => {
+  if (req.params.id == null) {
+    return res.status(400).send({ message: "Comment ID is required" });
+  }
+
+  try {
+    const comment = await Comment.findByPk(req.params.id, {
+      where: { isDeleted: false },
+      include: [
+        {
+          model: User,
+          attributes: ["name"],
+          include: [
+            {
+              model: Post,
+              as: "profileImg",
+              attributes: ["id"],
+              include: [
+                {
+                  model: Image,
+                  as: "Image",
+                  attributes: ["id", "thumbnail"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!comment) {
+      return res.status(404).send({ message: "Comment not found" });
+    }
+
+    let thumbnail: string | null = "";
+
+    if (comment.User.profileImg === null) {
+      console.log("profile is null");
+      thumbnail = "default.jpg";
+    } else {
+      thumbnail = comment.User.profileImg.Image.thumbnail;
+    }
+
+    thumbnail = await getPicUrlFromS3(req, thumbnail!);
+
+    const returnComment: CommentResponse = {
+      name: comment.User.name,
+      profileImg: thumbnail,
+      body: comment.body,
+      childCount: comment.childCount,
+      createdAt: comment.createdAt,
+      deleteAt: comment.deleteAt || null,
+      id: comment.id,
+      isDeleted: comment.isDeleted,
+      likeCount: comment.likeCount,
+      parentId: comment.parentId || null,
+      postId: comment.postId,
+      updatedAt: comment.updatedAt || null,
+      userId: comment.userId,
+    };
+
+    return res.status(200).send(returnComment);
+  } catch (error) {
+    console.error("Error finding single comment:", error);
+    return res.status(500).send({ message: "Internal Server Error" });
   }
 };

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import "../../../pages/common/ProfilePage/ProfilePage.css";
 import { Link } from "react-router-dom";
 import { useProfilePageContext } from "../../../context/ProfilePageProvider";
 import { Dropdown } from "react-bootstrap";
 import ChangeProfileModal from "./ChangeProfileModal";
-import axios from "../../../services/api/axios";
+import ChangePasswordModal from "./ChangePasswordModal";
 
 interface Props {
   userName: string | undefined;
@@ -31,29 +31,22 @@ const ProfileInfoMenu: React.FC<Props> = ({
   const closeChangeProfileModal = () => setShowChangeProfile(false);
   //end change profile Modal section
 
+  //start change password Modal section
+  const [showChangePassword, setShowChangePassword] = useState<boolean>(false);
+  const showChangePasswordModal = () => {
+    setShowChangePassword(true);
+  };
+  const closeChangePasswordModal = () => setShowChangePassword(false);
+  //end change password Modal section
+
   const handleLinkClick = (route: string) => {
     setRoute(route);
   };
 
-  useEffect(() => {
-    // axios.get(`/posts/userprofile/${userId}`).then((response) => {
-    //   if (response.data.length !== 0) {
-    //     //TODO: fetch the profil pic which has the id associated with the user
-    //     const latestProfilIndex = response.data.length - 1;
-    //     setProfileThumb(response.data[latestProfilIndex].thumbnailUrl);
-    //   }
-    // });
-    // axios.get(`/posts/userprofile/${profilePostId}`).then((response) => {
-    //   if (response.data.length !== 0) {
-    //     //TODO: fetch the profil pic which has the id associated with the user
-    //     setProfileThumb(response.data.thumbnailUrl);
-    //   }
-    // });
-  }, []);
   return (
     <div>
       <div className="InfoCard card mb-5">
-        <div className="basicInfo row">
+        <div className="basicInfo row mt-3">
           <div className="leftInfo col-md-6">
             <div className="profileName px-5">
               <div className="row">
@@ -98,8 +91,14 @@ const ProfileInfoMenu: React.FC<Props> = ({
           </div>
           {isPrivateProfile ? (
             <div className="rightInfo col-md-6 d-flex justify-content-end">
-              <div className="px-5">
-                <button className="btn btn-secondary">Edit Profile</button>
+              <div className="px-5 ">
+                <button
+                  className="btn btn-secondary mt-3"
+                  style={{ width: "180px" }}
+                  onClick={showChangePasswordModal}
+                >
+                  Change Password
+                </button>
               </div>
             </div>
           ) : null}
@@ -160,6 +159,11 @@ const ProfileInfoMenu: React.FC<Props> = ({
       <ChangeProfileModal
         closeChangeProfileModal={closeChangeProfileModal}
         showChangeProfileModal={showChangeProfile}
+      />
+
+      <ChangePasswordModal
+        closeChangePasswordModal={closeChangePasswordModal}
+        showChangePasswordModal={showChangePassword}
       />
     </div>
   );

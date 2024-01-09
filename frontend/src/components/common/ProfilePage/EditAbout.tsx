@@ -1,7 +1,7 @@
 import React from "react";
-import { Formik, ErrorMessage } from "formik";
-import axios from "../../../services/api/axios";
 import { IUser } from "../../../pages/shared/interface/user.interface";
+
+import EditAboutItem from "./EditAboutItem";
 
 interface ProfileAboutProps {
   userProfile: IUser | null;
@@ -15,40 +15,36 @@ const EditAbout: React.FC<ProfileAboutProps> = ({
   return (
     <div className="d-flex justify-content-center row ">
       {/* School panel */}
-      <div className="school d-flex justify-content-start row mt-3">
-        <div className="col-3 icon d-flex justify-content-end">
-          <i className="bi bi-mortarboard-fill icon"></i>
-        </div>
-        <div className="col-5 d-flex justify-content-start">
-          <p>Studied at {userProfile?.school}</p>
-        </div>
-        <div className="col-2 d-flex justify-content-start">
-          <button className="btn btn-secondary">edit</button>
-        </div>
-      </div>
-      {/* Location panel */}
-      <div className="school d-flex justify-content-start row mt-3">
-        <div className="col-3 icon d-flex justify-content-end">
-          <i className="bi bi-mortarboard-fill icon"></i>
-        </div>
-        <div className="col-5 d-flex justify-content-start">
-          <p>Lives in {userProfile?.location}</p>
-        </div>
-        <div className="col-2 d-flex justify-content-start">
-          <button className="btn btn-secondary">edit</button>
-        </div>
-      </div>
-      {/* Work panel */}
-      <div className="school d-flex justify-content-start row mt-3">
-        <div className="col-3 icon d-flex justify-content-end">
-          <i className="bi bi-mortarboard-fill icon"></i>
-        </div>
-        <div className="col-5 d-flex justify-content-start">
-          <p>Works at {userProfile?.workplace}</p>
-        </div>
-        <div className="col-2 d-flex justify-content-start">
-          <button className="btn btn-secondary">edit</button>
-        </div>
+      <EditAboutItem
+        contentName={"school"}
+        contentVariable={userProfile?.school}
+        isPrivateProfile={isPrivateProfile}
+      />
+      {/* Location Panel */}
+      <EditAboutItem
+        contentName={"location"}
+        contentVariable={userProfile?.location}
+        isPrivateProfile={isPrivateProfile}
+      />
+      {/* Workplace panel */}
+      <EditAboutItem
+        contentName={"workplace"}
+        contentVariable={userProfile?.workplace}
+        isPrivateProfile={isPrivateProfile}
+      />
+      <EditAboutItem
+        contentName={"position"}
+        contentVariable={userProfile?.position}
+        isPrivateProfile={isPrivateProfile}
+      />
+      <hr></hr>
+      <div className=" d-flex justify-content-start row mt-3">
+        <h2 className="col-2 icon d-flex justify-content-end">Contact Info</h2>
+        <EditAboutItem
+          contentName={"email"}
+          contentVariable={userProfile?.email}
+          isPrivateProfile={isPrivateProfile}
+        />
       </div>
     </div>
   );

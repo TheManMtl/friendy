@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { useFormik, ErrorMessage, Formik, Form, Field, FormikProps } from "formik";
 import "./LoginPage.css";
 import { useNavigate } from 'react-router-dom';
-
+import { apiError } from "../../types/common";
 
 function RegistrationPage() {
 
@@ -24,9 +24,6 @@ function RegistrationPage() {
     passwordCopy: string
   }
 
-  type apiErr = {
-    message: string
-  }
   const initialValues = {
     name: '',
     email: '',
@@ -58,7 +55,7 @@ function RegistrationPage() {
 
     } catch (error) {
 
-      const err = error as AxiosError<apiErr>;
+      const err = error as AxiosError<apiError>;
 
       if (!err?.response) {
 

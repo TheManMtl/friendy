@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import "./Comment.css";
 import useAxiosToken from "../../../hooks/useAxiosToken";
@@ -11,57 +11,242 @@ import {
   Chat,
 } from "react-bootstrap-icons";
 import { Comments } from "../../../models/Comments";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+import CommentContainer from "./CommentContainer";
+import { axiosToken } from "../../../services/api/axios";
+import useAuth from "../../../hooks/useAuth";
 type CommentProps = {
   isNested: boolean;
-  size: number;
   comment: Comments;
 };
 
-const Comment: React.FC<CommentProps> = ({ isNested, size, comment }) => {
-  const [viewReplies, setViewReplies] = useState<boolean>(true);
+const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
+  const [viewReplies, setViewReplies] = useState<boolean>(false);
   const [makeComment, setMakeComment] = useState<boolean>(false);
-  return (
-    <div
-      className={`d-flex flex-lg-row flex-column my-3 pe-2 nested-${isNested}-${size} `}
-    >
-      <div className="">
-        <ProfileImage
-          src={
-            "data:image/jpeg;base64,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"
+  const [editComment, setEditComment] = useState<boolean>(false);
+  const [replies, setReplies] = useState<number[]>([]);
+  const [newComments, setNewComments] = useState<Comments[]>([]);
+  const [userLiked, setUserLiked] = useState<boolean>(false);
+  const [theComment, setTheComment] = useState<Comments>(comment);
+  const [commentChanged, setCommentChanges] = useState<boolean>(false);
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+
+  TimeAgo.addDefaultLocale(en);
+  const timeAgo = new TimeAgo("en-US");
+
+  const newComment = (commentId: number) => {
+    const updatedReplies = [...replies, commentId];
+    setReplies(updatedReplies);
+  };
+
+  const handleLike = async () => {
+    console.log("LIKE");
+    // router.post("/comment/:id([0-9]+)", authUser, likes.likeCommentToggle);
+    await axiosToken
+      .post(`${process.env.REACT_APP_HOST_URL}/likes/comment/${comment.id}`)
+      .then((response) => {
+        console.log(response.data);
+        console.log("is this working?");
+        setCommentChanges(!commentChanged);
+      })
+      .catch((error) => {
+        console.log("is this NOT working?");
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    console.log("user:  ");
+    const fetchLikes = async () => {
+      await axiosToken
+        .get(`${process.env.REACT_APP_HOST_URL}/likes/comment/${comment.id}`)
+        .then((response) => {
+          console.log(response.data + "user liked comment");
+          setUserLiked(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    const fetchNewComment = async () => {
+      await axiosToken
+        .get(`${process.env.REACT_APP_HOST_URL}/comments/single/${comment.id}`)
+        .then((response) => {
+          setTheComment(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    fetchLikes();
+    if (!firstRender) {
+      fetchNewComment();
+    } else {
+      setFirstRender(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [comment.id, commentChanged]);
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      const comments = await Promise.all(
+        replies.map(async (commentId) => {
+          try {
+            const response = await axiosToken.get(
+              `${process.env.REACT_APP_HOST_URL}/comments/single/${commentId}`
+            );
+            return response.data;
+          } catch (error) {
+            console.log(error);
+            return null;
           }
-          alt={"alt"}
-          size={"small-small-med"}
-        />
-      </div>
-      <div className=" flex-grow-1">
-        <div className="row text-start bg-comment ms-1">
-          <div className="col-12  fw-bolder">Alex McBryan</div>
-          <div className="col-12 ">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores,
-            autem nemo ea.
+        })
+      );
+      const filteredComments = comments.filter((comment) => comment !== null);
+
+      setNewComments(filteredComments);
+    };
+
+    if (replies.length > 0) {
+      fetchComments();
+    }
+  }, [replies]);
+
+  return (
+    <div>
+      <div
+        className={`d-flex flex-lg-row flex-column my-3 pe-2 nested-${isNested} `}
+      >
+        {theComment.profileImg && !editComment && (
+          <div className="">
+            <ProfileImage
+              src={theComment.profileImg!}
+              alt={"alt"}
+              size={"small-small-med"}
+            />
           </div>
-        </div>
-        <div className="row text-start  ms-1">
-          <div className="col-12">
-            <span className="comment-interaction me-2">Like</span>
-            <span
-              className={`comment-interaction  me-2 comment-${makeComment}`}
-              onClick={() => {
-                setMakeComment(!makeComment);
-              }}
-            >
-              Comment
-            </span>
-            <span className="comment-interaction me-4">25m</span>
-            <span className="comment-interaction ">
-              <HandThumbsUpFill /> 3
-            </span>
-          </div>
-          {viewReplies && !makeComment && (
-            <div className="col-12 view-replies">View Replies</div>
+        )}
+
+        <div className=" flex-grow-1">
+          {!editComment && (
+            <div className="row text-start bg-comment ms-1">
+              <div className="col-12  fw-bolder">
+                {theComment.name && !editComment && theComment.name}
+              </div>
+              <div className="col-12 ">
+                {theComment.body && !editComment && theComment.body}
+              </div>
+            </div>
           )}
-          {makeComment && <CommentReply />}
+
+          {editComment && (
+            <div className="row text-start ms-1">
+              <div className="col-12">
+                <CommentReply
+                  commentId={theComment.id}
+                  newComment={newComment}
+                  setMakeComment={setEditComment}
+                  isNewComment={true}
+                  commentChanged={commentChanged}
+                  setCommentChanges={setCommentChanges}
+                />
+              </div>
+              <div
+                className="comment-interaction fw-bolder col-12 text-end cancel-edit"
+                onClick={() => {
+                  setEditComment(!editComment);
+                }}
+              >
+                Cancel
+              </div>
+            </div>
+          )}
+          <div className="row text-start  ms-1">
+            {!editComment && (
+              <div className="col-12">
+                <span
+                  className={`comment-interaction me-1 user-liked-${userLiked}`}
+                  onClick={handleLike}
+                >
+                  {userLiked ? <>Unlike</> : <>Like</>}
+                </span>
+                <span
+                  className={`comment-interaction  me-1 comment-${makeComment}`}
+                  onClick={() => {
+                    setMakeComment(!makeComment);
+                  }}
+                >
+                  Comment
+                </span>
+                <span className="comment-interaction me-1">
+                  {theComment.createdAt &&
+                    timeAgo.format(new Date(theComment.createdAt))}
+                </span>
+                <span className="comment-interaction ">
+                  <HandThumbsUpFill />{" "}
+                  {theComment.likeCount && <>{theComment.likeCount}</>}
+                </span>
+              </div>
+            )}
+
+            {theComment && (
+              <div className="col-12">
+                <span
+                  onClick={() => {
+                    setEditComment(!editComment);
+                  }}
+                  className="comment-interaction fw-bolder"
+                >
+                  {!editComment && <>Edit</>}
+                </span>
+                <span className="comment-interaction fw-bolder">
+                  {!editComment && <>Delete</>}
+                </span>
+              </div>
+            )}
+            {theComment.childCount > 0 && !makeComment && (
+              <div className="col-12 view-replies">
+                {theComment.childCount > 0 && !editComment && (
+                  <div
+                    onClick={() => {
+                      setViewReplies(!viewReplies);
+                      console.log(theComment.id);
+                    }}
+                  >
+                    {viewReplies ? <>Close Replies</> : <>View Replies</>}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
+      </div>
+      <div className="nested-in-comment">
+        {makeComment && (
+          <CommentReply
+            commentId={theComment.id}
+            newComment={newComment}
+            setMakeComment={setMakeComment}
+            isNewComment={false}
+            commentChanged={commentChanged}
+            setCommentChanges={setCommentChanges}
+          />
+        )}
+
+        {replies.length > 0 &&
+          newComments.map((comment, index) => (
+            <Comment key={index} isNested={true} comment={comment} />
+          ))}
+        {comment.childCount > 0 && viewReplies && (
+          <div className="nested-in-comment">
+            {" "}
+            <CommentContainer
+              commentId={comment.id}
+              postId={comment.postId}
+            />{" "}
+          </div>
+        )}
       </div>
     </div>
   );

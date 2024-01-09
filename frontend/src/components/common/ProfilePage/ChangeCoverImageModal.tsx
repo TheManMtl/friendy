@@ -9,19 +9,17 @@ import { AuthContext } from "../../../context/AuthProvider";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { useParams } from "react-router-dom";
 
-interface ChangeProfiletModalProps {
-  showChangeProfileModal: boolean;
-  closeChangeProfileModal: () => void;
+interface ChangeCoverImageModalProps {
+  showCoverImageModal: boolean | undefined;
+  closeCoverImageModal: () => void;
 }
-
-const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
-  showChangeProfileModal,
-  closeChangeProfileModal,
+const ChangeCoverImageModal: React.FC<ChangeCoverImageModalProps> = ({
+  showCoverImageModal,
+  closeCoverImageModal,
 }) => {
   const axiosToken = useAxiosToken();
   const authContext = useContext(AuthContext);
   const [file, setFile] = useState<File | undefined>(undefined);
-  const [profilePost, setProfilePost] = useState<Post | undefined>(undefined);
   const [userId, setUserId] = useState<number | undefined>(undefined);
 
   const handleImageChange = (event: any) => {
@@ -33,12 +31,11 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
     if (file !== undefined && file !== null) {
       const formData = new FormData();
       formData.append("image", file);
-
       if (userId) {
         // Append other fields to formData
         formData.append("authorId", userId.toString());
-        formData.append("type", PostType.profilePic);
-        formData.append("content", "This is a profile image");
+        formData.append("type", PostType.coverPhoto);
+        formData.append("content", "Cover image");
       }
 
       axiosToken
@@ -46,22 +43,22 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
           headers: { "Content-Type": "multipart/form-data" },
         })
         .then((response) => {
+          //update coverPostId in user record
           axiosToken
-            .put("/profile/update", { profilePostId: response.data.post.id })
+            .put("/profile/update", { coverPostId: response.data.post.id })
             .then((response) => {})
             .catch((error) => {
               console.log(error);
             });
+          closeCoverImageModal();
           // TODO:use flash message
-          alert("Picture successfully uploaded!");
+          alert("Cover image successfully uploaded!");
           window.location.reload();
         })
         .catch((error) => {
           console.log(error);
         });
       setFile(undefined);
-
-      //update profilePostId in the User record
     } else {
       console.log("====No file selected===");
     }
@@ -72,17 +69,18 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
       setUserId(authContext?.user?.id);
     }
   }, []);
+
   return (
     <div>
       {" "}
       <Modal
         centered
-        show={showChangeProfileModal}
-        onHide={closeChangeProfileModal}
+        onHide={closeCoverImageModal}
+        show={showCoverImageModal}
         size="lg"
       >
         <Modal.Header closeButton>
-          <Modal.Title>Change profile image</Modal.Title>
+          <Modal.Title>Change Cover image</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -100,9 +98,9 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
             ></ButtonF>
           </Form>
 
-          <Button variant="secondary" onClick={closeChangeProfileModal}>
+          {/* <Button variant="secondary" onClick={closeCoverImageModal}>
             Close
-          </Button>
+          </Button> */}
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>
@@ -110,4 +108,4 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
   );
 };
 
-export default ChangeProfileModal;
+export default ChangeCoverImageModal;

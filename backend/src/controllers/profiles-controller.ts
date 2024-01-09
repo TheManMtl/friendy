@@ -145,7 +145,7 @@ export const viewProfile = async (
       ],
     });
     if (!profile) {
-      return res.status(400).send({ message: "user does not exist" });
+      return res.status(404).send({ message: "User not found" });
     }
 
     // image
@@ -208,7 +208,7 @@ export const updateProfile = async (
     });
 
     if (!user) {
-      return res.status(400).send({ message: "User could not be found." });
+      return res.status(404).send({ message: "User could not be found." });
     }
 
     if (request.location != null) {
@@ -239,6 +239,11 @@ export const updateProfile = async (
     //added by Shiyu
     if (request.profilePostId != null) {
       user.profilePostId = request.profilePostId;
+      updates++;
+    }
+
+    if (request.coverPostId != null) {
+      user.coverPostId = request.coverPostId;
       updates++;
     }
 
@@ -588,4 +593,44 @@ const sortSearch = async (
     return map.user;
   });
   return finalSorting;
+};
+
+//get current user profile pic thumbnail
+export const getProfilePicThumbnail = async (
+  req: CustomRequest,
+  res: Response,
+): Promise<any> => {
+  try {
+
+    const user = await User.findByPk(req.params.id);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    const post = await Post.findOne({
+      where: {
+        id: user.profilePostId,
+      },
+      include: [
+        {
+          model: Image,
+          attributes: ["id", "fileName", "thumbnail"],
+        },
+      ],
+    });
+    if (!post || !post.Image) {
+      const url = await getPicUrlFromS3(req, "default_thumbnail.jpg");
+      console.log("default profile pic thumbnail url: ");
+      console.log(url);
+      return res.status(200).json(url);
+    }
+
+    const url = await getPicUrlFromS3(req, post.Image.thumbnail);
+    console.log("profile pic thumbnail url: ");
+    console.log(url);
+    return res.status(200).json(url);
+
+  } catch (error) {
+    console.error("Error fetching post images:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 };

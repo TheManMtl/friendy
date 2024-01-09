@@ -50,6 +50,7 @@
     background-size: cover;
     background-position: center;
     margin: 10px;
+    margin-top:0px;
     border: 1px solid #c9c9c9;
     box-shadow: -2px 2px 3px #d3d3d3;
     border-radius: 8px;
@@ -59,18 +60,22 @@
 
 .panel-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
     gap: 10px;
     padding: 10px;
 }
 
 .friendName {
     position: absolute;
-    bottom: 0;
+    bottom:10px;
     width: 100%;
     background-color: white;
     padding: 10px;
     box-sizing: border-box;
     background-color:white;
     height:120px;
+}
+
+.friendName:hover{
+    cursor:pointer;
 }

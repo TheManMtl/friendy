@@ -3,19 +3,17 @@
     border-radius: 35px;
     padding: 10px 8px;
 }
-
+ 
 .comment-interaction {
     font-size: .8em;
     color: #757678;
     margin-left: 8px;
 }
 
-.nested-true-3 {
-    margin-left: 2.5em;
-}
-.nested-true-1 {
-    margin-left: 1.5em;
-}
+
+/* .nested-true {
+    margin-left: -4em;
+} */
 .view-replies {
     margin-left: 8px;
     font-size: .9em;
@@ -45,4 +43,17 @@
 
 .comment-true {
     font-weight: 600;
+}
+
+.user-liked-true {
+    font-weight: 800;
+}
+
+.nested-in-comment {
+    padding-left: 20px;
+}
+
+.cancel-edit {
+    margin-top: -20px!important;
+    padding-right: 30px!important;
 }

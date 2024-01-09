@@ -1,12 +1,24 @@
 import React from "react";
 import "../../../pages/common/ProfilePage/ProfilePage.css";
+import { useState } from "react";
+import ChangeCoverImageModal from "./ChangeCoverImageModal";
 
 interface coverImageProps {
-  src: string;
+  src: string | undefined;
   isPrivateProfile: boolean;
 }
 
 const CoverImage: React.FC<coverImageProps> = ({ src, isPrivateProfile }) => {
+  //start CoverImage modal section
+  const [showCoverImageModal, setShowCoverImageModal] =
+    useState<boolean>(false);
+  const closeCoverImageModal = () => {
+    setShowCoverImageModal(false);
+  };
+  const openCoverImageModal = () => setShowCoverImageModal(true);
+
+  //end CoverImage Modal section
+
   return (
     <div>
       <div className="coverImage row">
@@ -18,7 +30,7 @@ const CoverImage: React.FC<coverImageProps> = ({ src, isPrivateProfile }) => {
             >
               <img
                 className="inner-image"
-                src="https://images.pexels.com/photos/580151/pexels-photo-580151.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                src={src}
                 alt="cover"
                 style={{
                   width: "100%",
@@ -28,11 +40,19 @@ const CoverImage: React.FC<coverImageProps> = ({ src, isPrivateProfile }) => {
               />
             </div>
             {isPrivateProfile ? (
-              <button className="btn-cover-image">Edit cover image</button>
+              <button className="btn-cover-image" onClick={openCoverImageModal}>
+                Edit cover image
+              </button>
             ) : null}
           </div>
         </div>
       </div>
+
+      {/* CoverImage Modal*/}
+      <ChangeCoverImageModal
+        showCoverImageModal={showCoverImageModal}
+        closeCoverImageModal={closeCoverImageModal}
+      />
     </div>
   );
 };
