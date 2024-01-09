@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; // Import axios
+import useAxiosToken from '../../../hooks/useAxiosToken';
 import AdminNavbarTop from './AdminComponents/AdminNavbarTop';
 import "./AdminStyle.css";
 
@@ -29,11 +30,10 @@ function getColorByRole(role: string): string {
 
 function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
-
-  const baseUrl = "/api/";
+  const axiosToken = useAxiosToken();
   useEffect(() => {
     // Fetch users 
-    axios.get(baseUrl +"users/admin")
+    axiosToken.get("users/admin")
       .then(response => setUsers(response.data))
       .catch(error => console.error('Error fetching users:', error));
   }, []);
