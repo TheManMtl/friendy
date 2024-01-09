@@ -24,23 +24,24 @@ export const createPost = async (req: any, res: Response) => {
   let image = null;
 
   try {
-
     const user = await User.findByPk(req.id);
 
     if (!user) {
-        return res.status(404).send({ message: "User not found" });
+      return res.status(404).send({ message: "User not found" });
     }
 
     if (req.body.profileId) {
-
       const user = await User.findByPk(req.body.profileId);
 
       if (!user) {
-        return res.status(404).send({ message: "User not found"});
+        return res.status(404).send({ message: "User not found" });
       }
     }
 
-    if (!imageFile && (!req.body.content || (req.body?.content as string).length < 1)) {
+    if (
+      !imageFile &&
+      (!req.body.content || (req.body?.content as string).length < 1)
+    ) {
       return res.status(400).json({ message: "Post content cannot be empty" });
     }
 
@@ -50,11 +51,12 @@ export const createPost = async (req: any, res: Response) => {
     }
     //FIXME: validate type
     const post = await Post.create({
-      authorId: user.id, 
+      authorId: user.id,
       profileId: req.body.profileId ?? null,
       type: req.body.type,
       content: req.body.content,
       imageId: image ? image.id : null,
+      albumId: req.body.albumId,
     });
     return res.status(201).json({ success: true, post });
   } catch (error) {
@@ -148,12 +150,12 @@ export const getTimeline = async (req: any, res: Response) => {
               {
                 [Op.or]: [
                   {
-                    profileId: req.params.id
+                    profileId: req.params.id,
                   },
                   {
-                    profileId: null
+                    profileId: null,
                   },
-                ]
+                ],
               },
             ],
           },
@@ -162,7 +164,7 @@ export const getTimeline = async (req: any, res: Response) => {
           },
         ],
         type: {
-          [Op.not]: "albumImg"
+          [Op.not]: "albumImg",
         },
         isDeleted: false,
       },
@@ -279,7 +281,7 @@ export const getPostImageUrl = async (req: Request, res: Response) => {
       ],
     });
     //check if the posts exist
-    if (post.length === 0) {
+    if (post === null) {
       return res.status(404).json("No posts found");
     }
 
@@ -419,33 +421,35 @@ export const getNewsfeed = async (req: any, res: Response) => {
     });
 
     // list of friends ids
-    const authorIds = await Promise.all(friends.map(async (friend: typeof Friend) => {
-      //check friend is active
-      let friendId;
-      if (friend.requestedById == id) {
-        await User.findByPk(friend.requestedToId, {
-          where: {
-            isDeleted: false,
-          },
-        });
-        console.log("===============================");
-        console.log("friend: " + friend.requestedToId);
-        console.log("===============================");
-        friendId = friend.requestedToId;
-      }
-      if (friend.requestedToId == id) {
-        await User.findByPk(friend.requestedById, {
-          where: {
-            isDeleted: false,
-          },
-        });
-        console.log("===============================");
-        console.log("friend: " + friend.requestedById);
-        console.log("===============================");
-        friendId = friend.requestedById;
-      }
-      return friendId;
-    }));
+    const authorIds = await Promise.all(
+      friends.map(async (friend: typeof Friend) => {
+        //check friend is active
+        let friendId;
+        if (friend.requestedById == id) {
+          await User.findByPk(friend.requestedToId, {
+            where: {
+              isDeleted: false,
+            },
+          });
+          console.log("===============================");
+          console.log("friend: " + friend.requestedToId);
+          console.log("===============================");
+          friendId = friend.requestedToId;
+        }
+        if (friend.requestedToId == id) {
+          await User.findByPk(friend.requestedById, {
+            where: {
+              isDeleted: false,
+            },
+          });
+          console.log("===============================");
+          console.log("friend: " + friend.requestedById);
+          console.log("===============================");
+          friendId = friend.requestedById;
+        }
+        return friendId;
+      })
+    );
 
     //add id to include user's own posts
     authorIds.push(id);
@@ -572,7 +576,7 @@ export const moveToAlbum = async (req: any, res: Response) => {
         id: req.params.postId,
         authorId: req.id,
         isDeleted: false,
-            },
+      },
     });
 
     if (!post) {
@@ -689,13 +693,12 @@ export const getPhotosByUserId = async (req: any, res: Response) => {
     console.error("Error fetching post images:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 //get the most recent post image from an album
 export const getPostFromAlbum = async (req: any, res: Response) => {
-  try{
+  try {
     const posts = await Post.findAll({
       where: {
-        
         albumId: req.params.albumId,
         isDeleted: false,
       },
@@ -712,32 +715,29 @@ export const getPostFromAlbum = async (req: any, res: Response) => {
     let thumbnailUrl = null;
     //check if the posts exist
     if (posts.length === 0) {
-      thumbnailUrl=(await imageController.getPicUrlFromS3(req, "default.jpg"))
+      thumbnailUrl = await imageController.getPicUrlFromS3(req, "default.jpg");
       return res.status(200).json([{ thumbnailUrl }]);
     }
     const post = posts[0];
 
     const resData: PostWithUrl[] = [];
-  
-     
 
-      if (post.Image) {
-        url = await imageController.getPicUrlFromS3(req, post.Image.fileName);
-        thumbnailUrl = await imageController.getPicUrlFromS3(
-          req,
-          post.Image.thumbnail
+    if (post.Image) {
+      url = await imageController.getPicUrlFromS3(req, post.Image.fileName);
+      thumbnailUrl = await imageController.getPicUrlFromS3(
+        req,
+        post.Image.thumbnail
+      );
+    }
 
-        );
-      }
+    const resPost: PostWithUrl = {
+      ...post.toJSON(),
+      imageUrl: url,
+      thumbnailUrl: thumbnailUrl,
+    };
+    resData.push(resPost);
 
-      const resPost: PostWithUrl = {
-        ...post.toJSON(),
-        imageUrl: url,
-        thumbnailUrl: thumbnailUrl,
-      };
-      resData.push(resPost);
-    
-      res.json(resData);
+    res.json(resData);
   } catch (error) {
     console.error("Error fetching post images:", error);
     return res.status(500).json({ error: "Internal Server Error" });
