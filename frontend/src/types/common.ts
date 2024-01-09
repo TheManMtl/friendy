@@ -45,5 +45,13 @@ export interface Comment {
 
 //to retrieve error messages from api
 export type apiError = {
-  message: string
-}
+  message: string;
+};
+
+export type FriendListType = {
+  friendId: number;
+  name: string;
+  userId: number;
+  friendsSince: Date;
+  thumbnail: string;
+};
