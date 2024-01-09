@@ -7,11 +7,13 @@ WORKDIR /usr/src/app
 # Copy package.json and package-lock.json
 # COPY package*.json ./
 
+# Bundle app source
+COPY . .
+
 # Install any needed packages
 RUN npm install
 
-# Bundle app source
-COPY . .
+
 
 # Build your TypeScript files
 RUN npm run build
