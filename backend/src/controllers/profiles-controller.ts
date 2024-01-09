@@ -74,8 +74,7 @@ export const viewProfile = async (
   try {
     console.log("\n\n\n\n\n\n\n\n VIEWING PROFILIE \n\n\n\n\n\n\n");
     let isFriend;
-    // const currentUserId = req.id;
-    const currentUserId = 101;
+    const currentUserId = req.id;
     const profileId = req.params.id;
     if (!currentUserId) {
       isFriend = false;
