@@ -19,9 +19,10 @@ import useAuth from "../../../hooks/useAuth";
 type CommentProps = {
   isNested: boolean;
   comment: Comments;
+  submit: any | null;
 };
 
-const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
+const Comment: React.FC<CommentProps> = ({ isNested, comment, submit }) => {
   const [viewReplies, setViewReplies] = useState<boolean>(false);
   const [makeComment, setMakeComment] = useState<boolean>(false);
   const [editComment, setEditComment] = useState<boolean>(false);
@@ -40,6 +41,9 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
   const newComment = (commentId: number) => {
     const updatedReplies = [...replies, commentId];
     setReplies(updatedReplies);
+    if (submit) {
+      submit();
+    }
   };
 
   const handleLike = async () => {
@@ -73,6 +77,9 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
         .delete(url)
         .then((response) => {
           setIsDeleted(true);
+          if (submit) {
+            submit();
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -178,6 +185,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
                       commentChanged={commentChanged}
                       setCommentChanges={setCommentChanges}
                       value={theComment.body}
+                      submit={submit}
                     />
                   </div>
                   <div
@@ -291,12 +299,18 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
                 commentChanged={commentChanged}
                 setCommentChanges={setCommentChanges}
                 value={null}
+                submit={submit}
               />
             )}
 
             {replies.length > 0 &&
               newComments.map((comment, index) => (
-                <Comment key={index} isNested={true} comment={comment} />
+                <Comment
+                  key={index}
+                  isNested={true}
+                  comment={comment}
+                  submit={submit}
+                />
               ))}
             {comment.childCount > 0 && viewReplies && (
               <div className="nested-in-comment">
@@ -304,6 +318,8 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment }) => {
                 <CommentContainer
                   commentId={comment.id}
                   postId={comment.postId}
+                  reRender={true}
+                  submit={submit}
                 />{" "}
               </div>
             )}

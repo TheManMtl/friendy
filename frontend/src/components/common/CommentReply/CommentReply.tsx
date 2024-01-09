@@ -21,6 +21,7 @@ type CommentReplyProps = {
   commentChanged: boolean;
   setCommentChanges: any;
   value: string | null;
+  submit: any | null;
 };
 
 const CommentReply: React.FC<CommentReplyProps> = ({
@@ -31,6 +32,7 @@ const CommentReply: React.FC<CommentReplyProps> = ({
   commentChanged,
   setCommentChanges,
   value,
+  submit,
 }) => {
   const axiosToken = useAxiosToken();
   const { user } = useAuth();
@@ -96,6 +98,9 @@ const CommentReply: React.FC<CommentReplyProps> = ({
           newComment(response.data.id);
         }
         setCommentChanges(!commentChanged);
+        if (submit) {
+          submit();
+        }
       })
       .catch((error) => {
         console.log(error);
