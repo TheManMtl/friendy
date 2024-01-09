@@ -24,7 +24,6 @@ interface ProfilPageType {
 }
 
 const ProfilePage: React.FC<ProfilPageType> = () => {
-
   const [userId, setUserId] = useState<number>();
   const { selectedRoute } = useProfilePageContext();
   const [isPrivateProfile, setIsPrivateProfile] = useState<boolean>(false);
@@ -32,7 +31,8 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
   const { user } = useAuth();
   const axiosToken = useAxiosToken();
   const [profileThumb, setProfileThumb] = useState<string | null>("");
-  const [currentUserProfileThumb, setCurrentUserProfileThumb] = useState<string>("");
+  const [currentUserProfileThumb, setCurrentUserProfileThumb] =
+    useState<string>("");
   const [userProfile, setUserProfile] = useState<IUser | null>(null);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -67,71 +67,75 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
               profileImageUrl: user.profileImgThumbnail,
               coverImagePostId: user.coverImgId,
             });
-            if (user.profileImgId != null) {
-              console.log("=======profilePostId is:====" + user.profileImgId);
-              axiosToken
-                .get(`/posts/userprofile/${user.profileImgId}`)
-                .then((response) => {
-                  if (response.data.length !== 0) {
-                    //TODO: fetch the profil pic which has the id associated with the user
-                    setProfileThumb(response.data.thumbnailUrl);
-                  }
-                })
-                .catch((error: any) => {
-                  const err = error as AxiosError<apiError>;
+            setProfileThumb(user.profileImgThumbnail);
+            setCoverImageUrl(user.coverImgFileName);
 
-                  if (!err?.response) {
-                    setErrorMessage("Failed to connect to server.");
-                    console.log(errorMessage);
-                  } else if (err.response?.data?.message) {
-                    setErrorMessage(err.response.data.message);
-                    console.log(errorMessage);
-                  } else {
-                    console.log(err);
-                    setErrorMessage("Something went wrong.");
-                  }
-                  setProfileThumb(
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
-                  );
-                });
-            } else {
-              setProfileThumb(
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
-              );
-            }
+            // if (user.profileImgId != null) {
+            //   console.log("=======profilePostId is:====" + user.profileImgId);
+            //   axiosToken
+            //     .get(`/posts/userprofile/${user.profileImgId}`)
+            //     .then((response) => {
+            //       if (response.data.length !== 0 && !response.data.isDeleted) {
+            //         //TODO: fetch the profil pic which has the id associated with the user
+            //         setProfileThumb(response.data.thumbnailUrl);
+            //       }
+            //     })
+            //     .catch((error: any) => {
+            //       const err = error as AxiosError<apiError>;
 
-            if (user.coverImgId != null) {
-              console.log("=======coverImagePostId is:====" + user.coverImgId);
-              axiosToken
-                .get(`/posts/userprofile/${user.coverImgId}`)
-                .then((response) => {
-                  if (response?.data?.length !== 0) {
-                    //TODO: fetch the profil pic which has the id associated with the user
-                    setCoverImageUrl(response.data.imageUrl);
-                    console.log(
-                      "====cover image url is:=====" + response.data.imageUrl
-                    );
-                  } else {
-                    setCoverImageUrl(
-                      "https://t4.ftcdn.net/jpg/03/78/40/11/360_F_378401105_9LAka9cRxk5Ey2wwanxrLTFCN1U51DL0.jpg"
-                    );
-                  }
-                })
-                .catch((error: any) => {
-                  const err = error as AxiosError<apiError>;
+            //       if (!err?.response) {
+            //         setErrorMessage("Failed to connect to server.");
+            //         console.log(errorMessage);
+            //       } else if (err.response?.data?.message) {
+            //         setErrorMessage(err.response.data.message);
+            //         console.log(errorMessage);
+            //       } else {
+            //         console.log(err);
+            //         setErrorMessage("Something went wrong.");
+            //       }
+            //       setProfileThumb(
+            //         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
+            //       );
+            //     });
+            // } else {
+            //   setProfileThumb(
+            //     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
+            //   );
+            // }
 
-                  if (!err?.response) {
-                    setErrorMessage("Failed to connect to server.");
-                    console.log(errorMessage);
-                  } else if (err.response?.data?.message) {
-                    setErrorMessage(err.response.data.message);
-                    console.log(errorMessage);
-                  } else {
-                    console.log(err);
-                    setErrorMessage("Something went wrong.");
-                  }
-                });
-            }
+            //FIXME: Delete this part once the backend of fetching coverimageUrl works
+            // if (user.coverImgId != null) {
+            //   console.log("=======coverImagePostId is:====" + user.coverImgId);
+            //   axiosToken
+            //     .get(`/posts/userprofile/${user.coverImgId}`)
+            //     .then((response) => {
+            //       if (response?.data?.length !== 0) {
+            //         //TODO: fetch the profil pic which has the id associated with the user
+            //         setCoverImageUrl(response.data.imageUrl);
+            //         console.log(
+            //           "====cover image url is:=====" + response.data.imageUrl
+            //         );
+            //       } else {
+            //         setCoverImageUrl(
+            //           "https://t4.ftcdn.net/jpg/03/78/40/11/360_F_378401105_9LAka9cRxk5Ey2wwanxrLTFCN1U51DL0.jpg"
+            //         );
+            //       }
+            //     })
+            //     .catch((error: any) => {
+            //       const err = error as AxiosError<apiError>;
+
+            //       if (!err?.response) {
+            //         setErrorMessage("Failed to connect to server.");
+            //         console.log(errorMessage);
+            //       } else if (err.response?.data?.message) {
+            //         setErrorMessage(err.response.data.message);
+            //         console.log(errorMessage);
+            //       } else {
+            //         console.log(err);
+            //         setErrorMessage("Something went wrong.");
+            //       }
+            //     });
+            // }
           }
 
           if (id && userId) {
@@ -145,7 +149,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         })
         .catch((error: any) => {
           const err = error as AxiosError<apiError>;
-
 
           if (!err?.response) {
             setErrorMessage("Failed to connect to server.");
@@ -172,11 +175,9 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         if (!err?.response) {
           setErrorMessage("Failed to connect to server.");
           console.log(errorMessage);
-
         } else if (err.response?.data?.message) {
           setErrorMessage(err.response.data.message);
           console.log(errorMessage);
-
         } else {
           console.log(err);
           setErrorMessage("Something went wrong.");
@@ -186,7 +187,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
         );
       });
-
   }, [axiosToken, id, navigate, user, userId]);
 
   const renderMainPanelContent = () => {
@@ -227,7 +227,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
     }
   };
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   return (
     <div>

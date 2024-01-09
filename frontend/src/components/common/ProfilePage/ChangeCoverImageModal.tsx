@@ -33,33 +33,73 @@ const ChangeCoverImageModal: React.FC<ChangeCoverImageModalProps> = ({
       formData.append("image", file);
       if (userId) {
         // Append other fields to formData
-        formData.append("authorId", userId.toString());
-        formData.append("type", PostType.coverPhoto);
-        formData.append("content", "Cover image");
+        // formData.append("authorId", userId.toString());
+        // formData.append("type", PostType.coverPhoto);
+        // formData.append("content", "Cover image");
+        //check album id with the profileId==userId and type==coverPhoto and isDeleted==0
+        //if exists return the id, if not create one record in album and then return the id
+        axiosToken
+          .get(`/albums/cover/${userId}`)
+          .then((response) => {
+            const coverAlbumId = response.data.id;
+            console.log("====Album id====" + coverAlbumId);
+            // Append other fields to formData
+            formData.append("authorId", userId.toString());
+            formData.append("type", PostType.coverPhoto);
+            formData.append("content", "Cover image");
+            formData.append("albumId", coverAlbumId.toString());
+
+            axiosToken
+              .post("/posts", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+              })
+              .then((response) => {
+                //update coverPostId in user record
+                axiosToken
+                  .put("/profile/update", {
+                    coverPostId: response.data.post.id,
+                  })
+                  .then((response) => {})
+                  .catch((error) => {
+                    console.log(error);
+                  });
+                closeCoverImageModal();
+                // TODO:use flash message
+                alert("Cover image successfully uploaded!");
+                window.location.reload();
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+            setFile(undefined);
+          })
+          .catch((error: any) => {
+            console.log(error);
+          });
       }
 
-      axiosToken
-        .post("/posts", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((response) => {
-          //update coverPostId in user record
-          axiosToken
-            .put("/profile/update", { coverPostId: response.data.post.id })
-            .then((response) => {})
-            .catch((error) => {
-              console.log(error);
-            });
-          closeCoverImageModal();
-          // TODO:use flash message
-          alert("Cover image successfully uploaded!");
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      setFile(undefined);
-    } else {
+      //   axiosToken
+      //     .post("/posts", formData, {
+      //       headers: { "Content-Type": "multipart/form-data" },
+      //     })
+      //     .then((response) => {
+      //       //update coverPostId in user record
+      //       axiosToken
+      //         .put("/profile/update", { coverPostId: response.data.post.id })
+      //         .then((response) => {})
+      //         .catch((error) => {
+      //           console.log(error);
+      //         });
+      //       closeCoverImageModal();
+      //       // TODO:use flash message
+      //       alert("Cover image successfully uploaded!");
+      //       window.location.reload();
+      //     })
+      //     .catch((error) => {
+      //       console.log(error);
+      //     });
+      //   setFile(undefined);
+      // } else {
       console.log("====No file selected===");
     }
   };
