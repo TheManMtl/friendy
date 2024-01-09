@@ -30,6 +30,15 @@ function getColorByRole(role: string): string {
 
 function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Determine the index of the last and first user on the current page
+  const indexOfLastUser = currentPage * itemsPerPage;
+  const indexOfFirstUser = indexOfLastUser - itemsPerPage;
+
   const axiosToken = useAxiosToken();
   useEffect(() => {
     // Fetch users 
@@ -38,6 +47,11 @@ function AdminUsersPage() {
       .catch(error => console.error('Error fetching users:', error));
   }, []);
 
+
+  // Slice the users array to get only the users for the current page
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
   return (
     <>
       <div className="row bg-pink">
@@ -48,7 +62,7 @@ function AdminUsersPage() {
       <div className="container mt-3">
         <h2>Users List Updated</h2>
         <div className="row">
-        <div className="col-md-2">
+          <div className="col-md-2">
             <div className="color-box" style={{ backgroundColor: getColorByRole('admin') }}></div>
             <p className="text-center">Admin</p>
           </div>
@@ -69,8 +83,8 @@ function AdminUsersPage() {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
-              <tr key={user.id} className={ getColorByRole(user.role) }>
+            {currentUsers.map(user => (
+              <tr key={user.id} className={getColorByRole(user.role)}>
                 <td >{user.id}</td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
@@ -83,6 +97,15 @@ function AdminUsersPage() {
             ))}
           </tbody>
         </table>
+
+        <div>
+  <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+    Previous
+  </button>
+  <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(users.length / itemsPerPage)}>
+    Next
+  </button>
+</div>
       </div>
     </>
   );
