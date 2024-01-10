@@ -66,7 +66,7 @@ const UserDetails = () => {
 
       })
       .catch(error => {
-        console.error('Error disabling user:', error);
+        console.error('Error reactivating user:', error);
 
       })
       .finally(() => {
