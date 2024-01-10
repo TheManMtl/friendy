@@ -33,7 +33,8 @@ const ProfilePageFriend: React.FC<ProfilePageFriendProps> = ({
       axiosToken
         .get(`/friends/all/${paramUserId}`)
         .then((response: any) => {
-          setFriends(response.data);
+          const friendsList = response.data;
+          setFriends(friendsList);
         })
         .catch((error: any) => {
           console.log("==error for getting param users friends===" + error);
@@ -45,9 +46,12 @@ const ProfilePageFriend: React.FC<ProfilePageFriendProps> = ({
           setLoggedinUserFriends(response.data);
 
           // Extract IDs and update the state
-          const friendsIds = response.data.map(
-            (friend: FriendListType) => friend.userId
-          );
+          const friendsIds = response.data
+            .map((friend: FriendListType) => friend.userId)
+            .filter(
+              (friendId: number) => friendId !== parseInt(userId || "", 10)
+            );
+
           setLoggedinUserFriendsIds(friendsIds);
         })
         .catch((error: any) => {
@@ -68,9 +72,13 @@ const ProfilePageFriend: React.FC<ProfilePageFriendProps> = ({
             <hr />
             <div className="row d-flex">
               {friends.map((friend, index) => {
-                const isFriendOfLoggedInUser = loggedinUserFriendsIds.includes(
+                let isFriendOfLoggedInUser = loggedinUserFriendsIds.includes(
                   friend.userId
                 );
+                //remove add friend button to the logged in user himself
+                if (friend.userId === parseInt(userId || "", 10)) {
+                  isFriendOfLoggedInUser = true;
+                }
                 return (
                   <React.Fragment key={index}>
                     <ProfileFriendCards
@@ -78,19 +86,11 @@ const ProfilePageFriend: React.FC<ProfilePageFriendProps> = ({
                       friend={friend}
                       setFriends={setFriends}
                       isFriendOfLoggedInUser={isFriendOfLoggedInUser}
+                      userId={parseInt(userId || "", 10)}
                     />
                   </React.Fragment>
                 );
               })}
-              {/* {friends.map((friend, index) => (
-                              
-
-                <ProfileFriendCards
-                  key={index}
-                  isPrivateProfile={isPrivateProfile}
-                  friend={friend}
-                />
-              ))} */}
             </div>
           </div>
         </div>
