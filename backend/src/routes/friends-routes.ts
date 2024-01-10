@@ -19,12 +19,14 @@ router.get(
 router.get("/all/:id", authUser, attachS3Info, friends.viewAllFriends);
 router.get(
   "/suggested-school/:id",
+  attachS3Info,
   authUser,
   friends.viewSuggestedFriendsBySchool
 );
 router.get(
   "/suggested-location/:id",
-  authUser,
+  attachS3Info,
+  // authUser,
   friends.viewSuggestedFriendsByLocation
 );
 router.put("/accept-request", authUser, friends.acceptRequest);

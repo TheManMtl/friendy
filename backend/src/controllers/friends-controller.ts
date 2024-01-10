@@ -394,17 +394,18 @@ export const viewSuggestedFriendsBySchool = async (
 
     const processedSuggestedFriends = suggestedFriends.map(
       async (friend: typeof Friend) => {
-        const thumbnail =
-          (await getPicUrlFromS3(
-            req,
-            friend.profileImg?.Image?.thumbnail || "default.jpg"
-          )) || "";
+        let thumbnail = "default.jpg";
+        if (friend.dataValues.profileImg) {
+          thumbnail = friend.dataValues.profileImg.Image.thumbnail;
+        }
+
+        const thumb = await getPicUrlFromS3(req, thumbnail);
 
         return {
           userId: friend.id,
           name: friend.name,
           school: friend.school || null,
-          thumbnail: thumbnail,
+          thumbnail: thumb,
           profileImgId: friend.profileImg?.id || null,
         };
       }
@@ -491,17 +492,23 @@ export const viewSuggestedFriendsByLocation = async (
 
     const processedSuggestedFriends = suggestedFriends.map(
       async (friend: typeof User) => {
-        const thumbnail =
-          (await getPicUrlFromS3(
-            req,
-            friend.profileImg?.Image?.thumbnail || "default.jpg"
-          )) || "";
+        let thumbnail = "default.jpg";
+        if (friend.dataValues.profileImg) {
+          thumbnail = friend.dataValues.profileImg.Image.thumbnail;
+        }
+
+        const thumb = await getPicUrlFromS3(req, thumbnail);
+        // const thumbnail =
+        //   (await getPicUrlFromS3(
+        //     req,
+        //     friend.profileImg?.Image?.thumbnail || "default.jpg"
+        //   )) || "";
 
         return {
           userId: friend.id,
           name: friend.name,
           location: friend.location || null,
-          thumbnail: thumbnail,
+          thumbnail: thumb,
           profileImgId: friend.profileImg?.id || null,
         };
       }
