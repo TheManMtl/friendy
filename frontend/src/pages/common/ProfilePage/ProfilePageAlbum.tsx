@@ -10,18 +10,22 @@ import AlbumList from "../../../components/common/AlbumDisplay/AlbumList";
 import { Button } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-function ProfilePageAlbum() {
+
+interface ProfilePageAlbumProps {
+    profileId: number | undefined;
+}
+const ProfilePageAlbum:React.FC<ProfilePageAlbumProps> = ({ profileId }) => {
     const [albums, setAlbums] = useState<IAlbum[]>([]);
     const authContext = useContext(AuthContext);
     const axiosToken = useAxiosToken();
     const navigate = useNavigate();
-    const userId = authContext?.user?.id;
+    // const profileId = authContext?.user?.id;
 
     // const {userId}= useParams();
     const fetchAlbums = async () => {
         try {
             await axiosToken
-                .get(`/albums/user/${userId}`)
+                .get(`/albums/user/${profileId}`)
                 .then((res) => {
                     setAlbums(res.data);
                 });
@@ -34,7 +38,7 @@ function ProfilePageAlbum() {
     }, []);
 
     const handleCreateAlbumClick = () => {
-        navigate(`/profile/${userId}/createalbum`);
+        navigate(`/profile/${profileId}/createalbum`);
     };
 
     return (

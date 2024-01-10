@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { AxiosError } from "axios";
 import { apiError } from "../../../types/common";
+import { idText } from "typescript";
 
 interface ProfilPageType {
   userInfo?: IUser;
@@ -211,9 +212,9 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
       case `/profile/${id}/friend`:
         return <ProfilePageFriend />;
       case `/profile/${id}/photo`:
-        return <ProfilePagePhoto />;
+        return <ProfilePagePhoto profileId={parseInt(id??"")} />;
       case `/profile/${id}/album`:
-        return <ProfilePageAlbum />;
+        return <ProfilePageAlbum profileId={parseInt(id??"")}/>;
       default:
         return (
           <ProfilePageHome

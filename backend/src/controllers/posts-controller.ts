@@ -4,6 +4,8 @@ import { PostAttributes } from "../db/models/post";
 import * as imageController from "./images-controller";
 import { Op } from "sequelize";
 import { CustomRequest } from "../middleware/auth";
+// import Album from "../database/modelsOrig/Album";
+
 
 const Post = models.Post;
 const User = models.User;
@@ -11,6 +13,7 @@ const Image = models.Image;
 const Comment = models.Comment;
 const Like = models.Like;
 const Friend = models.Friend;
+const Album = models.Album;
 
 interface PostWithUrl extends PostAttributes {
   imageUrl: string | null;
@@ -589,6 +592,38 @@ export const moveToAlbum = async (req: any, res: Response) => {
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
+// export const moveToAlbum = async (req: any, res:Response) => {
+//   try {
+//     const post = await Post.findOne({
+//       where: {
+//         id: req.params.postId,
+//         authorId: req.id,
+//         isDeleted: false,
+//       },
+//     });
+
+//     if (!post) {
+//       return res.status(404).json({ message: "Post not found" });
+//     }
+
+//     // Prepare the update object
+//     const updateData: { albumId: any; type?: string } = {
+//       albumId: req.body.albumId,
+//     };
+
+//     // Check if type is provided in the request body and add it to the update object
+//     if (req.body.type) {
+//       updateData.type = req.body.type;
+//     }
+
+//     // Update the post with new data
+//     await post.update(updateData);
+//     res.status(200).json({ message: "Post updated successfully" });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ message: "Something went wrong" });
+//   }
+// };
 
 export const getPostsByAlbumId = async (req: any, res: Response) => {
   try {
@@ -741,5 +776,55 @@ export const getPostFromAlbum = async (req: any, res: Response) => {
   } catch (error) {
     console.error("Error fetching post images:", error);
     return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const changePostType = async (req: any, res: Response) => {
+  try {
+    const profileAlbum = await Album.findOne({
+      where: {
+        profileId: req.body.userId,
+        type: "profilePic",
+      },
+    });
+
+    const post = await Post.findOne({
+      where: {
+        id: req.params.postId,
+      },
+    });
+
+    if (profileAlbum && post) {
+      post.update({
+        type: req.body.type,
+        albumId: profileAlbum.id,
+      });
+
+      const user = await User.findOne({
+        where: {
+          id: req.body.userId,
+        },
+      });
+  
+      switch (req.body.type) {
+        case "profilePic":
+          user.update({
+            profilePostId: post?.id,
+          });
+          break;
+        case "coverPic":
+          user.update({
+            coverPostId: post?.id,
+          });
+          break;
+        default:
+          break;
+      }
+    }
+
+    res.status(200).json({ message: "Post updated successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };

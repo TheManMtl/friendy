@@ -33,6 +33,6 @@ router.delete(
   s3Middleware.attachS3Info,
   posts.deletePost
 );
-
+router.put('/updatetype/:postId([0-9]+)',s3Middleware.attachS3Info, posts.changePostType),
 router.get('/user/:userId([0-9]+)/photos', s3Middleware.attachS3Info, posts.getPhotosByUserId);
 export default router;

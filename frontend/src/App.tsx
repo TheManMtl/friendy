@@ -71,16 +71,33 @@ function App() {
                 </FriendsPageProvider>
               }
             />
-            <Route path="/profile/:id/createalbum" element={<CreateAlbum />}></Route>
-            <Route path="/profile/:id/editalbum/:albumId" element={<EditAlbum />}></Route>
-            <Route path="/profile/:id/album/:albumId" element={<AlbumDetail />}></Route>
-          </Route>
-        </Routes>
-      </HashRouter>
+            <Route path="/profile/:id/createalbum" element={
+              <ProfilePageProvider>
+                <CreateAlbum />
+            </ProfilePageProvider>
+            }
+            />
 
-      {/* <Footer/> */}
-      {/* </AuthProvider> */}
-    </div>
+          <Route path="/profile/:id/editalbum/:albumId" element={
+           <ProfilePageProvider>
+          <EditAlbum />
+          </ProfilePageProvider>
+          }>
+            
+          </Route>
+          <Route path="/profile/:id/album/:albumId" element={
+            <ProfilePageProvider>
+              <AlbumDetail />
+            </ProfilePageProvider>
+          }></Route>
+
+        </Route>
+      </Routes>
+    </HashRouter>
+
+      {/* <Footer/> */ }
+  {/* </AuthProvider> */ }
+    </div >
   );
 }
 
