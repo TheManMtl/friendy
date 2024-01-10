@@ -11,7 +11,7 @@ router.post("/request", authUser, friends.createRequest);
 //active-requests?direction=received - friend requests you've received - defaults to this.
 router.get(
   "/active-requests/",
-  // authUser,
+  authUser,
   attachS3Info,
   friends.findAllRequests
 );

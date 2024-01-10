@@ -95,8 +95,8 @@ export const findAllRequests = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    // const userId = req.id;
-    const userId = 101;
+    const userId = req.id;
+
     const direction = req.query.direction || "received";
     let whereCondition;
     let attributeCondition;
@@ -155,11 +155,6 @@ export const findAllRequests = async (
         ).profileImg;
 
         if (doesExist != null) {
-          if (direction === "received") {
-            console.log(item.dataValues.RequestedBy.profileImg.Image.thumbnail);
-          } else {
-            console.log(item);
-          }
           thumbnail = (await getPicUrlFromS3(req, thumbnail)) || "";
         } else {
           thumbnail = (await getPicUrlFromS3(req, "default.jpg")) || "";
