@@ -164,6 +164,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
       <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
         <div className="leftContent col-md-4">
           <ProfileIntroCard
+            bioVariable={userProfile?.bio}
             userId={userId}
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
