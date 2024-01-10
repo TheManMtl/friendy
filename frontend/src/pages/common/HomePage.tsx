@@ -58,7 +58,7 @@ function HomePage() {
         <div className="col-lg-3 d-none d-lg-block ">
           <LeftPanel />
         </div>
-        <div className="col-6 ">
+        <div className="col-6 scroll">
           <div className="row m-3"></div>
           <PostInput
             src={currentUserProfileThumb}
