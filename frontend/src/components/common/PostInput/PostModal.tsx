@@ -18,6 +18,7 @@ interface PostModalProps {
   alt: string;
   size?: string;
   username?: string;
+  otherUsername?: string;
   profileId: string | null;
   postId?: number;
   postBody?: string;
@@ -31,6 +32,7 @@ const PostModal: React.FC<PostModalProps> = ({
   showPostModal,
   closePost,
   username,
+  otherUsername,
   profileId,
   postId,
   postBody
@@ -145,7 +147,10 @@ const PostModal: React.FC<PostModalProps> = ({
       {/* Post Modal */}
       <Modal centered show={showPostModal} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>{postId ? "Edit post" : "Create post"}</Modal.Title>
+          <Modal.Title>
+            {postId ? "Edit post" : "Create post"}
+            {profileId && otherUsername ? <>&nbsp;on {otherUsername}'s timeline</> : <></>}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ width: "500px" }}>
           <div className="row mb-4">

@@ -28,13 +28,17 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
   currentUserProfileThumb,
 }) => {
   const [posts, setPosts] = useState<IPost[]>([]);
+  const [newPosts, setNewPosts] = useState<IPost[]>([]);
   const axiosToken = useAxiosToken();
   const { user } = useAuth();
   //start Post modal section
   const [showPostModal, setShowPostModal] = useState<boolean>(false);
   const [paramId, setParamId] = useState<string | undefined>();
   const openPost = () => setShowPostModal(true);
-  const closePost = () => setShowPostModal(false);
+  const closePost = () => {
+    setShowPostModal(false);
+    getNewPosts();
+  }
   //end Modal section
 
   //FIXME: handle 404 with custom page
@@ -69,14 +73,6 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
               console.log(response.data);
               post.author.profileImg = response.data;
 
-              //temporary: replace pic with full size
-              if (post.Image) {
-                const url = await getImgUrl(post.Image.fileName);
-                console.log("post img url: " + url);
-                if (url) {
-                  post.thumbnailUrl = url;
-                }
-              }
               return post;
             } catch (error: any) {
               const err = error as AxiosError<apiError>;
@@ -98,6 +94,61 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
           })
         );
         setPosts(updatedList);
+      }
+    } catch (error) {
+      //TODO
+      console.log(error);
+    }
+  };
+
+  const getNewPosts = async () => {
+    try {
+      const response = await axiosToken.get(`/posts/user/${id}`);
+      const list = response.data as IPost[];
+
+      if (list[0] && list.length > posts.length) {
+
+        list.slice(0, list.length - posts.length);
+
+        const updatedList = await Promise.all(
+          list.map(async (post) => {
+            //get user profile pic
+            try {
+              const response = await axiosToken.get(
+                `/profile/thumbnail/${post.authorId}`
+              );
+              console.log(response.data);
+              post.author.profileImg = response.data;
+
+              //temporary: replace pic with full size
+              // if (post.Image) {
+              //   const url = await getImgUrl(post.Image.fileName);
+              //   console.log("post img url: " + url);
+              //   if (url) {
+              //     post.thumbnailUrl = url;
+              //   }
+              // }
+              return post;
+            } catch (error: any) {
+              const err = error as AxiosError<apiError>;
+              if (!err?.response) {
+                setErrorMessage("Failed to connect to server.");
+                console.log(errorMessage);
+              } else if (err.response?.data?.message) {
+                setErrorMessage(err.response.data.message);
+                console.log(errorMessage);
+              } else {
+                console.log(err);
+                setErrorMessage("Something went wrong.");
+              }
+              post.author.profileImg =
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s";
+              console.log("post thumbnail url: " + post.author.profileImg);
+              return post;
+            }
+          })
+        );
+        setNewPosts(updatedList);
       }
     } catch (error) {
       //TODO
@@ -139,6 +190,31 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
               isOtherUserProfile={!isPrivateProfile}
             />
           </div>
+          {newPosts[0] ? (
+            newPosts.map((post) => (
+              <div key={`post-${post.id}`} className="mt-2">
+                <PostCard
+                  id={post.id}
+                  authorId={post.authorId}
+                  profileImageSrc={post.author.profileImg as string}
+                  time={post.createdAt}
+                  username={post.author.name}
+                  content={post.content}
+                  thumbnailUrl={post.thumbnailUrl}
+                  likeCount={post.likeCount}
+                  commentCount={post.commentCount}
+                  comments={post.comments}
+                  type={post.type}
+                  currentUserProfileThumb={currentUserProfileThumb}
+                  submit={null}
+                  profileId={id ? parseInt(id) : null}
+                  profileName={userProfile?.name}
+                />
+              </div>
+            ))
+          ) : (
+            <></>
+          )}
           {posts[0] ? (
             posts.map((post) => (
               <div key={`post-${post.id}`} className="mt-2">
@@ -155,6 +231,9 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
                   comments={post.comments}
                   type={post.type}
                   currentUserProfileThumb={currentUserProfileThumb}
+                  submit={null}
+                  profileId={id ? parseInt(id) : null}
+                  profileName={userProfile?.name}
                 />
               </div>
             ))
@@ -172,6 +251,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
         alt={"profile"}
         size={"small"}
         username={user!.name}
+        otherUsername={userProfile?.name}
         profileId={id ? id!.toString() : null}
       />
     </div>

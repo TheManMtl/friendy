@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import "./PostCard.css";
 import { Comment as IComment } from "../../../types/common";
@@ -11,6 +11,9 @@ import Comment from "../Comment/Comment";
 import useAuth from "../../../hooks/useAuth";
 import PostModal from "../PostInput/PostModal";
 import DeletePostModal from "./DeletePostModal";
+import { AxiosError } from "axios";
+import { apiError } from "../../../types/common";
+import { IPost } from "../../../pages/shared/interface/post.interface";
 
 import {
   HandThumbsUp,
@@ -35,6 +38,10 @@ type PostCardProps = {
   type: string;
   currentUserProfileThumb?: string | null;
   openEdit?: () => void;
+  profileId?: number | null;
+  profileName?: string;
+  submit: any | null;
+
 };
 
 interface input {
@@ -45,9 +52,107 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const axiosToken = useAxiosToken();
   const [success, setSuccess] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [refresh, setRefresh] = useState(0);
+  const [changed, setChanged] = useState(0);
   const { user } = useAuth();
-  // const formik = useFormikContext();
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [liked, setLiked] = useState<boolean>(false);
+  const [found, setFound] = useState<boolean>(true);
+  const [reRender, setReRender] = useState<boolean>(false);
+  // const [post, setPost] = useState<SinglePost>();
+  const [firstRender, setFirstRender] = useState<boolean>(true);
+  const [post, setPost] = useState(props);
+
+  const submit = () => {
+    setReRender(!reRender);
+  };
+
+  useEffect(() => {
+
+    const getLiked = async () => {
+      await axiosToken
+        .get(`/likes/post/${post.id}`)
+        .then((response) => {
+          console.log(response.data + "user liked comment");
+          setLiked(response.data);
+        })
+        .catch((error: unknown) => {
+          const err = error as AxiosError<apiError>;
+
+          if (!err?.response) {
+            setErrorMessage("Failed to connect to server.");
+            console.log(errorMessage);
+
+          } else if (err.response?.data?.message) {
+            setErrorMessage(err.response.data.message);
+            console.log(errorMessage);
+
+          } else {
+            console.log(err);
+            setErrorMessage("Something went wrong.");
+          }
+        });
+    };
+
+    const refreshPost = async () => {
+      try {
+      const response = await axiosToken.get(`/posts/${post.id}`);
+      console.log(response.data);
+
+          // setPost(refreshedPost);
+          setPost({...post, 
+            commentCount: response?.data?.commentCount,
+            comments: response?.data?.comments,
+            likeCount: response?.data?.likeCount,
+            content: response?.data?.content
+          });
+
+          setFound(true);
+      } catch (error: unknown) {
+        setFound(false);
+
+          const err = error as AxiosError<apiError>;
+          console.log(error);
+
+          if (!err?.response) {
+            setErrorMessage("Failed to connect to server.");
+            console.log(errorMessage);
+
+          } else if (err.response?.data?.message) {
+            setErrorMessage(err.response.data.message);
+            console.log(errorMessage);
+
+          } else {
+            console.log(err);
+            setErrorMessage("Something went wrong.");
+          }
+        }
+    };
+
+    getLiked();
+    if (!firstRender) {
+      refreshPost();
+    } else {
+      setFirstRender(false);
+    }
+  }, [liked, post.id, changed, reRender]);
+
+
+  const handleLike = async () => {
+
+    console.log("like clicked");
+
+    await axiosToken
+      .post(`/likes/post/${post.id}`)
+      .then((response) => {
+        console.log(response.data);
+        setLiked(!liked);
+      })
+      .catch((error) => {
+        console.log("is this NOT working?");
+        console.log(error);
+      });
+  };
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -74,11 +179,12 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     console.log("handleCommentOnPost called");
     try {
       console.log("will it work?");
-      await axiosToken.post(`/comments/post/${props.id}`, data);
+      await axiosToken.post(`/comments/post/${post.id}`, data);
       setSuccess(true);
       setIsFocused(false);
       resetForm();
-      setRefresh((prev) => prev + 1);
+      setChanged((prev) => prev + 1);
+      submit();
       console.log("did it work?");
     } catch (error) {
       //TODO
@@ -150,6 +256,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [showPostModal, setShowPostModal] = useState<boolean>(false);
   const closePost = () => {
     setShowPostModal(false);
+    submit();
+
   };
   const openEdit = () => setShowPostModal(true);
   //end edit modal section
@@ -158,18 +266,20 @@ const PostCard: React.FC<PostCardProps> = (props) => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
+    submit();
   };
   const openDelete = () => setShowDeleteModal(true);
   //end confirm delete modal section
 
   return (
-    <div key={refresh}>
+    !found ? <></> :
+    <div>
       <div className="card">
         <div className="card-body">
           <div className="row card-title">
             <div className="col-1">
               <ProfileImage
-                src={props.profileImageSrc}
+                src={post.profileImageSrc}
                 alt="profile"
                 size="small"
               />
@@ -177,11 +287,11 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             <div className="col-10">
               <div className="d-flex justify-content-start">
                 {/* TODO handle route hashing? */}
-                <a href={`#/profile/${props.authorId}`} className="fw-bold">
+                <a href={`#/profile/${post.authorId}`} className="fw-bold">
                   {" "}
-                  {props.username}{" "}
+                  {post.username}{" "}
                 </a>
-                {props.type === "profilePic" ? (
+                {post.type === "profilePic" ? (
                   <span className="text-secondary">
                     {" "}
                     &nbsp;updated their profile picture.
@@ -189,7 +299,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                 ) : (
                   <></>
                 )}
-                {props.type === "coverPhoto" ? (
+                {post.type === "coverPhoto" ? (
                   <span className="text-secondary">
                     {" "}
                     &nbsp;changed their cover photo.
@@ -197,15 +307,20 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                 ) : (
                   <></>
                 )}
+                {
+                  post.profileId && post.authorId !== post.profileId ? (
+                    <span>&nbsp; <PlayFill />&nbsp; {post.profileName}</span>
+                  ) : (<></>)
+                }
               </div>
               <div className="d-flex justify-content-start">
                 <small className="text-secondary">
-                  {getPostTime(props.time)}
+                  {getPostTime(post.time)}
                 </small>
               </div>
             </div>
             <div className="col-1">
-              {props.authorId === user!.id ? (
+              {post.authorId === user!.id ? (
                 <div className="dropdown">
                   <div data-bs-toggle="dropdown" aria-expanded="false">
                     <ThreeDots />
@@ -225,11 +340,11 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             </div>
           </div>
           <div className="card-content container">
-            <p className="text-left-custom">{props.content}</p>
-            {props.thumbnailUrl && (
+            <p className="text-left-custom">{post.content}</p>
+            {post.thumbnailUrl && (
               <div className="card-img">
                 <img
-                  src={props.thumbnailUrl}
+                  src={post.thumbnailUrl}
                   className="card-img-top"
                   alt="Post Thumbnail"
                 />
@@ -239,20 +354,20 @@ const PostCard: React.FC<PostCardProps> = (props) => {
 
           <div className="row">
             <div className="col-2 text-start">
-              {props.likeCount > 0 ? (
+              {post.likeCount > 0 ? (
                 <>
                   <HandThumbsUp />
-                  <small>{" " + props.likeCount}</small>
+                  <small>{" " + post.likeCount}</small>
                 </>
               ) : (
                 <></>
               )}
             </div>
 
-            {props.commentCount > 0 ? (
+            {post.commentCount > 0 ? (
               <div className="col-4 offset-6 text-end text-secondary">
-                <small>{props.commentCount + " "}</small>
-                {props.commentCount === 1 ? (
+                <small>{post.commentCount + " "}</small>
+                {post.commentCount === 1 ? (
                   <small>comment</small>
                 ) : (
                   <small>comments</small>
@@ -265,22 +380,23 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           <hr />
           <div className="row text-center">
             <div className="col-4">
-              <HandThumbsUp />
-              {/* TODO buttons */}
-              <span className="text-secondary px-3">Like</span>
+              <span onClick={handleLike}>
+                <HandThumbsUp />
+                <span className="text-secondary px-3">{liked ? <>Unlike</> : <>Like</>}</span>
+              </span>
             </div>
             <div className="col-4 offset-4">
               <span className="text-secondary px-3">Comment</span>
             </div>
           </div>
           <hr />
-          {props.commentCount > 0 ? (
+          {post.commentCount > 0 ? (
             <div className="row">
               {/* TODO: display first comment only, toggle full list view */}
               <CommentContainer
-                postId={props.id}
+                postId={post.id}
                 commentId={0}
-                reRender={true}
+                reRender={reRender}
                 submit={null}
               />
             </div>
@@ -306,7 +422,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                   <div>
                     <Field
                       as="textarea"
-                      id={props.id + "CommentInput"}
+                      id={post.id + "CommentInput"}
                       name="body"
                       placeholder="Write a comment..."
                       rows={isFocused ? 2 : 1}
@@ -334,22 +450,22 @@ const PostCard: React.FC<PostCardProps> = (props) => {
         showPostModal={showPostModal}
         closePost={closePost}
         src={
-          props.currentUserProfileThumb
-            ? props.currentUserProfileThumb
-            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
+          post.currentUserProfileThumb
+            ? post.currentUserProfileThumb
+            :"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
         }
         alt={"profile"}
         size={"small"}
         username={user!.name}
         profileId={user!.id.toString()}
-        postId={props.id}
-        postBody={props.content}
+        postId={post.id}
+        postBody={post.content}
       />
 
       <DeletePostModal
         showDeleteModal={showDeleteModal}
         closeDeleteModal={closeDeleteModal}
-        postId={props.id}
+        postId={post.id}
       />
     </div>
   );
