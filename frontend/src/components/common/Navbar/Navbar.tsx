@@ -145,11 +145,11 @@ function Navbar() {
                       <i className="bi bi-people-fill icon"></i>
                     </a>
                   </li>
-                  <li className="nav-item">
+                  {/* <li className="nav-item">
                     <a className="nav-link" href="/">
                       <i className="bi bi-shop icon"></i>
                     </a>
-                  </li>
+                  </li> */}
                   <li className="nav-item">
                     <a className="nav-link" href="/#/gaming">
                       <i className="bi bi-controller icon"></i>
@@ -163,11 +163,11 @@ function Navbar() {
           <div className="right col-lg-4">
             <div className="wrapper">
               <ul className="navbar-nav me-auto mb-2 mb-lg-0 nav-right">
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <a className="nav-link" href="/">
                     <i className="bi bi-bell-fill iconRight"></i>
                   </a>
-                </li>
+                </li> */}
                 <li className="nav-item">
                   <a className="nav-link" href="/">
                     <i className="bi bi-chat-fill iconRight"></i>

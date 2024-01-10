@@ -72,7 +72,7 @@ const LeftPanel: React.FC<LeftPanelProps> = ({}) => {
   return (
     <div className="container ">
       <div className="row mt-3">
-        <div className="col-12 fs-4">Friendy Advertisers</div>
+        <div className="col-12 fs-5">Friendy Advertisers</div>
         <div className="col-12 mb-3">
           <Advertisment
             businessName={businessName[0]}
