@@ -31,6 +31,7 @@ import ImagePostDisplay from "./pages/common/ImagePostDisplay/ImagePostDisplay";
 import EditAlbum from "./pages/common/ProfilePage/EditAlbum";
 import AlbumDetail from "./pages/common/ProfilePage/AlbumDetail";
 import NotFound from "./pages/common/404";
+import UserDetails from './pages/common/AdimPage/UserDetails';
 
 function App() {
   // Determine if the current route is an admin route
@@ -60,6 +61,7 @@ function App() {
                   </ProfilePageProvider>
                 }
               />
+              <Route path="/user-details/:userId" element={<UserDetails />} />
               <Route path="/admin" element={<AdminUsersPage />}></Route>
               {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
               <Route

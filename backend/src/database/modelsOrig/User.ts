@@ -53,7 +53,7 @@ class User extends Model {
     defaultValue: true,
     allowNull: false,
   })
-  isActive!: boolean;
+  isDeleted!: boolean;
 
   @Column({
     type: DataType.ENUM("User", "Admin"),
