@@ -66,8 +66,7 @@ function Navbar() {
       });
     }
   }, [user, refreshTimestamp]);
-  return (
-    user ? (
+  return user ? (
     <div>
       <nav className="navbar navbar-expand-lg nav-custom py-3">
         <div className="container-fluid">
@@ -134,7 +133,7 @@ function Navbar() {
                     </a>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="/">
+                    <a className="nav-link" href="/#/gaming">
                       <i className="bi bi-controller icon"></i>
                     </a>
                   </li>
@@ -182,7 +181,8 @@ function Navbar() {
         </div>
       </nav>
     </div>
-    ) : (<></>)  
+  ) : (
+    <></>
   );
 }
 

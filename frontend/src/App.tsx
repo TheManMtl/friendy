@@ -32,7 +32,8 @@ import ImagePostDisplay from "./pages/common/ImagePostDisplay/ImagePostDisplay";
 import EditAlbum from "./pages/common/ProfilePage/EditAlbum";
 import AlbumDetail from "./pages/common/ProfilePage/AlbumDetail";
 import NotFound from "./pages/common/404";
-import UserDetails from './pages/common/AdimPage/UserDetails';
+import UserDetails from "./pages/common/AdimPage/UserDetails";
+import GamingPage from "./pages/gaming/GamingPage";
 
 function App() {
   // Determine if the current route is an admin route
@@ -47,7 +48,6 @@ function App() {
         <Routes>
           <Route element={<PersistAuth />}>
             <Route element={<LoggedInOnly />}>
-
               <Route path="/display" element={<ImagePostDisplay />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/" element={<HomePage />} />
@@ -73,46 +73,54 @@ function App() {
                   </FriendsPageProvider>
                 }
               />
-              <Route path="/profile/:id/createalbum" element={
-                <ProfilePageProvider>
-                  <CreateAlbum />
-                </ProfilePageProvider>
-              }
+              <Route
+                path="/profile/:id/createalbum"
+                element={
+                  <ProfilePageProvider>
+                    <CreateAlbum />
+                  </ProfilePageProvider>
+                }
               />
 
-              <Route path="/profile/:id/editalbum/:albumId" element={
-                <ProfilePageProvider>
-                  <EditAlbum />
-                </ProfilePageProvider>
-              }>
-
-              </Route>
-              <Route path="/profile/:id/album/:albumId" element={
-                <ProfilePageProvider>
-                  <AlbumDetail />
-                </ProfilePageProvider>
-              }></Route>
-
+              <Route
+                path="/profile/:id/editalbum/:albumId"
+                element={
+                  <ProfilePageProvider>
+                    <EditAlbum />
+                  </ProfilePageProvider>
+                }
+              ></Route>
+              <Route
+                path="/profile/:id/album/:albumId"
+                element={
+                  <ProfilePageProvider>
+                    <AlbumDetail />
+                  </ProfilePageProvider>
+                }
+              ></Route>
             </Route>
 
             {/* ADMIN ONLY */}
-            <Route element={<LoggedInOnly roles={["Admin"]}/>}>
-            <Route path="/admin" element={<AdminUsersPage />}></Route>
+            <Route element={<LoggedInOnly roles={["Admin"]} />}>
+              <Route path="/admin" element={<AdminUsersPage />}></Route>
             </Route>
 
             {/* LOGIN NOT REQUIRED */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/404" element={<NotFound />} />
+
+            {/* Gaming */}
+            <Route path="/gaming" element={<GamingPage />} />
           </Route>
         </Routes>
         {isAdminRoute || isDisplayRoute ? <></> : <Footer />}
       </HashRouter>
 
       {/* <Footer/> */}
-      
+
       {/* </AuthProvider> */}
-    </div >
+    </div>
   );
 }
 

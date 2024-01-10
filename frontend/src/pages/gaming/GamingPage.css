@@ -1,0 +1,5 @@
+.image-container {
+  max-width: 400px; /* Set the maximum width of the container */
+  margin: 0 auto; /* Center the container horizontally (optional) */
+  overflow: hidden; /* Hide any overflowing content */
+}
