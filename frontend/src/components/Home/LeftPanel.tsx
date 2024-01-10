@@ -81,7 +81,7 @@ const LeftPanel: React.FC<LeftPanelProps> = ({}) => {
           />
         </div>
 
-        <div className="col-12 mb-3">
+        <div className="col-12 ">
           <Advertisment
             businessName={businessName[1]}
             description={description[1]}
