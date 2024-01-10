@@ -124,10 +124,10 @@ function AdminUsersPage() {
         </table>
 
         <div>
-          <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+          <button className='' onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
             Previous
           </button>
-          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(users.length / itemsPerPage)}>
+          <button className='' onClick={() => paginate(currentPage + 1)} disabled={currentPage === Math.ceil(users.length / itemsPerPage)}>
             Next
           </button>
         </div>
