@@ -10,7 +10,11 @@ router.post("/signup", UserController.signUp);
 router.post("/login", UserController.login);
 router.delete("/logout", auth.authUser, auth.logout);
 router.get("/refresh", UserController.refresh);
-router.get("/admin", UserController.all);
 router.put("/password", auth.authUser, UserController.changedPassword);
+
+//admin routes
+router.get("/admin", UserController.all);
+router.get("/admin/:id", UserController.findByUserId);
+router.put("/admin/disable/:id", auth.authUser, UserController.disableUser);
 
 export default router;

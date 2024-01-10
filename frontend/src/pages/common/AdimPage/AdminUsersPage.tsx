@@ -3,6 +3,7 @@ import axios from 'axios'; // Import axios
 import useAxiosToken from '../../../hooks/useAxiosToken';
 import AdminNavbarTop from './AdminComponents/AdminNavbarTop';
 import "./AdminStyle.css";
+import {useNavigate} from 'react-router-dom'
 
 interface User {
   id: number;
@@ -10,17 +11,17 @@ interface User {
   email: string;
   location: string;
   birthday: Date;
-  isActive: boolean;
+  isDeleted: boolean;
   role: string;
-  imageUrl?: string;
+  profileImgThumbnail?: string;
 }
 
 //define colors for role
 function getColorByRole(role: string): string {
 
-  console.log("Role:", role);
+  //console.log("Role:", role);
   switch (role) {
-    case 'admin':
+    case 'Admin':
       return 'bgadmin';
     case 'User':
       return 'bguser';
@@ -54,10 +55,15 @@ function AdminUsersPage() {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const viewUser = (userId: number) => {
-    //TODO: User detail page
-    console.log("View user with ID:", userId);
+  // const viewUser = (userId: number) => {
+  //   
+  //   console.log("View user with ID:", userId);    
+  // };
 
+  const navigate = useNavigate();
+
+  const viewUser = (userId: number) => {
+    navigate(`/user-details/${userId}`);
   };
   return (
     <>
@@ -88,6 +94,7 @@ function AdminUsersPage() {
               <th>Location</th>
               <th>DOB</th>
               <th>role</th>
+              <th>status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -96,7 +103,7 @@ function AdminUsersPage() {
               <tr key={user.id} className={getColorByRole(user.role)}>
                 <td >{user.id}</td>
                 <td>
-                  {user.imageUrl ? <img src={user.imageUrl} alt={user.name} style={{ width: '50px', height: '50px' }} /> : 'No image'}
+                  {user.profileImgThumbnail ? <img src={user.profileImgThumbnail} alt={user.name} style={{ width: '50px', height: '50px' }} /> : 'No image'}
                 </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
@@ -104,6 +111,9 @@ function AdminUsersPage() {
                 <td>{new Date(user.birthday).toLocaleDateString()}</td>
                 <td>
                   {user.role}
+                </td>
+                <td>
+                {user.isDeleted ? 'Deleted' : 'Active'}
                 </td>
                 <td>
                   <button className='btn btn-warning' onClick={() => viewUser(user.id)}>View</button>
