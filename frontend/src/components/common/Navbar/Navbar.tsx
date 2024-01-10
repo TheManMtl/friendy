@@ -38,7 +38,8 @@ function Navbar() {
 
   useEffect(() => {
     if (user != null) {
-      axiosToken.get(`/profile/view/${user.id}`).then((response) => {
+      axiosToken.get(`/profile/view/${user.id}`)
+      .then((response) => {
         console.log(
           "=====navbar profileImageId=====" +
             response.data.profileInfo.profileImgId
@@ -47,7 +48,8 @@ function Navbar() {
 
         if (response.data.profileInfo.profileImgId != null) {
           const profileImageId = response.data.profileInfo.profileImgId;
-          axios.get(`/posts/userprofile/${profileImageId}`).then((response) => {
+          axios.get(`/posts/userprofile/${profileImageId}`)
+          .then((response) => {
             console.log("====thumbnail URl====" + response.data.thumbnailUrl);
             if (response.data.length !== 0 && !response.data.isDeleted) {
               //TODO: fetch the profil pic which has the id associated with the user
@@ -57,12 +59,22 @@ function Navbar() {
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
               );
             }
+          })
+          .catch((error) => {
+            setProfileThumb(
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
+            );            
+            console.log(error);
           });
         } else {
           setProfileThumb(
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
           );
         }
+      })
+      .catch((error) => {
+        console.log("is this NOT working?");
+        console.log(error);
       });
     }
   }, [user, refreshTimestamp]);
