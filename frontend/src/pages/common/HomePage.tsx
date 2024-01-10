@@ -10,14 +10,15 @@ import useAuth from "../../hooks/useAuth";
 import useAxiosToken from "../../hooks/useAxiosToken";
 import { AxiosError } from "axios";
 import { apiError } from "../../types/common";
+import LeftPanel from "../../components/Home/LeftPanel";
 
 function HomePage() {
-
   const axiosToken = useAxiosToken();
   const { user } = useAuth();
   const navigate = useNavigate();
   //profile pic for post input and post modal
-  const [currentUserProfileThumb, setCurrentUserProfileThumb] = useState<string>("");
+  const [currentUserProfileThumb, setCurrentUserProfileThumb] =
+    useState<string>("");
   //start Post modal section
   const [showPostModal, setShowPostModal] = useState<boolean>(false);
   const openPost = () => setShowPostModal(true);
@@ -32,7 +33,6 @@ function HomePage() {
   }, [navigate, user]);
 
   const getUserThumbnail = () => {
-
     //get current user profile pic
     axiosToken
       .get(`/profile/thumbnail/${user!.id}`)
@@ -51,21 +51,23 @@ function HomePage() {
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
         );
       });
-  }
+  };
   return (
     <div className="container-fluid px-0 mx-0">
       <div className="row">
-        <div className="col-lg-3 d-none d-lg-block ">leftpanel</div>
+        <div className="col-lg-3 d-none d-lg-block ">
+          <LeftPanel />
+        </div>
         <div className="col-6 ">
-        <div className="row m-3"></div>
-            <PostInput
-              src={currentUserProfileThumb}
-              alt={"profile"}
-              size={"small"}
-              openPost={openPost}
-              userName={user!.name}
-              isOtherUserProfile={false}
-            />
+          <div className="row m-3"></div>
+          <PostInput
+            src={currentUserProfileThumb}
+            alt={"profile"}
+            size={"small"}
+            openPost={openPost}
+            userName={user!.name}
+            isOtherUserProfile={false}
+          />
           <Newsfeed />
         </div>
         <div className="col-lg-3 d-none d-lg-block ">
