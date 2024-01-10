@@ -40,15 +40,15 @@ const UserDetails = () => {
     axiosToken.put(`/users/admin/disable/${userId}`)
       .then(response => {
   
+        //TODO: update the status on the page
         
-        // Optionally, show a success message to the user
       })
       .catch(error => {
         console.error('Error disabling user:', error);
-        // Optionally, show an error message to the user
+        
       })
       .finally(() => {
-        // Optional: Hide loading state in the UI
+       
       });
   };
   
