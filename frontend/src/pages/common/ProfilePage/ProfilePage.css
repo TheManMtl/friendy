@@ -62,3 +62,7 @@
   margin-right: 10px;
   font-size: 25px;
 }
+
+.curser-pointer {
+  cursor: pointer;
+}
