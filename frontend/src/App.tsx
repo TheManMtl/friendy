@@ -52,7 +52,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
 
               {/* <Route path="/photos" element={<PhotoPage />} />
-           <Route path="/posts" element={<PostPage />} /> */}
+              <Route path="/posts" element={<PostPage />} /> */}
               <Route
                 path="/profile/:id/*"
                 element={
@@ -72,9 +72,31 @@ function App() {
                   </FriendsPageProvider>
                 }
               />
-              <Route path="/profile/:id/createalbum" element={<CreateAlbum />}></Route>
-              <Route path="/profile/:id/editalbum/:albumId" element={<EditAlbum />}></Route>
-              <Route path="/profile/:id/album/:albumId" element={<AlbumDetail />}></Route>
+              <Route path="/profile/:id/createalbum" element={
+                <ProfilePageProvider>
+                  <CreateAlbum />
+                </ProfilePageProvider>
+              }
+              />
+
+              <Route path="/profile/:id/editalbum/:albumId" element={
+                <ProfilePageProvider>
+                  <EditAlbum />
+                </ProfilePageProvider>
+              }>
+
+              </Route>
+              <Route path="/profile/:id/album/:albumId" element={
+                <ProfilePageProvider>
+                  <AlbumDetail />
+                </ProfilePageProvider>
+              }></Route>
+
+            </Route>
+
+            {/* ADMIN ONLY */}
+            <Route element={<LoggedInOnly roles={["Admin"]}/>}>
+            <Route path="/admin" element={<AdminUsersPage />}></Route>
             </Route>
 
             {/* LOGIN NOT REQUIRED */}
@@ -87,7 +109,7 @@ function App() {
 
       {/* <Footer/> */}
       {/* </AuthProvider> */}
-    </div>
+    </div >
   );
 }
 

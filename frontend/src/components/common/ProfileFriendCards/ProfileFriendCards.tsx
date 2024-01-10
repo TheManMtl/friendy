@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import { FriendListType } from "../../../types/common";
 import { useNavigate } from "react-router-dom";
@@ -11,13 +11,17 @@ interface ProfileFriendCardsProps {
   friend: FriendListType;
   isFriendOfLoggedInUser: boolean;
   setFriends: React.Dispatch<React.SetStateAction<FriendListType[]>>;
+  userId: number;
 }
 const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
   isPrivateProfile,
   friend,
   isFriendOfLoggedInUser,
   setFriends,
+  userId,
 }) => {
+  const [sentRequests, setSentRequests] = useState<number[]>([]);
+
   const buttonText = "Remove Friend";
   const navigate = useNavigate();
   const buttonClass = buttonText === "Remove Friend" ? "yellow" : "blue";
@@ -50,6 +54,39 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
       removeFriend(userId);
     }
   };
+
+  const addFriend = async (friendId: number, userId: number) => {
+    try {
+      if (sentRequests.includes(friendId)) {
+        await axiosToken.delete(`/friends/remove`, {
+          data: { id: friendId },
+        });
+        setSentRequests((prevRequests) =>
+          prevRequests.filter((id) => id !== friendId)
+        );
+      } else {
+        const response = await axiosToken.post("/friends/request", {
+          id: friendId,
+        });
+        setSentRequests((prevRequests) => [...prevRequests, friendId]);
+      }
+    } catch (error) {
+      console.error("Error sending/undoing friend request:", error);
+    }
+  };
+
+  useEffect(() => {
+    try {
+      axiosToken
+        .get(`/friends/active-requests?direction=sent`)
+        .then((response) => {
+          setSentRequests(response.data.map((request: any) => request.userId));
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   return (
     <div className="col-md-6 mb-4">
       <div className="card">
@@ -71,7 +108,7 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
             <div className="col-5 d-flex">
               <div className="mt-4 mx-2">{friend.name}</div>
             </div>
-            <div className="col-3">
+            <div className="col-4">
               {" "}
               {isPrivateProfile ? (
                 <div>
@@ -82,8 +119,15 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
                     Remove Friend
                   </button>
                 </div>
-              ) : isFriendOfLoggedInUser ? null : (
-                <button className="btn btn-sm btn-secondary mt-4">
+              ) : isFriendOfLoggedInUser ? null : sentRequests.includes(
+                  friend.userId
+                ) ? (
+                <p className="mt-4">Friend request sent</p>
+              ) : (
+                <button
+                  className="btn btn-sm btn-secondary mt-4"
+                  onClick={() => addFriend(friend.userId, userId)}
+                >
                   Add Friend
                 </button>
               )}

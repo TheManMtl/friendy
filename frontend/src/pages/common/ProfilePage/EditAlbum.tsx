@@ -7,7 +7,7 @@ import { Post, PostType } from "../../../types/common";
 import { AuthContext } from "../../../context/AuthProvider";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { useParams } from 'react-router-dom';
-
+import { useProfilePageContext } from "../../../context/ProfilePageProvider";
 // function EditAlbum() {
   
     const EditAlbum =()=> {
@@ -17,7 +17,11 @@ import { useParams } from 'react-router-dom';
     const [title, setTitle] = useState<string>("")
     const axiosToken = useAxiosToken();
     const userId=authContext?.user?.id;
+    const { setRoute } = useProfilePageContext();
     const navigate = useNavigate();
+    const handleLinkClick = (route: string) => {
+        setRoute(route);
+      };
     useEffect(() => {
         try{
             axiosToken.get(`/albums/${albumId}`).then((res) => {
@@ -60,9 +64,12 @@ try{
             <div className="container leftPanel col-xl-3">
                 <div className="row">
                     <div className="col-xl-3 mb-3">
-                        <Button variant="link" onClick={() => navigate(-1)}>
+                    <Link to={`/profile/${userId}/album`}
+            onClick={() => handleLinkClick(`/profile/${userId}/album`)}>
+                        <Button variant="link" >
                             <i className="bi bi-arrow-left-circle-fill text-secondary fs-3"></i>
                         </Button>
+                    </Link>
                     </div>
                     <hr></hr>
                     <h2 className="pt-5 mb-5">Edit Album</h2>

@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Post, PostType } from "../../../types/common";
 import { AuthContext } from "../../../context/AuthProvider";
 import useAxiosToken from "../../../hooks/useAxiosToken";
+import { useProfilePageContext } from "../../../context/ProfilePageProvider";
 
 function CreateAlbum() {
     const authContext = useContext(AuthContext);
@@ -15,14 +16,10 @@ function CreateAlbum() {
     const axiosToken = useAxiosToken();
     const navigate = useNavigate();
     const userId=authContext?.user?.id;
-    // const initialValues = {
-    //     profileId: authContext?.user?.id,
-    //     authorId: authContext?.user?.id,
-    //     type: PostType.timeline,
-    //     content: "",
-    //     imageId: null,
-    // };
-
+    const { setRoute } = useProfilePageContext();
+    const handleLinkClick = (route: string) => {
+        setRoute(route);
+      };
     const submit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 try{
@@ -67,9 +64,12 @@ try{
             <div className="container leftPanel col-xl-3">
                 <div className="row">
                     <div className="col-xl-3 mb-3">
-                        <Button variant="link" onClick={() => navigate(-1)}>
+                    <Link to={`/profile/${userId}/album`}
+            onClick={() => handleLinkClick(`/profile/${userId}/album`)}>
+                        <Button variant="link" >
                             <i className="bi bi-arrow-left-circle-fill text-secondary fs-3"></i>
                         </Button>
+                        </Link>
                     </div>
                     <hr></hr>
                     <h2 className="pt-5 mb-5">Create Album</h2>

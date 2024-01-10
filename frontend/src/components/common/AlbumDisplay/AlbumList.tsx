@@ -7,7 +7,7 @@ import Image from 'next/image';
 import "../PostCard/PostCard.css";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import axios from "../../../services/api/axios";
-import {Modal,Button} from "react-bootstrap";
+import {Modal,Button, Dropdown} from "react-bootstrap";
 import { AuthContext } from "../../../context/AuthProvider";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
@@ -23,6 +23,8 @@ const AlbumList: React.FC <AlbumListProps>= (props) => {
     const navigate = useNavigate();
     const authContext = useContext(AuthContext);
     const userId = authContext?.user?.id;
+    const [isPrivateProfile, setIsPrivateProfile] = useState<boolean>(false);
+    const { id } = useParams();
     const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
     useEffect(() => {
       const fetchAlbumThumbnail = async () => {
@@ -31,12 +33,13 @@ const AlbumList: React.FC <AlbumListProps>= (props) => {
           console.log("Response data:", response.data); // Check the response structure
           setThumbnailUrl(response.data[0].thumbnailUrl);
           console.log("Thumbnail url:", thumbnailUrl);
+          handlePrivateProfile();
         } catch (err) {
           console.log('Error fetching recent post image:',err);
         }
       };
       fetchAlbumThumbnail();
-    }, [props.albumId, axiosToken]);
+    }, [props.albumId, axiosToken, id, userId]);
     const handleDeleteModal = async () =>{
       try{
          await axiosToken.delete(`/albums/${props.albumId}`);
@@ -54,6 +57,11 @@ const AlbumList: React.FC <AlbumListProps>= (props) => {
     };
     const handleEditAlbumClick = () => {
       navigate(`/profile/${userId}/editalbum/${props.albumId}`);
+    }
+    const handlePrivateProfile = () => {
+      if(id === userId?.toString()) {
+      setIsPrivateProfile(true);
+      }
     }
     
   return (
@@ -77,7 +85,7 @@ const AlbumList: React.FC <AlbumListProps>= (props) => {
 </div>
 </div>
 <div className="position-absolute top-0 end-0 m-3">
-  <div className="dropdown">
+  {/* <div className="dropdown">
     <button
       className="btn btn-secondary dropdown-toggle"
       type="button"
@@ -99,8 +107,19 @@ const AlbumList: React.FC <AlbumListProps>= (props) => {
       </li>
       
     </ul>
-  </div>
+  </div> */}
+{isPrivateProfile && (
+  <Dropdown>
+  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+    <i className="bi bi-three-dots-vertical"></i>
+  </Dropdown.Toggle>
 
+  <Dropdown.Menu>
+    <Dropdown.Item onClick={() => setDeleteModal(true)}>Delete Album</Dropdown.Item>
+    <Dropdown.Item onClick={handleEditAlbumClick}>Edit Album</Dropdown.Item>
+  </Dropdown.Menu>
+</Dropdown>
+)}
 </div>
 <Modal show={deleteModal} onHide={() => setDeleteModal(false)} backdrop="static">
         <Modal.Header closeButton>
