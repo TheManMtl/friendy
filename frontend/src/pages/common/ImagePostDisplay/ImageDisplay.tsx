@@ -22,7 +22,7 @@ const ImageDisplay: React.FC<ImageDisplayProps> = ({ src }) => {
           className="big-x ms-3"
           onClick={() => {
             console.log("EXIT");
-            // navigate(-1);
+            navigate(-1);
           }}
         >
           <XLg size={45} />
