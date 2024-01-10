@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { useState, useContext } from "react";
 import axios from "../../services/api/axios";
 import { AuthContext } from "../../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { error } from "console";
 
 interface loginInfo {
@@ -18,6 +18,8 @@ function LoginPage() {
   const authContext = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState<string | null>();
   let navigate = useNavigate();
+  let location = useLocation();
+  const backTo = location.state?.from?.pathname;
 
   const initialValues = {
     email: "",
@@ -48,7 +50,10 @@ function LoginPage() {
               role: response.data.role,
               token: response.data.token,
             });
-            if (response.data.role !== "Admin") {
+
+            if (backTo) {
+              navigate(backTo, {replace: true});
+            } else if (response.data.role !== "Admin") {
               navigate(`/`);
             } else {
               navigate("/admin");

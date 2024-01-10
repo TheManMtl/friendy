@@ -31,6 +31,7 @@ import ImagePostDisplay from "./pages/common/ImagePostDisplay/ImagePostDisplay";
 import EditAlbum from "./pages/common/ProfilePage/EditAlbum";
 import AlbumDetail from "./pages/common/ProfilePage/AlbumDetail";
 import NotFound from "./pages/common/404";
+import UserDetails from './pages/common/AdimPage/UserDetails';
 
 function App() {
   // Determine if the current route is an admin route
@@ -51,7 +52,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
 
               {/* <Route path="/photos" element={<PhotoPage />} />
-           <Route path="/posts" element={<PostPage />} /> */}
+              <Route path="/posts" element={<PostPage />} /> */}
               <Route
                 path="/profile/:id/*"
                 element={
@@ -60,6 +61,7 @@ function App() {
                   </ProfilePageProvider>
                 }
               />
+              <Route path="/user-details/:userId" element={<UserDetails />} />
               <Route path="/admin" element={<AdminUsersPage />}></Route>
               {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
               <Route
@@ -71,37 +73,42 @@ function App() {
                 }
               />
               <Route path="/profile/:id/createalbum" element={
-              <ProfilePageProvider>
-                <CreateAlbum />
-            </ProfilePageProvider>
+                <ProfilePageProvider>
+                  <CreateAlbum />
+                </ProfilePageProvider>
               }
-            />
+              />
 
-          <Route path="/profile/:id/editalbum/:albumId" element={
-           <ProfilePageProvider>
-          <EditAlbum />
-          </ProfilePageProvider>
-          }>
-            
-          </Route>
-            <Route path="/profile/:id/album/:albumId" element={
-            <ProfilePageProvider>
-              <AlbumDetail />
-            </ProfilePageProvider>
-          }></Route>
+              <Route path="/profile/:id/editalbum/:albumId" element={
+                <ProfilePageProvider>
+                  <EditAlbum />
+                </ProfilePageProvider>
+              }>
 
+              </Route>
+              <Route path="/profile/:id/album/:albumId" element={
+                <ProfilePageProvider>
+                  <AlbumDetail />
+                </ProfilePageProvider>
+              }></Route>
+
+            </Route>
+
+            {/* ADMIN ONLY */}
+            <Route element={<LoggedInOnly roles={["Admin"]}/>}>
+            <Route path="/admin" element={<AdminUsersPage />}></Route>
             </Route>
 
             {/* LOGIN NOT REQUIRED */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/404" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </HashRouter>
+          </Route>
+        </Routes>
+      </HashRouter>
 
-      {/* <Footer/> */ }
-  {/* </AuthProvider> */ }
+      {/* <Footer/> */}
+      {/* </AuthProvider> */}
     </div >
   );
 }

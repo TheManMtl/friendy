@@ -289,3 +289,52 @@ export const changedPassword = async (
     next(error);
   }
 };
+
+export const findByUserId: RequestHandler = async (req, res, next) => {
+  const userId = req.params.id;
+
+  if (!userId) {
+    return res.status(400).send({ message: "User ID is required." });
+  }
+
+  try {
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ["password"] } // Exclude the password field
+    });
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found." });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const disableUser: RequestHandler = async (req, res, next) => {
+  const userId = req.params.id; // Assuming the user ID is passed as a URL parameter
+
+  try {
+    // Find the user by ID
+    const user = await User.findByPk(userId);
+
+    // Check if user exists
+    if (!user) {
+      return res.status(404).send({ message: "User not found." });
+    }
+
+    // Set isActive to false to disable the user
+    user.isActive = false;
+
+    // Save the updated user
+    await user.save();
+
+    // Respond back
+    res.status(200).send({ message: "User disabled successfully." });
+  } catch (error) {
+    // Handle possible errors
+    console.error("Error disabling user:", error);
+    next(error);
+  }
+};
