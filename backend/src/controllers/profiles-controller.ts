@@ -102,8 +102,8 @@ export const viewProfile = async (
       where: {
         isDeleted: false,
       },
-    },
-    {
+    // },
+    // {
       attributes: [
         "name",
         "email",
