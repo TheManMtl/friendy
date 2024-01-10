@@ -14,6 +14,7 @@ import ProfilePage from "./pages/common/ProfilePage/ProfilePage";
 import FriendsPage from "./pages/common/FriendsPage/FriendsPage";
 import { FriendsPageProvider } from "./context/FriendsPageContext";
 import Navbar from "./components/common/Navbar/Navbar";
+import Footer from "./components/common/Navbar/Footer";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -105,9 +106,11 @@ function App() {
             <Route path="/404" element={<NotFound />} />
           </Route>
         </Routes>
+        {isAdminRoute || isDisplayRoute ? <></> : <Footer />}
       </HashRouter>
 
       {/* <Footer/> */}
+      
       {/* </AuthProvider> */}
     </div >
   );

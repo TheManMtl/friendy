@@ -19,11 +19,22 @@ const ProfilePagePhoto: React.FC<ProfilePagePhotoProps> = ({ profileId }) => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const axiosToken = useAxiosToken();
 
+  const refreshPosts = async () => {
+    console.log("Refreshing posts");
+    
+    try {
+      await axiosToken
+          .get(`/posts/user/${profileId}/photos`)
+          .then((res) => {
+              setPosts(res.data);
+          });
+  } catch (err) {
+      console.log(err);
+  }
+  };
   useEffect(() => {
-    axiosToken.get(`/posts/user/${profileId}/photos`).then((res) => {
-      setPosts(res.data);
-    });
-  }, []);
+   refreshPosts();
+  }, [profileId]);
   const showAlert = (message: string) => {
     setAlertMessage(message);
   };
@@ -50,6 +61,7 @@ const ProfilePagePhoto: React.FC<ProfilePagePhotoProps> = ({ profileId }) => {
                 thumbnailUrl={post.thumbnailUrl}
                 alt={"thumbnail"}
                 showAlert={showAlert}
+                onPostDeleted={refreshPosts}
               />
             </div>
           ))}

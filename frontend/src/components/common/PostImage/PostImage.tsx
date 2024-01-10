@@ -12,6 +12,7 @@ type PostImageProps = {
   postId: number;
   alt: string;
   thumbnailUrl?: string;
+  onPostDeleted: () => void;
 };
 
 const PostImage: React.FC<PostImageProps & { showAlert: (message: string) => void }> = (props) => {
@@ -26,12 +27,13 @@ const PostImage: React.FC<PostImageProps & { showAlert: (message: string) => voi
   const { id } = useParams();
   const userId = authContext?.user?.id;
   const [isPrivateProfile, setIsPrivateProfile] = useState<boolean>(false);
-  const handleDeleteModal = () => {
+  const handleDeleteModal = async () => {
 
     try {
-      axiosToken.delete(`/posts/${props.postId}`);
+      await axiosToken.delete(`/posts/${props.postId}`);
       setDeleteModal(false);
       console.log("Post deleted successfully");
+      props.onPostDeleted();
     } catch (err) {
       console.log(err);
     }

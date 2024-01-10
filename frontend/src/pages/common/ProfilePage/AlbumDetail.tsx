@@ -26,6 +26,19 @@ function AlbumDetail() {
   const handleLinkClick = (route: string) => {
     setRoute(route);
   };
+  const refreshPosts = async () => {
+    console.log("Refreshing posts");
+    
+    try {
+      await axiosToken
+          .get(`/posts/album/${albumId}`)
+          .then((res) => {
+              setPosts(res.data);
+          });
+  } catch (err) {
+      console.log(err);
+  }
+  };
   useEffect(() => {
     if (albumId) {
       axiosToken
@@ -74,6 +87,7 @@ function AlbumDetail() {
                 thumbnailUrl={post.thumbnailUrl}
                 alt={"thumbnail"}
                 showAlert={showAlert}
+                onPostDeleted={refreshPosts}
               />
             </div>
           ))}

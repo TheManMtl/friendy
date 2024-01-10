@@ -1,0 +1,8 @@
+.flex-container {
+    display: flex;
+    align-items: center; /* Aligns items vertically to the center */
+    gap: 10px; /* Sets a gap between the items */
+}
+.footer-text {
+    font-size: 0.75em; 
+}
