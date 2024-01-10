@@ -13,8 +13,9 @@ router.get("/refresh", UserController.refresh);
 router.put("/password", auth.authUser, UserController.changedPassword);
 
 //admin routes
-router.get("/admin", UserController.all);
-router.get("/admin/:id", UserController.findByUserId);
-router.put("/admin/disable/:id", auth.authUser, UserController.disableUser);
+router.get("/admin", auth.authUser, auth.authAdmin, UserController.all);
+router.get("/admin/:id", auth.authUser, auth.authAdmin, UserController.findByUserId);
+router.put("/admin/disable/:id", auth.authUser, auth.authAdmin, UserController.disableUser);
+router.put("/admin/reactivate/:id", auth.authUser, auth.authAdmin, UserController.reactivateUser);
 
 export default router;
