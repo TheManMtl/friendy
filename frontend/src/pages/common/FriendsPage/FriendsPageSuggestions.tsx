@@ -25,11 +25,9 @@ function FriendsPageSuggestions({ userId }: { userId: number }) {
         setSuggestedFriendsBySchool(responseSchool.data);
 
         const responseLocation = await axios.get(`/friends/suggested-location/${userId}`);
-        console.log("Suggested Friends by Location:", responseLocation.data); // Add this log
         setSuggestedFriendsByLocation(responseLocation.data);
 
         const sentRequestsResponse = await axios.get(`/friends/active-requests?direction=sent`);
-        console.log("Sent friend requests: ", sentRequestsResponse.data);
         setSentRequests(sentRequestsResponse.data.map((request: any) => request.requestedToId));
       } catch (error: any) {
         console.error('Could not retrieve suggested friends:', error.response?.data || error.message);

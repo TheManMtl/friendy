@@ -333,13 +333,7 @@ export const viewSuggestedFriendsBySchool = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    const currentUserId = parseInt(req.params.id, 10);
-    if (isNaN(currentUserId)) {
-      return res
-        .status(400)
-        .send({ message: "Invalid user ID in request parameters." });
-    }
-
+    const currentUserId = req.params.id;
     const currentUser = await User.findByPk(currentUserId, {
       attributes: ["school"],
     });
