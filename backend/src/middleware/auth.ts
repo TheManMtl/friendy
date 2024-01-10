@@ -69,7 +69,7 @@ export const authAdmin = async (
   next: NextFunction
 ): Promise<any> => {
   if (!req.role || req.role != "Admin") {
-    return res.status(401).send({ auth: false, message: "not authenticated." });
+    return res.status(401).send({ auth: false, message: "not authorized." });
   }
   next();
 };

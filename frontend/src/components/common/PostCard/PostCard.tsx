@@ -397,7 +397,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                 postId={post.id}
                 commentId={0}
                 reRender={reRender}
-                submit={null}
+                submit={submit}
               />
             </div>
           ) : (
