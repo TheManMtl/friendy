@@ -51,7 +51,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
 
               {/* <Route path="/photos" element={<PhotoPage />} />
-           <Route path="/posts" element={<PostPage />} /> */}
+              <Route path="/posts" element={<PostPage />} /> */}
               <Route
                 path="/profile/:id/*"
                 element={
@@ -60,7 +60,6 @@ function App() {
                   </ProfilePageProvider>
                 }
               />
-              <Route path="/admin" element={<AdminUsersPage />}></Route>
               {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
               <Route
                 path="/friends/*"
@@ -71,37 +70,42 @@ function App() {
                 }
               />
               <Route path="/profile/:id/createalbum" element={
-              <ProfilePageProvider>
-                <CreateAlbum />
-            </ProfilePageProvider>
+                <ProfilePageProvider>
+                  <CreateAlbum />
+                </ProfilePageProvider>
               }
-            />
+              />
 
-          <Route path="/profile/:id/editalbum/:albumId" element={
-           <ProfilePageProvider>
-          <EditAlbum />
-          </ProfilePageProvider>
-          }>
-            
-          </Route>
-            <Route path="/profile/:id/album/:albumId" element={
-            <ProfilePageProvider>
-              <AlbumDetail />
-            </ProfilePageProvider>
-          }></Route>
+              <Route path="/profile/:id/editalbum/:albumId" element={
+                <ProfilePageProvider>
+                  <EditAlbum />
+                </ProfilePageProvider>
+              }>
 
+              </Route>
+              <Route path="/profile/:id/album/:albumId" element={
+                <ProfilePageProvider>
+                  <AlbumDetail />
+                </ProfilePageProvider>
+              }></Route>
+
+            </Route>
+
+            {/* ADMIN ONLY */}
+            <Route element={<LoggedInOnly roles={["Admin"]}/>}>
+            <Route path="/admin" element={<AdminUsersPage />}></Route>
             </Route>
 
             {/* LOGIN NOT REQUIRED */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/404" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </HashRouter>
+          </Route>
+        </Routes>
+      </HashRouter>
 
-      {/* <Footer/> */ }
-  {/* </AuthProvider> */ }
+      {/* <Footer/> */}
+      {/* </AuthProvider> */}
     </div >
   );
 }
