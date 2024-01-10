@@ -26,7 +26,7 @@ router.get(
 router.get(
   "/suggested-location/:id",
   attachS3Info,
-  // authUser,
+  authUser,
   friends.viewSuggestedFriendsByLocation
 );
 router.put("/accept-request", authUser, friends.acceptRequest);
