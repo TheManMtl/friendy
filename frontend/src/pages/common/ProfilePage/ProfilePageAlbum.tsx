@@ -19,6 +19,9 @@ const ProfilePageAlbum:React.FC<ProfilePageAlbumProps> = ({ profileId }) => {
     const authContext = useContext(AuthContext);
     const axiosToken = useAxiosToken();
     const navigate = useNavigate();
+    const { id } = useParams();
+    const userId = authContext?.user?.id;
+    const [isPrivateProfile, setIsPrivateProfile] = useState<boolean>(false);
     // const profileId = authContext?.user?.id;
 
     // const {userId}= useParams();
@@ -35,18 +38,24 @@ const ProfilePageAlbum:React.FC<ProfilePageAlbumProps> = ({ profileId }) => {
     }
     useEffect(() => {
         fetchAlbums();
-    }, []);
+        handlePrivateProfile();
+    }, [id, userId]);
 
     const handleCreateAlbumClick = () => {
         navigate(`/profile/${profileId}/createalbum`);
     };
+    const handlePrivateProfile = () => {
+        if(id === userId?.toString()) {
+        setIsPrivateProfile(true);
+        }
+      }
 
     return (
 
         <div className="container">
-
+{isPrivateProfile && (
             <Button variant="secondary" onClick={handleCreateAlbumClick} className="mt-3">Create Album</Button>
-
+            )}
             <div className="row mt-3 mb-3">
                 {albums.map((album) => (
                     <div key={`album-${album.id}`} className="col-lg-4 col-md-12 mb-4 mb-lg-0 position-relative">

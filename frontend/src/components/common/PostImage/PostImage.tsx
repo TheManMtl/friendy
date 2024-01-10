@@ -6,7 +6,7 @@ import axios from "../../../services/api/axios";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { AuthContext } from "../../../context/AuthProvider";
 import { IAlbum } from "../../../pages/shared/interface/album.interface";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 type PostImageProps = {
   postId: number;
@@ -23,6 +23,9 @@ const PostImage: React.FC<PostImageProps & { showAlert: (message: string) => voi
   const navigate = useNavigate();
   const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const { id } = useParams();
+  const userId = authContext?.user?.id;
+  const [isPrivateProfile, setIsPrivateProfile] = useState<boolean>(false);
   const handleDeleteModal = () => {
 
     try {
@@ -39,6 +42,7 @@ const PostImage: React.FC<PostImageProps & { showAlert: (message: string) => voi
         const userId = authContext?.user?.id;
         axiosToken.get(`/albums/user/${userId}`).then((res) => {
           setAlbums(res.data);
+          handlePrivateProfile();
         });
       } catch (err) {
         console.log(err);
@@ -46,7 +50,12 @@ const PostImage: React.FC<PostImageProps & { showAlert: (message: string) => voi
     };
 
     fetchAlbums();
-  }, []); // Empty dependency array for fetching on mount
+  }, [id, userId]); // Empty dependency array for fetching on mount
+  const handlePrivateProfile = () => {
+    if (id === userId?.toString()) {
+      setIsPrivateProfile(true);
+    }
+  }
 
   const handleMoveToAlbumModal = () => {
     setMoveToAlbumModal(true);
@@ -117,51 +126,21 @@ const PostImage: React.FC<PostImageProps & { showAlert: (message: string) => voi
         />
 
         <div className="position-absolute top-0 pt-2 end-0 m-3">
-          {/* <div className="dropdown">
-          <button
-            className="btn btn-secondary dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <i className="bi bi-three-dots-vertical"></i>
-          </button>
-          <ul className="dropdown-menu">
-            <li>
-              <a className="dropdown-item" onClick={() => setDeleteModal(true)}>
-                Delete
-              </a>
-            </li>
-            <li>
-              <a className="dropdown-item" onClick={() => setMoveToAlbumModal(true)}>
-                Move to Album
-              </a>
-            </li>
-            <li>
-              <a className="dropdown-item" onClick={()=> handleProfilePicture()}>
-                Make profile picture
-              </a>
-            </li>
-            <li>
-              <a className="dropdown-item" onClick={()=> handleCoverPicture()}>
-                Make cover photo
-              </a>
-            </li>
-          </ul>
-        </div> */}
-          <Dropdown>
-            <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-              <i className="bi bi-three-dots-vertical"></i>
-            </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setDeleteModal(true)}>Delete</Dropdown.Item>
-              <Dropdown.Item onClick={() => setMoveToAlbumModal(true)}>Move to Album</Dropdown.Item>
-              <Dropdown.Item onClick={handleProfilePicture}>Make profile picture</Dropdown.Item>
-              <Dropdown.Item onClick={handleCoverPicture}>Make cover photo</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+          {isPrivateProfile && (
+            <Dropdown>
+              <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                <i className="bi bi-three-dots-vertical"></i>
+              </Dropdown.Toggle>
 
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setDeleteModal(true)}>Delete</Dropdown.Item>
+                <Dropdown.Item onClick={() => setMoveToAlbumModal(true)}>Move to Album</Dropdown.Item>
+                <Dropdown.Item onClick={handleProfilePicture}>Make profile picture</Dropdown.Item>
+                <Dropdown.Item onClick={handleCoverPicture}>Make cover photo</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          )}
         </div>
 
         {/* delete modal */}
