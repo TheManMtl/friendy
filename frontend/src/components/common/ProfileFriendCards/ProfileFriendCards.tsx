@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { isPromise } from "util/types";
 import { Button } from "../../../components/common";
 import useAxiosToken from "../../../hooks/useAxiosToken";
+import { RequestProfile } from "../../../models/RequestProfile";
+import FriendRequestBtn from "../FriendRequestBtn/FriendRequestBtn";
 
 interface ProfileFriendCardsProps {
   isPrivateProfile: boolean;
@@ -12,6 +14,8 @@ interface ProfileFriendCardsProps {
   isFriendOfLoggedInUser: boolean;
   setFriends: React.Dispatch<React.SetStateAction<FriendListType[]>>;
   userId: number;
+  toggle: boolean;
+  setToggle: (toggle: boolean) => void;
 }
 const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
   isPrivateProfile,
@@ -19,12 +23,13 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
   isFriendOfLoggedInUser,
   setFriends,
   userId,
+  toggle,
+  setToggle,
 }) => {
   const [sentRequests, setSentRequests] = useState<number[]>([]);
+  const [friendRequests, setFriendRequests] = useState<number[]>([]);
 
-  const buttonText = "Remove Friend";
   const navigate = useNavigate();
-  const buttonClass = buttonText === "Remove Friend" ? "yellow" : "blue";
   const axiosToken = useAxiosToken();
   const navigateAndRefresh = (path: any) => {
     navigate(path);
@@ -74,6 +79,13 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
       console.error("Error sending/undoing friend request:", error);
     }
   };
+  const returnNewFriend = (friend: RequestProfile | null) => {
+    console.log("friend request");
+    if (friend == null) {
+      console.log("passing the function properly");
+      setToggle(!toggle);
+    }
+  };
 
   useEffect(() => {
     try {
@@ -85,7 +97,24 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
     } catch (error) {
       console.log(error);
     }
-  }, []);
+
+    try {
+      axiosToken
+        .get(
+          `${process.env.REACT_APP_HOST_URL}/friends/active-requests?direction=received`
+        )
+        .then((response: any) => {
+          // console.log(
+          //   JSON.stringify(response.data, null, 2) + "friendsresp -> \n\n\n\n"
+          // );
+          setFriendRequests(
+            response.data.map((request: any) => request.userId)
+          );
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [toggle]);
 
   return (
     <div className="col-md-6 mb-4">
@@ -122,7 +151,27 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
               ) : isFriendOfLoggedInUser ? null : sentRequests.includes(
                   friend.userId
                 ) ? (
+                //TODO:replace with undo request
                 <p className="mt-4">Friend request sent</p>
+              ) : friendRequests.includes(friend.userId) ? (
+                //TODO:determine if it receives the request if yes, use button accept request
+                <div>
+                  {" "}
+                  <div className="mt-2">
+                    <FriendRequestBtn
+                      returnNewFriend={returnNewFriend}
+                      value={true}
+                      friendId={friend.userId! as number}
+                    />
+                  </div>
+                  <div className="mt-2">
+                    <FriendRequestBtn
+                      returnNewFriend={returnNewFriend}
+                      value={false}
+                      friendId={friend.userId! as number}
+                    />
+                  </div>
+                </div>
               ) : (
                 <button
                   className="btn btn-sm btn-secondary mt-4"
