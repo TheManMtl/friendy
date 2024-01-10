@@ -1,15 +1,24 @@
 import React from "react";
 import "../../../pages/common/ProfilePage/ProfilePage.css";
 import { IUser } from "../../../pages/shared/interface/user.interface";
+import { Link, useNavigate } from "react-router-dom";
+import { useProfilePageContext } from "../../../context/ProfilePageProvider";
 
 interface IntroCardProps {
   userProfile: IUser | null;
   isPrivateProfile: boolean;
+  userId: number | undefined;
 }
 const ProfileIntroCard: React.FC<IntroCardProps> = ({
   userProfile,
   isPrivateProfile,
+  userId,
 }) => {
+  const { setRoute } = useProfilePageContext();
+
+  const handleLinkClick = (route: string) => {
+    setRoute(route);
+  };
   return (
     <div>
       <div className="IntroCard card py-4">
@@ -48,7 +57,15 @@ const ProfileIntroCard: React.FC<IntroCardProps> = ({
           </div>
           {isPrivateProfile ? (
             <div>
-              <button className="btn btn-secondary col-10">Edit details</button>
+              <Link
+                to={`/profile/${userId}/about`}
+                className="nav-link"
+                onClick={() => handleLinkClick(`/profile/${userId}/about`)}
+              >
+                <button className="btn btn-secondary col-10">
+                  Edit details
+                </button>
+              </Link>
             </div>
           ) : null}
         </div>
@@ -58,3 +75,6 @@ const ProfileIntroCard: React.FC<IntroCardProps> = ({
 };
 
 export default ProfileIntroCard;
+function setRoute(route: string) {
+  throw new Error("Function not implemented.");
+}
