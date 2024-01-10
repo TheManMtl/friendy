@@ -67,13 +67,14 @@ const PostImage: React.FC<PostImageProps & { showAlert: (message: string) => voi
     console.log(albumId + " is selected");
     setSelectedAlbumId(albumId);
   };
-  const handleMoveToAlbum = () => {
+  const handleMoveToAlbum = async () => {
     console.log("Move to album button clicked");
     if (selectedAlbumId !== null) {
       try {
-        axiosToken.put(`/posts/toalbum/${props.postId}`, { albumId: selectedAlbumId });
+       await axiosToken.put(`/posts/toalbum/${props.postId}`, { albumId: selectedAlbumId });
         setMoveToAlbumModal(false);
         console.log("Post moved to album successfully");
+        props.onPostDeleted();
       } catch (err) {
         console.log(err);
       }

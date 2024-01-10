@@ -97,9 +97,10 @@ export const viewProfile = async (
       if (friend) isFriend = true;
     }
 
-    const profile = await User.findByPk(profileId, 
+    const profile = await User.findOne(
       {
       where: {
+        id: profileId,
         isDeleted: false,
       },
     // },
@@ -145,6 +146,10 @@ export const viewProfile = async (
           model: User,
           as: "relationshipWith",
           attributes: ["id", "name"],
+          required: false,
+          where: {
+            isDeleted: false,
+          },
         },
       ],
     });

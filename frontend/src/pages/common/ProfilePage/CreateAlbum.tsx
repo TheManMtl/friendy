@@ -15,43 +15,41 @@ function CreateAlbum() {
     const [title, setTitle] = useState<string>("")
     const axiosToken = useAxiosToken();
     const navigate = useNavigate();
-    const userId=authContext?.user?.id;
+    const userId = authContext?.user?.id;
     const { setRoute } = useProfilePageContext();
     const handleLinkClick = (route: string) => {
         setRoute(route);
-      };
+    };
     const submit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-try{
+        try {
+            const newAlbum = await axiosToken.post("/albums", {
+                title: title,
+                profileId: userId
+            });
 
+            console.log(newAlbum.data.id);
+            console.log(files.length);
 
-        const newAlbum = await axiosToken.post("/albums", {
-            title: title,
-            profileId: userId
-        });
-
-        console.log(newAlbum.data.id);
-        console.log(files.length);
-
-        const imageData = new FormData();
-        if (files.length !== 0 && newAlbum.data.id !== null) {
-            for (let file of files) {
-                imageData.append("images", file);
-            };
-            imageData.append("authorId", authContext?.user?.id.toString() ?? "");
-            imageData.append("type", PostType.albumImg);
-            imageData.append("albumId", newAlbum.data.id.toString() ?? "");
-            await axiosToken.post("/posts/multiple", imageData, { headers: { 'Content-Type': 'multipart/form-data' } });
+            const imageData = new FormData();
+            if (files.length !== 0 && newAlbum.data.id !== null) {
+                for (let file of files) {
+                    imageData.append("images", file);
+                };
+                imageData.append("authorId", authContext?.user?.id.toString() ?? "");
+                imageData.append("type", PostType.albumImg);
+                imageData.append("albumId", newAlbum.data.id.toString() ?? "");
+                await axiosToken.post("/posts/multiple", imageData, { headers: { 'Content-Type': 'multipart/form-data' } });
+            }
+            navigate(`/profile/${userId}/album`);
+        } catch (err) {
+            console.log("Error creating album", err);
         }
-        navigate(`/profile/${userId}/album`);
-    } catch (err) {
-        console.log("Error creating album",err);
-    }
     }
 
     const handleFileChange = (e: any) => {
         setFiles(e.target.files);
-        const imageUrls : string[] = [] ;
+        const imageUrls: string[] = [];
         for (let file of e.target.files) {
             imageUrls.push(URL.createObjectURL(file));
         }
@@ -64,11 +62,11 @@ try{
             <div className="container leftPanel col-xl-3">
                 <div className="row">
                     <div className="col-xl-3 mb-3">
-                    <Link to={`/profile/${userId}/album`}
-            onClick={() => handleLinkClick(`/profile/${userId}/album`)}>
-                        <Button variant="link" >
-                            <i className="bi bi-arrow-left-circle-fill text-secondary fs-3"></i>
-                        </Button>
+                        <Link to={`/profile/${userId}/album`}
+                            onClick={() => handleLinkClick(`/profile/${userId}/album`)}>
+                            <Button variant="link" >
+                                <i className="bi bi-arrow-left-circle-fill text-secondary fs-3"></i>
+                            </Button>
                         </Link>
                     </div>
                     <hr></hr>
@@ -99,11 +97,11 @@ try{
 
             <div className="container col-xl-9">
                 <div className="row">
-                        {imagePreviews.map((imageSrc, index) => (
-                            <div key={index} className="col-12 col-md-6 col-lg-4 mb-3">
-                                <img src={imageSrc} alt={`preview-${index}`} className="img-fluid" />
-                            </div>
-                        ))}
+                    {imagePreviews.map((imageSrc, index) => (
+                        <div key={index} className="col-12 col-md-6 col-lg-4 mb-3">
+                            <img src={imageSrc} alt={`preview-${index}`} className="img-fluid" />
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
