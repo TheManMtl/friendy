@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+
+  backend:
+    image: backend
+    ports:
+      - 3000:80                  
+    networks:
+      - backend
+    restart: always        
+
+networks:
+  backend:
+    external: true

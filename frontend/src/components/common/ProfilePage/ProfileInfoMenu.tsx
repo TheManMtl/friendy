@@ -64,21 +64,22 @@ const ProfileInfoMenu: React.FC<Props> = ({
                           src={
                             profileThumb
                               ? profileThumb
-                              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
+                              : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
                           }
                           alt={"profile"}
                           size={"medium"}
                         />
                       </Dropdown.Toggle>
-
-                      <Dropdown.Menu>
-                        <Dropdown.Item onClick={showChangeProfileModal}>
-                          Change profile image
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#">
-                          See profile image
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
+                      {isPrivateProfile ? (
+                        <Dropdown.Menu>
+                          <Dropdown.Item onClick={showChangeProfileModal}>
+                            Change profile image
+                          </Dropdown.Item>
+                          <Dropdown.Item href="#">
+                            See profile image
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      ) : null}
                     </Dropdown>
                   </div>
                 </div>

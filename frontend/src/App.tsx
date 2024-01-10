@@ -21,8 +21,7 @@ import "./assets/global.css";
 import { ProfilePageProvider } from "./context/ProfilePageProvider";
 import AdminUsersPage from "./pages/common/AdimPage/AdminUsersPage";
 import PersistAuth from "./components/PersistAuth";
-import { useContext } from "react";
-import { AuthContext } from "./context/AuthProvider";
+import LoggedInOnly from "./components/LoggedInOnly";
 
 import AlbumList from "./components/common/AlbumDisplay/AlbumList";
 import CreateAlbum from "./pages/common/ProfilePage/CreateAlbum";
@@ -45,37 +44,37 @@ function App() {
         {isAdminRoute || isDisplayRoute ? <></> : <Navbar />}
         <Routes>
           <Route element={<PersistAuth />}>
-            <Route path="/display" element={<ImagePostDisplay />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/404" element={<NotFound />} />
-            {/* <Route path="/photos" element={<PhotoPage />} />
+            <Route element={<LoggedInOnly />}>
+
+              <Route path="/display" element={<ImagePostDisplay />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/" element={<HomePage />} />
+
+              {/* <Route path="/photos" element={<PhotoPage />} />
            <Route path="/posts" element={<PostPage />} /> */}
-            <Route
-              path="/profile/:id/*"
-              element={
-                <ProfilePageProvider>
-                  <ProfilePage />
-                </ProfilePageProvider>
-              }
-            />
-            <Route path="/admin" element={<AdminUsersPage />}></Route>
-            {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
-            <Route
-              path="/friends/*"
-              element={
-                <FriendsPageProvider>
-                  <FriendsPage />
-                </FriendsPageProvider>
-              }
-            />
-            <Route path="/profile/:id/createalbum" element={
+              <Route
+                path="/profile/:id/*"
+                element={
+                  <ProfilePageProvider>
+                    <ProfilePage />
+                  </ProfilePageProvider>
+                }
+              />
+              <Route path="/admin" element={<AdminUsersPage />}></Route>
+              {/* Wrapping only FriendsPage in FriendsPageContext... I don't think it applies anywhere else on the site -Nick */}
+              <Route
+                path="/friends/*"
+                element={
+                  <FriendsPageProvider>
+                    <FriendsPage />
+                  </FriendsPageProvider>
+                }
+              />
+              <Route path="/profile/:id/createalbum" element={
               <ProfilePageProvider>
                 <CreateAlbum />
             </ProfilePageProvider>
-            }
+              }
             />
 
           <Route path="/profile/:id/editalbum/:albumId" element={
@@ -85,12 +84,18 @@ function App() {
           }>
             
           </Route>
-          <Route path="/profile/:id/album/:albumId" element={
+            <Route path="/profile/:id/album/:albumId" element={
             <ProfilePageProvider>
               <AlbumDetail />
             </ProfilePageProvider>
           }></Route>
 
+            </Route>
+
+            {/* LOGIN NOT REQUIRED */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/404" element={<NotFound />} />
         </Route>
       </Routes>
     </HashRouter>

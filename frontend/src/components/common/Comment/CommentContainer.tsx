@@ -8,11 +8,15 @@ import Comment from "./Comment";
 type CommentContainerProps = {
   postId: number;
   commentId: number;
+  reRender: boolean;
+  submit: any | null;
 };
 
 const CommentContainer: React.FC<CommentContainerProps> = ({
   postId,
   commentId,
+  reRender,
+  submit,
 }) => {
   const [comments, setComments] = useState<Comments[]>([]);
   const axiosToken = useAxiosToken();
@@ -39,20 +43,23 @@ const CommentContainer: React.FC<CommentContainerProps> = ({
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toggle]);
+  }, [toggle, reRender]);
   return (
     <>
       {comments && comments.length > 0 && (
         <div>
-          {/* <Comment isNested={false} size={1} comment={comments[0]} />
-          <Comment isNested={true} size={1} comment={comments[0]} /> */}
           {comments.map((comment, index) => (
-            <Comment key={index} isNested={!isParent} comment={comment} />
+            <Comment
+              key={index}
+              isNested={!isParent}
+              comment={comment}
+              submit={submit}
+            />
           ))}
         </div>
       )}
     </>
   );
 };
- 
+
 export default CommentContainer;

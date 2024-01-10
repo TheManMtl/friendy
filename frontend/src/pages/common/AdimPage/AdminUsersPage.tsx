@@ -57,7 +57,7 @@ function AdminUsersPage() {
   const viewUser = (userId: number) => {
     //TODO: User detail page
     console.log("View user with ID:", userId);
-    
+
   };
   return (
     <>
@@ -106,8 +106,8 @@ function AdminUsersPage() {
                   {user.role}
                 </td>
                 <td>
-          <button className='btn btn-warning' onClick={() => viewUser(user.id)}>View</button>
-        </td>
+                  <button className='btn btn-warning' onClick={() => viewUser(user.id)}>View</button>
+                </td>
               </tr>
             ))}
           </tbody>

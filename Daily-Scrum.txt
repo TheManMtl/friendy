@@ -817,6 +817,85 @@ Xuerun:
   -display the most recent image of the album in album card
   -link postdetail page to the post list
   -set a photo as profile photo and cover photo
+
+
+Date: Jan 09
+
+
+Alex:
+Finished:
+- fix retrieval of images in backend 
+- see upvotes
+- upvote comment
+- delete upvote comment
+- make comment
+- change password (backend)
+- start work on admin panel 
+
+Working on:
+- finishing post display
+- upvote post
+- delete your comment
+- edit your comment (almost done)
+- x takes you back
+Challenges:
+N/A
+
+Ehsan:
+Finished:
+Working on: admin page and CI/CD
+Needs help on: images of users
+
+Meredith:
+ Finished: 
+  - delete posts
+  - add post input to home page
+  - full size imgs for timeline
+  - add profile links to post authors
+  - 404 page (partial)
+ Not done:
+  - update post feeds after create/edit
+ Working On: 
+   - update post feeds
+   - comment view in post card
+   - debug comment form (clear validation errors)
+   - like/unlike from post card (+ view liked by users list if time)
+   - 404 page routing
+   - debug rerendering timeline in profile page on params change
+   - handle update on users after delete profile pic/cover pic
+   - pagination? (back end for posts and comments)
+ Challenges: 
+  - 
+
+Nick:
+Finished: friends page update
+Working on: video chat
+Needs help on: server file for webrtc/socket
+
+Shiyu:
+Finished:
+-hooked photos in photo gallery
+-finished editing function in about page
+-implemented changing password
+-started working on friends subpage
+-added error handling to login
+Working on
+-fix profilePostId bug
+-finish friend subpage
+-hook image post to image post detail page
+-test overall user frontend
+Challenges
+-NA
+
+Xuerun:
+ Finished: 
+  -display the most recent image of the album in album card
+  -link postdetail page to the post list
+  -correct the resize parameter when uploading a image 
+
+ Working On: 
+    -set a photo as profile photo and cover photo
+    -correct redirect to album list
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------

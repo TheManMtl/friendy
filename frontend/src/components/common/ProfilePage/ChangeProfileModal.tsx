@@ -35,31 +35,75 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
       formData.append("image", file);
 
       if (userId) {
-        // Append other fields to formData
-        formData.append("authorId", userId.toString());
-        formData.append("type", PostType.profilePic);
-        formData.append("content", "This is a profile image");
+        axiosToken
+          .get(`/albums/profile/${userId}`)
+          .then((response) => {
+            const profileAlbumId = response.data.id;
+            console.log("=====profile album id=====" + profileAlbumId);
+            // Append other fields to formData
+
+            formData.append("authorId", userId.toString());
+            formData.append("type", PostType.profilePic);
+            //formData.append("content", "This is a profile image");
+            formData.append("albumId", profileAlbumId.toString());
+
+            axiosToken
+              .post("/posts", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+              })
+              .then((response) => {
+                axiosToken
+                  .put("/profile/update", {
+                    profilePostId: response.data.post.id,
+                  })
+                  .then((response) => {
+                    console.log(
+                      "====changed profilePostId===" +
+                        response.data.profilePostId
+                    );
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+                // TODO:use flash message
+                alert("Picture successfully uploaded!");
+                window.location.reload();
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+            setFile(undefined);
+          })
+          .catch((error: any) => {
+            console.log("===Get album id error===" + error);
+          });
+      } else {
+        console.log("====userId is null=====");
       }
 
-      axiosToken
-        .post("/posts", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((response) => {
-          axiosToken
-            .put("/profile/update", { profilePostId: response.data.post.id })
-            .then((response) => {})
-            .catch((error) => {
-              console.log(error);
-            });
-          // TODO:use flash message
-          alert("Picture successfully uploaded!");
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      setFile(undefined);
+      // axiosToken
+      //   .post("/posts", formData, {
+      //     headers: { "Content-Type": "multipart/form-data" },
+      //   })
+      //   .then((response) => {
+      //     axiosToken
+      //       .put("/profile/update", { profilePostId: response.data.post.id })
+      //       .then((response) => {
+      //         console.log(
+      //           "====changed profilePostId===" + response.data.profilePostId
+      //         );
+      //       })
+      //       .catch((error) => {
+      //         console.log(error);
+      //       });
+      //     // TODO:use flash message
+      //     alert("Picture successfully uploaded!");
+      //     window.location.reload();
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
+      // setFile(undefined);
 
       //update profilePostId in the User record
     } else {

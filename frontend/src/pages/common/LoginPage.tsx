@@ -139,7 +139,13 @@ function LoginPage() {
               <a href="/" className="sm-text mx-auto mb-3">
                 Don't have an account?
               </a>
-              <button className="btn btn-white ml-2 mx-2">Create new</button>
+
+              <button
+                className="btn btn-white ml-2 mx-2"
+                onClick={() => navigate("/register")}
+              >
+                Create new
+              </button>
             </div>
           </div>
 

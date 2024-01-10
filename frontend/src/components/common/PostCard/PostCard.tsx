@@ -18,7 +18,7 @@ import {
   PlayFill,
   ThreeDots,
   Trash,
-  Pencil
+  Pencil,
 } from "react-bootstrap-icons";
 
 type PostCardProps = {
@@ -32,18 +32,16 @@ type PostCardProps = {
   likeCount: number;
   commentCount: number;
   comments?: IComment[];
-  type: string
+  type: string;
   currentUserProfileThumb?: string | null;
   openEdit?: () => void;
-
-}
+};
 
 interface input {
   body: string;
 }
 
 const PostCard: React.FC<PostCardProps> = (props) => {
-
   const axiosToken = useAxiosToken();
   const [success, setSuccess] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -60,15 +58,19 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     setIsFocused(false);
   };
 
-  
   const validationSchema = Yup.object().shape({
-    body: Yup.string().max(1500).required("Comment body must be between 1 and 1500 characters."),
+    body: Yup.string()
+      .max(1500)
+      .required("Comment body must be between 1 and 1500 characters."),
   });
   const initialValues = {
-    body: ""
+    body: "",
   };
 
-  const handleCommentOnPost = async (data: input, { resetForm }: FormikHelpers<input>) => {
+  const handleCommentOnPost = async (
+    data: input,
+    { resetForm }: FormikHelpers<input>
+  ) => {
     console.log("handleCommentOnPost called");
     try {
       console.log("will it work?");
@@ -102,10 +104,10 @@ const PostCard: React.FC<PostCardProps> = (props) => {
 
     const min = Math.floor(millisec / 60000);
     if (min === 0) {
-      return '1m';
+      return "1m";
     }
     if (min < 60) {
-      return min + 'm';
+      return min + "m";
     }
     const hr = Math.floor(min / 60);
     if (hr < 2) {
@@ -116,49 +118,49 @@ const PostCard: React.FC<PostCardProps> = (props) => {
     }
     const day = Math.floor(hr / 24);
     if (day < 2) {
-      return "a day ago"
+      return "a day ago";
     }
     if (day < 7) {
-      return day + " days ago"
+      return day + " days ago";
     }
 
     const month = newDate.getMonth();
     const months: string[] = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     let result = months[month] + " " + newDate.getDate();
     if (newDate.getFullYear() < new Date().getFullYear()) {
-      result += (" " + newDate.getFullYear());
+      result += " " + newDate.getFullYear();
     }
     return result;
-  }
+  };
 
-    //Post modal for editing
-    const [showPostModal, setShowPostModal] = useState<boolean>(false);
-    const closePost = () => {
-      setShowPostModal(false);
-    };
-    const openEdit = () => setShowPostModal(true);
-    //end edit modal section
+  //Post modal for editing
+  const [showPostModal, setShowPostModal] = useState<boolean>(false);
+  const closePost = () => {
+    setShowPostModal(false);
+  };
+  const openEdit = () => setShowPostModal(true);
+  //end edit modal section
 
-    //confirm delete modal
-    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
-    const closeDeleteModal = () => {
-      setShowDeleteModal(false);
-    };
-    const openDelete = () => setShowDeleteModal(true);
-    //end confirm delete modal section
+  //confirm delete modal
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
+  const openDelete = () => setShowDeleteModal(true);
+  //end confirm delete modal section
 
   return (
     <div key={refresh}>
@@ -175,44 +177,55 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             <div className="col-10">
               <div className="d-flex justify-content-start">
                 {/* TODO handle route hashing? */}
-                <a href={`#/profile/${props.authorId}`} className="fw-bold"> {props.username} </a>
-                {
-                  props.type === "profilePic" ? (
-                    <span className="text-secondary"> &nbsp;updated their profile picture.</span>
-                  ) : (<></>)
-                }
-                {
-                  props.type === "coverPhoto" ? (
-                    <span className="text-secondary"> &nbsp;changed their cover photo.</span>
-                  ) : (<></>)
-                }
+                <a href={`#/profile/${props.authorId}`} className="fw-bold">
+                  {" "}
+                  {props.username}{" "}
+                </a>
+                {props.type === "profilePic" ? (
+                  <span className="text-secondary">
+                    {" "}
+                    &nbsp;updated their profile picture.
+                  </span>
+                ) : (
+                  <></>
+                )}
+                {props.type === "coverPhoto" ? (
+                  <span className="text-secondary">
+                    {" "}
+                    &nbsp;changed their cover photo.
+                  </span>
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="d-flex justify-content-start">
-                <small className="text-secondary">{getPostTime(props.time)}</small>
+                <small className="text-secondary">
+                  {getPostTime(props.time)}
+                </small>
               </div>
             </div>
             <div className="col-1">
-              {
-                props.authorId === user!.id ? (
-                  <div className="dropdown">
-                    <div data-bs-toggle="dropdown" aria-expanded="false">
-                      <ThreeDots />
-                    </div>
-                    <ul className="dropdown-menu">
-                      <li className="dropdown-item" onClick={openEdit}><Pencil /> Edit post</li>
-                      <li className="dropdown-item" onClick={openDelete}><Trash /> Move to trash</li>
-                    </ul>
+              {props.authorId === user!.id ? (
+                <div className="dropdown">
+                  <div data-bs-toggle="dropdown" aria-expanded="false">
+                    <ThreeDots />
                   </div>
-                ) : (
-                  <></>
-                )
-              }
+                  <ul className="dropdown-menu">
+                    <li className="dropdown-item" onClick={openEdit}>
+                      <Pencil /> Edit post
+                    </li>
+                    <li className="dropdown-item" onClick={openDelete}>
+                      <Trash /> Move to trash
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
           <div className="card-content container">
-            <p className="text-left-custom">
-              {props.content}
-            </p>
+            <p className="text-left-custom">{props.content}</p>
             {props.thumbnailUrl && (
               <div className="card-img">
                 <img
@@ -225,41 +238,29 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           </div>
 
           <div className="row">
-
             <div className="col-2 text-start">
-              {
-                props.likeCount > 0 ?
-                  (
-                    <>
-                      <HandThumbsUp />
-                      <small>{" " + props.likeCount}</small>
-                    </>
-                  ) : (
-                    <></>
-                  )
-              }
+              {props.likeCount > 0 ? (
+                <>
+                  <HandThumbsUp />
+                  <small>{" " + props.likeCount}</small>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
 
-            {
-              props.commentCount > 0 ?
-                (
-                  <div className="col-4 offset-6 text-end text-secondary">
-                    <small>{props.commentCount + " "}</small>
-                    {
-                      props.commentCount === 1 ? (
-                        <small>comment</small>
-
-                      ) : (
-                        <small>comments</small>
-                      )
-                    }
-                  </div>
-
+            {props.commentCount > 0 ? (
+              <div className="col-4 offset-6 text-end text-secondary">
+                <small>{props.commentCount + " "}</small>
+                {props.commentCount === 1 ? (
+                  <small>comment</small>
                 ) : (
-                  <></>
-                )
-            }
-
+                  <small>comments</small>
+                )}
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
           <hr />
           <div className="row text-center">
@@ -273,18 +274,19 @@ const PostCard: React.FC<PostCardProps> = (props) => {
             </div>
           </div>
           <hr />
-          {
-            props.commentCount > 0 ?
-              (
-                <div className="row">
-                  {/* TODO: display first comment only, toggle full list view */}
-                  <CommentContainer postId={props.id} commentId={0} />
-                </div>
-
-              ) : (
-                <></>
-              )
-          }
+          {props.commentCount > 0 ? (
+            <div className="row">
+              {/* TODO: display first comment only, toggle full list view */}
+              <CommentContainer
+                postId={props.id}
+                commentId={0}
+                reRender={true}
+                submit={null}
+              />
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
         <div className="card-footer bg-transparent border-0">
           <Formik
@@ -296,7 +298,8 @@ const PostCard: React.FC<PostCardProps> = (props) => {
           >
             {(formikprops) => (
               <Form>
-                <div className={`textarea-container${isFocused ? " focused" : ""}`}
+                <div
+                  className={`textarea-container${isFocused ? " focused" : ""}`}
                   onFocus={handleFocus}
                   onBlur={handleBlur}
                 >
@@ -312,9 +315,14 @@ const PostCard: React.FC<PostCardProps> = (props) => {
                   </div>
                   {/* <Button type="submit" variant="color" label="Post comment"></Button> */}
                   {/* {isFocused && ( */}
-                  <button className="btn-block btn-color submit-button p-0 px-1" type="submit" onClick={() => console.log("Button clicked")}><SendFill /></button>
+                  <button
+                    className="btn-block btn-color submit-button p-0 px-1"
+                    type="submit"
+                    onClick={() => console.log("Button clicked")}
+                  >
+                    <SendFill />
+                  </button>
                   {/* )}  */}
-
                 </div>
                 <ErrorMessage name="body" component="div" />
               </Form>
@@ -328,8 +336,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
         src={
           props.currentUserProfileThumb
             ? props.currentUserProfileThumb
-            : 
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
+            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQCxaZG5PZ2b0vJvY43fF39JensmbejwDzB_FvoT73FxQ&s"
         }
         alt={"profile"}
         size={"small"}
@@ -343,7 +350,7 @@ const PostCard: React.FC<PostCardProps> = (props) => {
         showDeleteModal={showDeleteModal}
         closeDeleteModal={closeDeleteModal}
         postId={props.id}
-        />
+      />
     </div>
   );
 };

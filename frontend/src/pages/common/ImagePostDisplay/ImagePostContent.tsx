@@ -15,17 +15,63 @@ import { SinglePost } from "../../../models/SinglePost";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import CommentContainer from "../../../components/common/Comment/CommentContainer";
+import MainComment from "./MainComment";
+import useAuth from "../../../hooks/useAuth";
 
 type ImagePostContentProps = {
   user: Profile;
   post: SinglePost;
+  reRender: boolean;
+  setReRender: any;
 };
 
-const ImagePostContent: React.FC<ImagePostContentProps> = ({ user, post }) => {
+const ImagePostContent: React.FC<ImagePostContentProps> = ({
+  user,
+  post,
+  reRender,
+  setReRender,
+}) => {
   const axiosToken = useAxiosToken();
   TimeAgo.addDefaultLocale(en);
   const timeAgo = new TimeAgo("en-US");
 
+  const [makeComment, setMakeComment] = useState<boolean>(false);
+  const [userLikes, setUserLikes] = useState<boolean>(false);
+
+  const submit = () => {
+    setReRender(!reRender);
+    setMakeComment(false);
+  };
+
+  const handleVote = async (vote: boolean) => {
+    console.log(vote);
+    await axiosToken
+      .post(`${process.env.REACT_APP_HOST_URL}/likes/post/${post.id}`)
+      .then((response) => {
+        console.log(response.data);
+        submit();
+      })
+      .catch((error) => {
+        console.log("is this NOT working?");
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    console.log("rerender");
+
+    const renderLike = async () => {
+      await axiosToken
+        .get(`${process.env.REACT_APP_HOST_URL}/likes/post/${post.id}`)
+        .then((response: any) => {
+          console.log(response.data + " does user like post?");
+          setUserLikes(response.data);
+        })
+        .catch((error: any) => {
+          console.log(error);
+        });
+    };
+    renderLike();
+  }, [reRender]);
   return (
     <div className="image-post-content-scroll">
       <div className="row p-5 ">
@@ -75,17 +121,57 @@ const ImagePostContent: React.FC<ImagePostContentProps> = ({ user, post }) => {
 
         <div className="col-12 py-2 my-3 interact-options">
           <div className="row">
-            <div className="col-6 text-center like-comment p-1">
+            {userLikes ? (
+              <>
+                {" "}
+                <div
+                  className="col-6 text-center like-comment p-1"
+                  onClick={() => handleVote(false)}
+                >
+                  <HandThumbsUpFill size={30} /> <span>Unlike</span>
+                </div>
+              </>
+            ) : (
+              <>
+                {" "}
+                <div
+                  className="col-6 text-center like-comment p-1"
+                  onClick={() => handleVote(true)}
+                >
+                  <HandThumbsUp size={30} /> <span>Like</span>
+                </div>
+              </>
+            )}
+
+            {/* <div className="col-6 text-center like-comment p-1">
               <HandThumbsUp size={30} /> <span>Like</span>
-            </div>
+            </div> */}
+
             <div className="col-6 text-center like-comment p-1 ">
-              <Chat size={30} /> <span>Comment</span>
+              <Chat size={30} />{" "}
+              <span
+                onClick={() => {
+                  setMakeComment(!makeComment);
+                }}
+              >
+                Comment
+              </span>
             </div>
           </div>
         </div>
+        {makeComment && (
+          <div className="col-12 no-margin-padding-left">
+            <MainComment postId={post.id} submit={submit} />
+          </div>
+        )}
 
         <div className="col-12 no-margin-padding-left">
-          <CommentContainer commentId={0} postId={89} />
+          <CommentContainer
+            commentId={0}
+            postId={post.id}
+            reRender={reRender}
+            submit={submit}
+          />
         </div>
       </div>
     </div>

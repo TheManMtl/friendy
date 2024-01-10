@@ -67,3 +67,14 @@ color: white;
 .profile-thumbnail {
     margin-left: -20px;
 }
+
+.post-container {
+    z-index: 1;
+}
+
+#btnExit{
+    z-index: 999;
+    background-color: inherit;
+    position: relative;
+border: none;
+}

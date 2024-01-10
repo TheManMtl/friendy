@@ -15,6 +15,7 @@ const ImagePostDisplay: React.FC<ImagePostDisplayProps> = ({}) => {
   const [searchParams] = useSearchParams();
   const [post, setPost] = useState<SinglePost>();
   const [user, setUser] = useState<Profile>();
+  const [reRender, setReRender] = useState<boolean>(false);
 
   useEffect(() => {
     const postId = searchParams.get("postid");
@@ -47,17 +48,24 @@ const ImagePostDisplay: React.FC<ImagePostDisplayProps> = ({}) => {
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams, reRender]);
 
   return (
-    <div className="container-fluid wh-100">
+    <div className="container-fluid wh-100 ">
       <div className="d-flex flex-lg-row flex-column">
         <div className="flex-grow-1 bg-black full-height">
           {post?.imageUrl && <ImageDisplay src={post.imageUrl} />}
         </div>
 
         <div className=" post-content h-100">
-          {user && post && <ImagePostContent user={user!} post={post!} />}
+          {user && post && (
+            <ImagePostContent
+              user={user!}
+              post={post!}
+              reRender={reRender}
+              setReRender={setReRender}
+            />
+          )}
         </div>
       </div>
     </div>
