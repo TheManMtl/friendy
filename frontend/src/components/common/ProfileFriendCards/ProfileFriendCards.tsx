@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import ProfileImage from "../ProfileImage/ProfileImage";
 import { FriendListType } from "../../../types/common";
 import { useNavigate } from "react-router-dom";
-import { isPromise } from "util/types";
-import { Button } from "../../../components/common";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { RequestProfile } from "../../../models/RequestProfile";
 import FriendRequestBtn from "../FriendRequestBtn/FriendRequestBtn";
-
+import "../../../pages/common/ProfilePage/ProfilePage.css";
 interface ProfileFriendCardsProps {
   isPrivateProfile: boolean;
   friend: FriendListType;
@@ -50,7 +48,6 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
       console.error("Error removing friend:", error);
     }
   };
-
   const handleRemoveFriend = (userId: number) => {
     const shouldRemove = window.confirm(
       "Are you sure you want to remove this friend?"
@@ -59,7 +56,6 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
       removeFriend(userId);
     }
   };
-
   const addFriend = async (friendId: number, userId: number) => {
     try {
       if (sentRequests.includes(friendId)) {
@@ -84,6 +80,22 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
     if (friend == null) {
       console.log("passing the function properly");
       setToggle(!toggle);
+    }
+  };
+  const revokeFriendRequest = async (friendId: number) => {
+    try {
+      const response = await axiosToken.delete("/friends/remove", {
+        data: { id: friendId },
+      });
+      setFriendRequests((prevFriendRequests) =>
+        prevFriendRequests.filter(
+          (friendRequestId) => friendRequestId !== friendId
+        )
+      );
+      setToggle(!toggle);
+      console.log("Friend request revoked successfully:", response.data);
+    } catch (error) {
+      console.error("Error revoking friend request:", error);
     }
   };
 
@@ -152,7 +164,14 @@ const ProfileFriendCards: React.FC<ProfileFriendCardsProps> = ({
                   friend.userId
                 ) ? (
                 //TODO:replace with undo request
-                <p className="mt-4">Friend request sent</p>
+                <p className="mt-4">
+                  <button
+                    className="btn"
+                    onClick={() => revokeFriendRequest(friend.userId)}
+                  >
+                    Undo Request
+                  </button>
+                </p>
               ) : friendRequests.includes(friend.userId) ? (
                 //TODO:determine if it receives the request if yes, use button accept request
                 <div>
