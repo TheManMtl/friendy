@@ -29,6 +29,18 @@ function FriendsPageRequests({ userId }: { userId: number }) {
     }
   };
 
+  const acceptFriendRequest = async (friendId: number) => {
+    try {
+      const response = await axiosToken.put('/friends/accept-request', { id: friendId });
+      setFriendRequestsReceived((prevFriendRequests) =>
+        prevFriendRequests.filter((friendRequest) => friendRequest.userId !== friendId)
+      );
+      console.log('Friend request accepted successfully:', response.data);
+    } catch (error) {
+      console.error('Error accepting friend request:', error);
+    }
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,7 +94,7 @@ function FriendsPageRequests({ userId }: { userId: number }) {
             key={index}
             friend={friend}
             buttonText="Accept Request"
-            onClick={() => console.log(`Accept Request ${friend.name}`)}
+            onClick={() => acceptFriendRequest(friend.userId)}
           />
         ))}
       </div>
