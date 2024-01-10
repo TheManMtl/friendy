@@ -214,6 +214,7 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
           <ProfilePageFriend
             isPrivateProfile={isPrivateProfile}
             paramUserId={id}
+            userId={userId?.toString()}
           />
         );
       case `/profile/${id}/photo`:
@@ -232,8 +233,6 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         );
     }
   };
-
-  useEffect(() => {}, []);
 
   return (
     <div>

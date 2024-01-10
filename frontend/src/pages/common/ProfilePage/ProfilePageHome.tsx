@@ -49,7 +49,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
     console.log("line 33!!");
     getPosts();
     console.log("line 35!!");
-  }, []);
+  }, [id, paramId]);
 
   //FIXME: when url param changes, old user's posts are not removed unless new user has posts on timeline
   const getPosts = async () => {
