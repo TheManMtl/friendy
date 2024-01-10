@@ -43,8 +43,8 @@
 }
 
 .video-wrapper {
-	width: 460px;
-	height:348px;
+	width: 450px;
+	height:340px;
 	display: flex;
 	padding:none;
 	border: 5px solid rgb(9, 9, 11);

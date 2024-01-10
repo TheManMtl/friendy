@@ -98,56 +98,62 @@ function VideoChat() {
 
 	const leaveCall = () => {
 		setCallEnded(true);
-		connectionRef.current.destroy();
-	};
+		if (stream) {
+		  const tracks = stream.getTracks();
+		  tracks.forEach(track => track.stop());
+		}
+		setStream(null);
+	  };
 
 	return (
 		<>
-			<h1 style={{ textAlign: "center", color: "#000", marginTop: "2em"}}>Video Chat</h1>
+			<h1 style={{ textAlign: "center", color: "#000", marginTop: "2em" }}>Video Chat</h1>
 			<div className="container">
 				<div className="video-container">
 					<div className="video-wrapper">
 						<div className="video">
-							{stream && <video playsInline muted ref={myVideo} autoPlay style={{ width: "450px" }}/>}
+							{stream && <video playsInline muted ref={myVideo} autoPlay style={{ width: "450px" }} />}
 						</div>
 					</div>
+					<div className="video-wrapper">
 					<div className="video">
-						{callAccepted && !callEnded ? <video playsInline ref={userVideo} autoPlay style={{ width: "450px" }}/> : null}
+						{callAccepted && !callEnded ? <video playsInline ref={userVideo} autoPlay style={{ width: "450px" }} /> : null}
 					</div>
-				</div>
-				<div className="myId">
-					<input
-						type="text"
-						placeholder="Name"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						style={{ marginBottom: "20px" }}
-					/>
-					<h4>Socket Id: {me}</h4>
-					<input
-						type="text"
-						placeholder="ID to call"
-						value={idToCall}
-						onChange={(e) => setIdToCall(e.target.value)}
-					/>
-					<div className="call-button">
-						{callAccepted && !callEnded ? (
-							<button className="vchat-button" onClick={leaveCall}>End Call</button>
-						) : (
-							<button className="vchat-button" onClick={() => callUser(idToCall)}>Call</button>
-						)}
-						{idToCall}
-					</div>
-				</div>
-				<div>
-					{receivingCall && !callAccepted ? (
-						<div className="caller">
-							<h1>{name} is calling...</h1>
-							<button onClick={answerCall}>Answer</button>
-						</div>
-					) : null}
 				</div>
 			</div>
+			<div className="myId">
+				<input
+					type="text"
+					placeholder="Name"
+					value={name}
+					onChange={(e) => setName(e.target.value)}
+					style={{ marginBottom: "20px" }}
+				/>
+				<h4>Socket Id: {me}</h4>
+				<input
+					type="text"
+					placeholder="ID to call"
+					value={idToCall}
+					onChange={(e) => setIdToCall(e.target.value)}
+				/>
+				<div className="call-button">
+					{callAccepted && !callEnded ? (
+						<button className="vchat-button" onClick={leaveCall}>End Call</button>
+					) : (
+						<button className="vchat-button" onClick={() => callUser(idToCall)}>Call</button>
+					)}
+					{idToCall}
+				</div>
+			</div>
+			<div>
+				{receivingCall && !callAccepted ? (
+					<div className="caller">
+						<h1>{name} is calling...</h1>
+						<button onClick={answerCall}>Answer</button>
+					</div>
+				) : null}
+			</div>
+		</div >
 		</>
 	);
 }
