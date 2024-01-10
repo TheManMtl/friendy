@@ -96,6 +96,7 @@ export const findAllRequests = async (
 ): Promise<any> => {
   try {
     const userId = req.id;
+
     const direction = req.query.direction || "received";
     let whereCondition;
     let attributeCondition;
@@ -145,8 +146,10 @@ export const findAllRequests = async (
       allRequests.map(async (item: any) => {
         const mutuals: number = await findMutualFriends(userId!, item.id);
         let thumbnail: string =
-          (direction === "received" ? item.RequestedBy : item.RequestedTo)
-            ?.profileImg?.image?.thumbnail || null;
+          (direction === "received"
+            ? item.dataValues.RequestedBy
+            : item.RequestedTo
+          )?.profileImg?.Image?.thumbnail || null;
         const doesExist: any = (
           direction === "received" ? item.RequestedBy : item.RequestedTo
         ).profileImg;
@@ -156,6 +159,7 @@ export const findAllRequests = async (
         } else {
           thumbnail = (await getPicUrlFromS3(req, "default.jpg")) || "";
         }
+
         return {
           id: item.id,
           name:

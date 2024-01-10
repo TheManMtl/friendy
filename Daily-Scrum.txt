@@ -896,6 +896,91 @@ Xuerun:
  Working On: 
     -set a photo as profile photo and cover photo
     -correct redirect to album list
+
+Date: Jan 10
+
+
+Alex:
+Finished:
+- finishing post display
+- upvote post
+- delete your comment
+- edit your comment (almost done)
+- x takes you back
+- debugged image retrieval
+
+Working on:
+- Fix friend request image retrieval
+- Help debug comment bug
+- Admin panel help
+- left panel - fake ads
+- general debugging
+Challenges:
+N/A
+
+Finished:
+-admin user details
+- partially hosted backend with docker and jenkins
+Working on
+- trying to host on heroku
+Challenges
+-NA
+
+Meredith:
+ Finished: 
+   - update post feeds on post crud and top-level comment crud
+   - display timeline post recipient
+   - comment view in post card
+   - like/unlike from post card
+   - 404 page routing
+   - handle update on users after delete profile pic/cover pic
+   - role-based routes, login status route security
+ Not done:
+   - pagination (back end for posts and comments)
+   - debug comment form (clear validation errors)
+   - list of users who liked
+   - debug rerendering timeline in profile page on params change
+
+ Working On: 
+  - admin page
+  - debug nested comment post update
+  - presentation
+  - other not dones + debugging
+ Challenges: 
+  - 
+
+Nick:
+Nick
+  Working on: 
+        -friend page debugging
+        -implement video call
+
+   Needs help:
+        -connection issues (socket io)
+
+Shiyu:
+Finished:
+-fixed profilePostId bug
+-finished friend subpage
+-hooked image post to image post detail page
+Working on
+-hook edit bio
+-add accept friend function in friend subpage
+-add games to the game page
+-test overall frontend
+-prepare for presentation
+Challenges
+-NA
+
+Xuerun:
+ Finished: 
+  - fix createalbum,editalbum and albumdetail redirect back bug
+  - fix view user's photo on friend's profile photo and album page
+  - implement set profile picture and cover photo on profile photo page
+  - fix the bug: can edit friend's photos and albums
+ Working On: 
+  - looking for bugs and fix bugs
+  - prepare presentation
 --------------------------------------------------
 TEMPLATE
 --------------------------------------------------

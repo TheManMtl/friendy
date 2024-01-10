@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
-import app from "./app";
+// import app from "./app";
+import server from "./app";
 dotenv.config();
 
 //const app = express();
@@ -7,6 +8,7 @@ const port = process.env.PORT || 8181;
 import db from "./db/models";
 
 //for seeding:
+
 
 // import users from './db/seeders/users';
 
@@ -34,8 +36,14 @@ import db from "./db/models";
 
 // {force: true}    {alter: true}     <-- use as needed
  //db.sequelize.sync({ alter: true });
+// db.sequelize.authenticate().then(() => {
+//   app.listen(port, () => {
+//     console.log(`server running on post ${port}`);
+//   });
+// });
+
 db.sequelize.authenticate().then(() => {
-  app.listen(port, () => {
+  server.listen(port, () => {
     console.log(`server running on post ${port}`);
   });
 });

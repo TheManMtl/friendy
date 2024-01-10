@@ -38,7 +38,7 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
   const closePost = () => {
     setShowPostModal(false);
     getNewPosts();
-  }
+  };
   //end Modal section
 
   //FIXME: handle 404 with custom page
@@ -107,7 +107,6 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
       const list = response.data as IPost[];
 
       if (list[0] && list.length > posts.length) {
-
         list.slice(0, list.length - posts.length);
 
         const updatedList = await Promise.all(
@@ -120,14 +119,6 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
               console.log(response.data);
               post.author.profileImg = response.data;
 
-              //temporary: replace pic with full size
-              // if (post.Image) {
-              //   const url = await getImgUrl(post.Image.fileName);
-              //   console.log("post img url: " + url);
-              //   if (url) {
-              //     post.thumbnailUrl = url;
-              //   }
-              // }
               return post;
             } catch (error: any) {
               const err = error as AxiosError<apiError>;
@@ -173,6 +164,8 @@ const ProfilePageHome: React.FC<ProfileHomeProps> = ({
       <div className="contentSection row mt-1 px-5 py-3 d-flex justify-content-center">
         <div className="leftContent col-md-4">
           <ProfileIntroCard
+            bioVariable={userProfile?.bio}
+            userId={userId}
             userProfile={userProfile}
             isPrivateProfile={isPrivateProfile}
           />
