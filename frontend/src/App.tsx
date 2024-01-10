@@ -12,6 +12,7 @@ import LoginPage from "./pages/common/LoginPage";
 import RegisterPage from "./pages/common/RegisterPage";
 import ProfilePage from "./pages/common/ProfilePage/ProfilePage";
 import FriendsPage from "./pages/common/FriendsPage/FriendsPage";
+import VideoChat from "./pages/common/VideoChat/VideoChat";
 import { FriendsPageProvider } from "./context/FriendsPageContext";
 import Navbar from "./components/common/Navbar/Navbar";
 import Footer from "./components/common/Navbar/Footer";
@@ -106,6 +107,7 @@ function App() {
             </Route>
 
             {/* LOGIN NOT REQUIRED */}
+            <Route path="/vchat" element={<VideoChat />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/404" element={<NotFound />} />
