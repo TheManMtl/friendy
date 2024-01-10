@@ -148,7 +148,7 @@ function VideoChat() {
 			<div>
 				{receivingCall && !callAccepted ? (
 					<div className="caller">
-						<h1>{name} is calling...</h1>
+						<h3>{name} is calling...</h3>
 						<button onClick={answerCall}>Answer</button>
 					</div>
 				) : null}
