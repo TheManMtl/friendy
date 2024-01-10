@@ -385,7 +385,7 @@ export const viewSuggestedFriendsBySchool = async (
             {
               model: Image,
               as: "Image",
-              attributes: ["id", "thumbnail"],
+              attributes: ["id", "filename", "thumbnail"],
             },
           ],
         },
@@ -393,7 +393,7 @@ export const viewSuggestedFriendsBySchool = async (
     });
 
     const processedSuggestedFriends = suggestedFriends.map(
-      async (friend: typeof User) => {
+      async (friend: typeof Friend) => {
         const thumbnail =
           (await getPicUrlFromS3(
             req,
