@@ -1,72 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 import "./Footer.css";
-import { useForm } from "react-hook-form";
-import ProfileImage from "../ProfileImage/ProfileImage";
-import LogoutButton from "../Button/LogoutButton";
-import { useContext } from "react";
-import { AuthContext } from "../../../context/AuthProvider";
-import { SearchModel } from "../../../models/SearchModel";
-import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
-import useAxiosToken from "../../../hooks/useAxiosToken";
-import axios from "../../../services/api/axios";
+
 
 function Footer() {
-    const [refreshTimestamp, setRefreshTimestamp] = useState(Date.now());
 
-    const authContext = useContext(AuthContext);
-    const userId = authContext?.user?.id;
-    console.log("====userId in Navbar is====" + userId);
-    const navigate = useNavigate();
-    const [profileThumb, setProfileThumb] = useState<string | null>("");
-    const { user, setUser } = useAuth();
-    const axiosToken = useAxiosToken();
+    const { user } = useAuth();
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<SearchModel>();
-
-    function onSubmit(input: SearchModel, event: any) {
-        event.preventDefault();
-        const urlParams = input.searchTerms.trim();
-        console.log(urlParams);
-        const params = encodeURIComponent(urlParams);
-        navigate(`/search?search=${params}`);
-    }
-
-    useEffect(() => {
-        if (user != null) {
-            axiosToken.get(`/profile/view/${user.id}`).then((response) => {
-                console.log(
-                    "=====navbar profileImageId=====" +
-                    response.data.profileInfo.profileImgId
-                );
-                console.log("====API Response====", response.data);
-
-                if (response.data.profileInfo.profileImgId != null) {
-                    const profileImageId = response.data.profileInfo.profileImgId;
-                    axios.get(`/posts/userprofile/${profileImageId}`).then((response) => {
-                        console.log("====thumbnail URl====" + response.data.thumbnailUrl);
-                        if (response.data.length !== 0 && !response.data.isDeleted) {
-                            //TODO: fetch the profil pic which has the id associated with the user
-                            setProfileThumb((prevProfileThumb) => response.data.thumbnailUrl);
-                        } else {
-                            setProfileThumb(
-                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
-                            );
-                        }
-                    });
-                } else {
-                    setProfileThumb(
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnGZWTF4dIu8uBZzgjwWRKJJ4DisphDHEwT2KhLNxBAA&s"
-                    );
-                }
-            });
-        }
-    }, [user, refreshTimestamp]);
     return (
         user ? (
             <div className="mt-5">
