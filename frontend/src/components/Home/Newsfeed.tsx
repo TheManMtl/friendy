@@ -106,6 +106,7 @@ const Newsfeed: React.FC = () => {
                             commentCount={post.commentCount}
                             comments={post.comments}
                             type={post.type}
+                            submit={null}
                         />
                     </div>
                 ))

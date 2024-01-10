@@ -32,7 +32,7 @@ const PostInput: React.FC<Props> = ({ src, alt, size, openPost, userName, isOthe
           </div>
         </div>
         <hr />
-        <div className="row py-2">
+        {/* <div className="row py-2">
           <div className="col-6">
             {" "}
             <a href="/profile">Photo/video</a>
@@ -41,7 +41,7 @@ const PostInput: React.FC<Props> = ({ src, alt, size, openPost, userName, isOthe
             {" "}
             <a href="/profile">Life event</a>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -18,10 +18,10 @@ interface PostModalProps {
   alt: string;
   size?: string;
   username?: string;
+  otherUsername?: string;
   profileId: string | null;
   postId?: number;
   postBody?: string;
-
 }
 
 const PostModal: React.FC<PostModalProps> = ({
@@ -31,9 +31,10 @@ const PostModal: React.FC<PostModalProps> = ({
   showPostModal,
   closePost,
   username,
+  otherUsername,
   profileId,
   postId,
-  postBody
+  postBody,
 }) => {
   const authContext = useContext(AuthContext);
   const [file, setFile] = useState<any>();
@@ -42,18 +43,15 @@ const PostModal: React.FC<PostModalProps> = ({
   const [files, setFiles] = useState<File[]>([]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const axiosToken = useAxiosToken();
-  const [errorMessage, setErrorMessage] = useState('');
-  //Formik properties
-  // const initialValues = {
-  //   authorId: authContext?.user?.id,
-  //   type: PostType.timeline,
-  //   content: "",
-  //   imageId: null,
-  // }
+  const [errorMessage, setErrorMessage] = useState("");
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
+      if (content === "") {
+        setErrorMessage("Content body is required");
+        return;
+      }
       if (!postId) {
         const formData = new FormData();
         formData.append("image", file);
@@ -77,11 +75,9 @@ const PostModal: React.FC<PostModalProps> = ({
       if (!err?.response) {
         setErrorMessage("Failed to connect to server.");
         console.log(errorMessage);
-
       } else if (err.response?.data?.message) {
         setErrorMessage(err.response.data.message);
         console.log(errorMessage);
-
       } else {
         console.log(err);
         setErrorMessage("Something went wrong.");
@@ -92,7 +88,7 @@ const PostModal: React.FC<PostModalProps> = ({
   const handleClose = () => {
     closePost();
     setErrorMessage("");
-  }
+  };
 
   //FIXME: trigger update to parent component
   const onSubmit = (data: Post) => {
@@ -112,9 +108,6 @@ const PostModal: React.FC<PostModalProps> = ({
       console.error("Error posting post:", error.message);
     }
   };
-  //   const validationSchema = Yup.object().shape({
-  //     content: Yup.string().max(1000).required(),
-  //   });
 
   const handleImageChange = (
     event: React.ChangeEvent<HTMLInputElement | null>
@@ -145,7 +138,14 @@ const PostModal: React.FC<PostModalProps> = ({
       {/* Post Modal */}
       <Modal centered show={showPostModal} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>{postId ? "Edit post" : "Create post"}</Modal.Title>
+          <Modal.Title>
+            {postId ? "Edit post" : "Create post"}
+            {profileId && otherUsername ? (
+              <>&nbsp;on {otherUsername}'s timeline</>
+            ) : (
+              <></>
+            )}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ width: "500px" }}>
           <div className="row mb-4">
@@ -170,22 +170,18 @@ const PostModal: React.FC<PostModalProps> = ({
               type="file"
               accept="image/*"
             ></input>
-          <div className="row mb-3 px-2">
-            <div className="col">
-            {
-              errorMessage ? (
-                <div className="mt-5 mb-3">Error: {errorMessage}</div>
-
-              ) : (
+            <div className="row mb-3 px-2">
+              <div className="col">
+                {errorMessage ? (
+                  <div className="mt-5 mb-3">{errorMessage}</div>
+                ) : null}
                 <ButtonF
                   type="submit"
                   variant="color"
                   label={postId ? "Save changes " : "Post"}
                 ></ButtonF>
-              )
-            }
+              </div>
             </div>
-          </div>
           </form>
           <div className="row"></div>
         </Modal.Body>
