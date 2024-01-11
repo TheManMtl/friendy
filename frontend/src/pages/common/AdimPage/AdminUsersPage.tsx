@@ -33,9 +33,9 @@ function getColorByRole(role: string): string {
 function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [selectedRole, setSelectedRole] = useState<string>('All');
-
   const [selectedStatus, setSelectedStatus] = useState<string>('All');
+
+  const [searchQuery, setSearchQuery] = useState<string>('');
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -68,6 +68,16 @@ function AdminUsersPage() {
   const handleStatusChange = (status: string) => {
     setSelectedStatus(status);
   };
+
+  useEffect(() => {
+    // Update filtered users based on search query
+    const lowercasedQuery = searchQuery.toLowerCase();
+    setFilteredUsers(users.filter(user =>
+      user.name.toLowerCase().includes(lowercasedQuery) ||
+      user.email.toLowerCase().includes(lowercasedQuery) ||
+      (user.location && user.location.toLowerCase().includes(lowercasedQuery))
+    ));
+  }, [searchQuery, users]);
   //users for the current page
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
@@ -92,7 +102,18 @@ function AdminUsersPage() {
 
       <div className="container mt-3 ">
         <h2 className='mb-5'>Users List</h2>
-
+        <div className="row">
+          <div className="col-md-8 mb-3">
+            <div className="search-bar">
+              <input
+                type="text"
+                placeholder="Search by name, email, or location"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
         <div className="row">
           <div className="col-md-2">
             <div>
