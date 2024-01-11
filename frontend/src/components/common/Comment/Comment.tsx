@@ -16,6 +16,7 @@ import en from "javascript-time-ago/locale/en";
 import CommentContainer from "./CommentContainer";
 import { axiosToken } from "../../../services/api/axios";
 import useAuth from "../../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 type CommentProps = {
   isNested: boolean;
   comment: Comments;
@@ -35,6 +36,8 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment, submit }) => {
   const [toDelete, setToDelete] = useState<boolean>(false);
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const { user, setUser } = useAuth();
+  const navigate = useNavigate();
+
   TimeAgo.addDefaultLocale(en);
   const timeAgo = new TimeAgo("en-US");
 
@@ -153,7 +156,10 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment, submit }) => {
             className={`d-flex flex-lg-row flex-column my-3 pe-2 nested-${isNested} `}
           >
             {theComment.profileImg && !editComment && (
-              <div className="">
+              <div
+                className=""
+                onClick={() => navigate(`/profile/${theComment.userId}`)}
+              >
                 <ProfileImage
                   src={theComment.profileImg!}
                   alt={"alt"}
@@ -165,7 +171,10 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment, submit }) => {
             <div className=" flex-grow-1">
               {!editComment && (
                 <div className="row text-start bg-comment ms-1">
-                  <div className="col-12  fw-bolder">
+                  <div
+                    className="col-12  fw-bolder"
+                    onClick={() => navigate(`/profile/${theComment.userId}`)}
+                  >
                     {theComment.name && !editComment && theComment.name}
                   </div>
                   <div className="col-12 ">

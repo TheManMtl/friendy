@@ -10,9 +10,16 @@ interface Props {
   userName?: string;
   isOtherUserProfile: boolean;
 }
-const PostInput: React.FC<Props> = ({ src, alt, size, openPost, userName, isOtherUserProfile }) => {
+const PostInput: React.FC<Props> = ({
+  src,
+  alt,
+  size,
+  openPost,
+  userName,
+  isOtherUserProfile,
+}) => {
   return (
-    <div className="card">
+    <div className="card ">
       <div className="card-body">
         <div className="inputBtn row py-2">
           <div className="col-1">
@@ -21,13 +28,11 @@ const PostInput: React.FC<Props> = ({ src, alt, size, openPost, userName, isOthe
           <div className="col-11">
             {/* TODO: use modal to open post window */}
             <button className="col-11 btn-input mt-1" onClick={openPost}>
-              {
-                isOtherUserProfile === true && userName != null ? (
-                  <>Write something to {userName}...</>
-                ) : (
-                  <>What's on your mind?</>
-                )
-              }
+              {isOtherUserProfile === true && userName != null ? (
+                <>Write something to {userName}...</>
+              ) : (
+                <>What's on your mind?</>
+              )}
             </button>
           </div>
         </div>

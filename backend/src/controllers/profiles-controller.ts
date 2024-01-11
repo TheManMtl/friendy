@@ -97,14 +97,13 @@ export const viewProfile = async (
       if (friend) isFriend = true;
     }
 
-    const profile = await User.findOne(
-      {
+    const profile = await User.findOne({
       where: {
         id: profileId,
         isDeleted: false,
       },
-    // },
-    // {
+      // },
+      // {
       attributes: [
         "name",
         "email",
@@ -378,6 +377,8 @@ export const findPeople = async (
           { workplace: { [Op.or]: searchFor } },
         ],
         isDeleted: false,
+
+        id: { [Op.not]: req.id },
       },
       attributes: [
         "id",
@@ -611,13 +612,11 @@ export const getProfilePicThumbnail = async (
   res: Response
 ): Promise<any> => {
   try {
-    const user = await User.findByPk(req.params.id,
-      {
-        where: 
-        {
-          isDeleted: false,
-        },
-      });
+    const user = await User.findByPk(req.params.id, {
+      where: {
+        isDeleted: false,
+      },
+    });
     if (!user) {
       return res.status(404).send({ message: "User not found" });
     }

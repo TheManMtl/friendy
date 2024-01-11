@@ -1,0 +1,58 @@
+/* .container {
+	display: grid;
+	grid-template-columns: 7fr 3fr;
+} */
+
+.myId {
+	border-radius: 5px;
+	margin-left: 2.2rem;
+	padding: 2rem;
+	display: grid;
+	justify-content: left;
+	align-content: center;
+}
+
+.call-button {
+	text-align: center;
+	margin-top: 2rem;
+}
+
+.video-container {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	/* justify-content: center;
+	align-content: center; */
+	margin-top: 2rem;
+	margin-left: 2rem;
+	border-radius: 10px;
+}
+
+.caller {
+	text-align: center;
+	color: #232323;
+}
+
+.vchat-button {
+	border-radius: 4px;
+	border: solid 1px rgb(201, 186, 199);
+	background-color: rgb(255, 189, 255);
+}
+
+.vchat-button:hover {
+	background-color: purple;
+}
+
+.video-wrapper {
+	width: 450px;
+	height:340px;
+	display: flex;
+	padding:none;
+	border: 5px solid rgb(9, 9, 11);
+	overflow:hidden;
+	border-radius:13px;
+  }
+  
+  .video {
+	width:100%;
+	flex: 1;
+  }

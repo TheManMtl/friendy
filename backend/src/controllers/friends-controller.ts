@@ -96,7 +96,6 @@ export const findAllRequests = async (
 ): Promise<any> => {
   try {
     const userId = req.id;
-
     const direction = req.query.direction || "received";
     let whereCondition;
     let attributeCondition;
@@ -144,7 +143,9 @@ export const findAllRequests = async (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const requests: requestProfile[] = await Promise.all(
       allRequests.map(async (item: any) => {
-        const mutuals: number = await findMutualFriends(userId!, item.id);
+        const theOtherId =
+          direction === "received" ? item.RequestedBy.id : item.RequestedTo.id;
+        const mutuals: number = await findMutualFriends(userId!, theOtherId);
         let thumbnail: string =
           (direction === "received"
             ? item.dataValues.RequestedBy
@@ -166,10 +167,7 @@ export const findAllRequests = async (
             direction === "received"
               ? item.RequestedBy.name
               : item.RequestedTo.name,
-          userId:
-            direction === "received"
-              ? item.RequestedBy.id
-              : item.RequestedTo.id,
+          userId: theOtherId,
           requestedAt: item.requestedAt,
           thumbnail: thumbnail || null,
           profilePostId:
@@ -541,14 +539,9 @@ export const findMutualFriends = async (
           return user.requestedToId;
         } else {
           return user.requestedById;
-          return null;
         }
       }
     );
-
-    for (const friend of user1friendIds) {
-      console.log(friend);
-    }
 
     const mutuals = await Friend.findAll({
       where: {
@@ -574,6 +567,11 @@ export const findMutualFriends = async (
       },
     });
     console.log("MUTUAAAAAAALZ" + mutuals.length);
+    for (const friend of mutuals) {
+      console.log("\n\n\n FRIEND:");
+      console.log(friend);
+      console.log("\n\n\n ");
+    }
     return mutuals.length;
   } catch (error) {
     console.error("Error finding mutual friends:", error);

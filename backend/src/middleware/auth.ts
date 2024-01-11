@@ -86,7 +86,7 @@ export const logout = async (req: CustomRequest, res: Response) => {
 
     deadTokens.push(token);
     deadRefreshTokens.push(refreshToken);
-    console.log("deadtokens " + deadTokens[0]);
+    console.log("deadtokens " + (deadTokens.length > 0 ? deadTokens[0] : 'empty'));
     //clear cookies
     res.clearCookie("refreshToken", { httpOnly: true, sameSite: "strict" });
     return res.status(200).json({ message: "Successfully logged out" });

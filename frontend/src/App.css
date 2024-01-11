@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+body {
+  font-family: 'Roboto', sans-serif!important;
+}
+.sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000; 
+}
+
+.scroll {
+  height: 100vh; 
+  overflow-y: auto;  
+  overflow-x: hidden;
+}
