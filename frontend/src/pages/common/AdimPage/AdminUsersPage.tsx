@@ -3,7 +3,7 @@ import axios from 'axios'; // Import axios
 import useAxiosToken from '../../../hooks/useAxiosToken';
 import AdminNavbarTop from './AdminComponents/AdminNavbarTop';
 import "./AdminStyle.css";
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 interface User {
   id: number;
@@ -32,7 +32,10 @@ function getColorByRole(role: string): string {
 
 function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [selectedRole, setSelectedRole] = useState<string>('All');
 
+  const [selectedStatus, setSelectedStatus] = useState<string>('All');
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -43,13 +46,28 @@ function AdminUsersPage() {
 
   const axiosToken = useAxiosToken();
   useEffect(() => {
-    // Fetch users 
+    // Fetch users
     axiosToken.get("users/admin")
-      .then(response => setUsers(response.data))
+      .then(response => {
+        setUsers(response.data);
+        setFilteredUsers(response.data);  // Set initial filtered users
+      })
       .catch(error => console.error('Error fetching users:', error));
   }, []);
 
+  useEffect(() => {
+    // Update filtered users when selectedStatus changes
+    if (selectedStatus === 'All') {
+      setFilteredUsers(users);
+    } else {
+      const isDeletedStatus = selectedStatus === 'Deleted';
+      setFilteredUsers(users.filter(user => user.isDeleted === isDeletedStatus));
+    }
+  }, [selectedStatus, users]);
 
+  const handleStatusChange = (status: string) => {
+    setSelectedStatus(status);
+  };
   //users for the current page
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
@@ -72,23 +90,32 @@ function AdminUsersPage() {
       </div>
       <AdminNavbarTop />
 
-      <div className="container mt-3">
-        <h2>Users List Updated</h2>
+      <div className="container mt-3 ">
+        <h2 className='mb-5'>Users List</h2>
+
         <div className="row">
           <div className="col-md-2">
-            <div className="color-box" style={{ backgroundColor: getColorByRole('admin') }}></div>
-            <p className="text-center">Admin</p>
+            <div>
+              <button className='btn btn-secondary mb-3' onClick={() => handleStatusChange('All')}>All Users</button>
+            </div>
           </div>
           <div className="col-md-2">
-            <div className="color-box" style={{ backgroundColor: getColorByRole('User') }}></div>
-            <p className="text-center">User</p>
+            <div>
+              <button className='btn btn-info' onClick={() => handleStatusChange('Active')}>Active Users</button>
+            </div>
+          </div>
+          <div className="col-md-2">
+            <div>
+              <button className='btn btn-primary' onClick={() => handleStatusChange('Deleted')}>Deleted Users</button>
+            </div>
           </div>
         </div>
+
+
         <table className="table">
           <thead>
             <tr>
               <th>ID</th>
-              <th>Image</th>
               <th>Name</th>
               <th>Email</th>
               <th>Location</th>
@@ -99,12 +126,9 @@ function AdminUsersPage() {
             </tr>
           </thead>
           <tbody>
-            {currentUsers.map(user => (
+            {filteredUsers.slice(indexOfFirstUser, indexOfLastUser).map(user => (
               <tr key={user.id} className={getColorByRole(user.role)}>
                 <td >{user.id}</td>
-                <td>
-                  {user.profileImgThumbnail ? <img src={user.profileImgThumbnail} alt={user.name} style={{ width: '50px', height: '50px' }} /> : 'No image'}
-                </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.location}</td>
@@ -113,7 +137,7 @@ function AdminUsersPage() {
                   {user.role}
                 </td>
                 <td>
-                {user.isDeleted ? 'Deleted' : 'Active'}
+                  {user.isDeleted ? 'Deleted' : 'Active'}
                 </td>
                 <td>
                   <button className='btn btn-warning' onClick={() => viewUser(user.id)}>View</button>
