@@ -89,13 +89,15 @@ function Navbar() {
       <nav className="navbar navbar-expand-lg nav-custom py-3 ">
         <div className="container-fluid">
           <div className="left col-4">
-            <img
-              src={window.location.origin + "/FriendyLogo.png"}
-              alt="logo"
-              className="logo"
-            ></img>
             <a className="navbar-brand" href="/">
-              Friendy
+              <img
+                src={window.location.origin + "/FriendyLogo.png"}
+                alt="logo"
+                className="logo"
+              ></img>
+            </a>
+            <a className="navbar-brand mt-2" href="/">
+              FRIENDY
             </a>
             <form
               className="d-flex searchInput"
