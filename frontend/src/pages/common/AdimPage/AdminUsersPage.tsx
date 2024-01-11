@@ -114,7 +114,7 @@ function AdminUsersPage() {
             </div>
           </div>
         </div>
-        <div className="row">
+        {/* <div className="row">
           <div className="col-md-2">
             <div>
               <button className='btn btn-secondary mb-3' onClick={() => handleStatusChange('All')}>All Users</button>
@@ -130,7 +130,7 @@ function AdminUsersPage() {
               <button className='btn btn-primary' onClick={() => handleStatusChange('Deleted')}>Deleted Users</button>
             </div>
           </div>
-        </div>
+        </div> */}
 
 
         <table className="table">
