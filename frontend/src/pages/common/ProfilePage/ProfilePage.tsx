@@ -176,11 +176,11 @@ const ProfilePage: React.FC<ProfilPageType> = () => {
         profileThumb={profileThumb}
       />
       <div>{renderMainPanelContent()}</div>
-      {isPrivateProfile ? (
+      {/* {isPrivateProfile ? (
         <div>This is private</div>
       ) : (
         <div>This is public</div>
-      )}
+      )} */}
     </div>
   );
 };
