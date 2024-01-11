@@ -135,10 +135,10 @@ const EditAlbum = () => {
                     <div className="">
                         Container Right
                         <div className="row">
-                            {posts.map((post) => (
+                            {/* {posts.map((post) => (
                                 <div key={`post-${post.id}`} className="col-lg-4 col-md-12 mb-4 mb-lg-0 position-relative">
                                     <div className="row">
-
+                                        
                                         <PostImage
                                             postId={post.id}
                                             thumbnailUrl={post.thumbnailUrl}
@@ -153,7 +153,27 @@ const EditAlbum = () => {
                                         ))}
                                     </div>
                                 </div>
-                            ))}
+                            ))} */}
+                            <div className="row">
+                    
+                    {posts.map((post) => (
+                        <div key={`post-${post.id}`} className="col-lg-4 col-md-12 mb-4 mb-lg-0 position-relative">
+                            <PostImage
+                                postId={post.id}
+                                thumbnailUrl={post.thumbnailUrl}
+                                alt={"thumbnail"}
+                                showAlert={showAlert}
+                                onPostDeleted={refreshPosts}
+                            />
+                        </div>
+                    ))}
+                   
+                    {imagePreviews.map((imageSrc, index) => (
+                        <div key={`preview-${index}`} className="col-12 col-md-6 col-lg-4 mb-3">
+                            <img src={imageSrc} alt={`preview-${index}`} className="img-fluid" />
+                        </div>
+                    ))}
+                    </div>
                         </div>
                     </div>
                 </div>
