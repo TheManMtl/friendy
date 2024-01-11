@@ -8,6 +8,8 @@ import { Post, PostType } from "../../../types/common";
 import { AuthContext } from "../../../context/AuthProvider";
 import useAxiosToken from "../../../hooks/useAxiosToken";
 import { useParams } from "react-router-dom";
+import { AxiosError } from "axios";
+import { apiError } from "../../../types/common";
 
 interface ChangeProfiletModalProps {
   showChangeProfileModal: boolean;
@@ -23,6 +25,8 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
   const [file, setFile] = useState<File | undefined>(undefined);
   const [profilePost, setProfilePost] = useState<Post | undefined>(undefined);
   const [userId, setUserId] = useState<number | undefined>(undefined);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const handleImageChange = (event: any) => {
     event.preventDefault();
@@ -57,20 +61,35 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
                     profilePostId: response.data.post.id,
                   })
                   .then((response) => {
-                    console.log(
-                      "====changed profilePostId===" +
-                        response.data.profilePostId
-                    );
+                    setSuccess(true);
                   })
                   .catch((error) => {
-                    console.log(error);
+                    const err = error as AxiosError<apiError>;
+                    if (!err?.response) {
+                      setErrorMessage("Failed to connect to server.");
+                    } else if (err.response?.data?.message) {
+                      setErrorMessage(err.response.data.message);
+                    } else {
+                      console.log(err);
+                      setErrorMessage("Failed to upload.");
+                    }
                   });
+
+
                 // TODO:use flash message
-                alert("Picture successfully uploaded!");
-                window.location.reload();
+                // alert("Picture successfully uploaded!");
+                // window.location.reload();
               })
               .catch((error) => {
-                console.log(error);
+                const err = error as AxiosError<apiError>;
+                if (!err?.response) {
+                  setErrorMessage("Failed to connect to server.");
+                } else if (err.response?.data?.message) {
+                  setErrorMessage(err.response.data.message);
+                } else {
+                  console.log(err);
+                  setErrorMessage("Failed to upload.");
+                }
               });
             setFile(undefined);
           })
@@ -116,37 +135,54 @@ const ChangeProfileModal: React.FC<ChangeProfiletModalProps> = ({
       setUserId(authContext?.user?.id);
     }
   }, []);
+
+  const handleClose = () => {
+    closeChangeProfileModal();
+    setErrorMessage("");
+    window.location.reload();
+  };
   return (
     <div>
       {" "}
       <Modal
         centered
         show={showChangeProfileModal}
-        onHide={closeChangeProfileModal}
+        onHide={handleClose}
         size="lg"
       >
         <Modal.Header closeButton>
           <Modal.Title>Change profile image</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </Form.Group>
-            <ButtonF
-              variant="color"
-              label="Up load"
-              onClick={uploadFile}
-            ></ButtonF>
-          </Form>
+          {
+            success ? (
+              <div>
+                Successfully uploaded.
+              </div>
+            ) : (
+              <Form>
+                <Form.Group>
+                  <Form.Control
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </Form.Group>
+                {errorMessage ? (
+                  <div className="mt-5 mb-3">{errorMessage}</div>
+                ) : (
+                  <ButtonF
+                    variant="color"
+                    label="Upload"
+                    onClick={uploadFile}
+                  ></ButtonF>
+                )}
 
-          <Button variant="secondary" onClick={closeChangeProfileModal}>
+              </Form>
+            )}
+          {/* <Button variant="secondary" onClick={closeChangeProfileModal}>
             Close
-          </Button>
+          </Button> */}
         </Modal.Body>
         <Modal.Footer></Modal.Footer>
       </Modal>
