@@ -118,7 +118,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment, submit }) => {
       setFirstRender(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [comment.id, commentChanged]);
+  }, [comment.id, commentChanged, isDeleted]);
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -199,7 +199,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment, submit }) => {
                 </div>
               )}
               <div className="row text-start  ms-1">
-                {!editComment && !toDelete && (
+                {theComment.isDeleted === false && !editComment && !toDelete && (
                   <div className="col-12">
                     <span
                       className={`comment-interaction me-1 user-liked-${userLiked}`}
@@ -226,7 +226,7 @@ const Comment: React.FC<CommentProps> = ({ isNested, comment, submit }) => {
                   </div>
                 )}
 
-                {theComment.userId === user?.id && (
+                {theComment.isDeleted === false && theComment.userId === user?.id && (
                   <div className="col-12">
                     {!toDelete ? (
                       <>

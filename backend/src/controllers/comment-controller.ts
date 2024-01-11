@@ -2,6 +2,7 @@ import { Response } from "express";
 import { CustomRequest } from "../middleware/auth";
 import models from "../db/models";
 import { getPicUrlFromS3 } from "./images-controller";
+import { Op } from "sequelize";
 
 const sequelize = models.sequelize;
 const User = models.User;
@@ -130,15 +131,24 @@ export const commentOnComment = async (
     const t = await sequelize.transaction();
 
     try {
-      await Comment.increment(
-        "childCount",
-        {
-          where: {
-            id: parent.id,
+
+      let nextParent = parent;
+
+      while (nextParent != null) {
+
+        await Comment.increment(
+          "childCount",
+          {
+            where: {
+              id: nextParent.id,
+            },
           },
-        },
-        { transaction: t }
-      );
+          { transaction: t }
+        );
+
+        nextParent = await Comment.findByPk(nextParent.parentId);
+      }
+      
 
       await Post.increment(
         //is this right? comment children included in original post comment count?
@@ -181,11 +191,7 @@ export const getCommentChildren = async (
 ): Promise<any> => {
   try {
     //get parent comment
-    const parent = await Comment.findByPk(req.params.id, {
-      where: {
-        isDeleted: false,
-      },
-    });
+    const parent = await Comment.findByPk(req.params.id);
 
     if (!parent) {
       return res.status(404).send({ message: "Parent comment not found" });
@@ -194,7 +200,6 @@ export const getCommentChildren = async (
     const children = await Comment.findAll({
       where: {
         parentId: parent.id,
-        isDeleted: false,
       },
       include: [
         {
@@ -221,7 +226,7 @@ export const getCommentChildren = async (
       children.map(async (child: any) => {
         let thumbnail: string | null = "";
 
-        if (child.User.profileImg === null) {
+        if (child.User.profileImg === null || child.isDeleted) {
           console.log("profile is null");
           thumbnail = "default.jpg";
         } else {
@@ -232,9 +237,9 @@ export const getCommentChildren = async (
         console.log(child.User.name + " NAME");
         console.log(child.User.profileImg + " IMG");
         const comment: CommentResponse = {
-          name: child.User.name,
+          name: child.isDeleted ? "User" : child.User.name,
           profileImg: thumbnail,
-          body: child.body,
+          body: child.isDeleted ? "Comment has been deleted" : child.body,
           childCount: child.childCount,
           createdAt: child.createdAt,
           deleteAt: child.deleteAt || null,
@@ -276,7 +281,16 @@ export const getPostComments = async (
       where: {
         postId: post.id,
         parentId: null,
-        isDeleted: false,
+        // [Op.or]: [
+        //   {
+        //     isDeleted: false,
+        //   },
+        //   {
+        //     childCount: {
+        //       [Op.gt]: 0
+        //     }
+        //   }
+        // ]
       },
       include: [
         {
@@ -303,7 +317,7 @@ export const getPostComments = async (
       comments.map(async (comment: any) => {
         let thumbnail: string | null = "";
 
-        if (comment.User.profileImg === null) {
+        if (comment.User.profileImg === null || comment.isDeleted) {
           console.log("profile is null");
           thumbnail = "default.jpg";
         } else {
@@ -312,9 +326,9 @@ export const getPostComments = async (
 
         thumbnail = await getPicUrlFromS3(req, thumbnail!);
         const returnComment: CommentResponse = {
-          name: comment.User.name,
+          name: comment.isDeleted ? "User" : comment.User.name,
           profileImg: thumbnail,
-          body: comment.body,
+          body: comment.isDeleted ? "Comment has been deleted" : comment.body,
           childCount: comment.childCount,
           createdAt: comment.createdAt,
           deleteAt: comment.deleteAt || null,
@@ -443,15 +457,22 @@ export const deleteCommentOnComment = async (
     const t = await sequelize.transaction();
 
     try {
-      await Comment.decrement(
-        "childCount",
-        {
-          where: {
-            id: parent.id,
+      let nextParent = parent;
+
+      while (nextParent != null) {
+
+        await Comment.decrement(
+          "childCount",
+          {
+            where: {
+              id: nextParent.id,
+            },
           },
-        },
-        { transaction: t }
-      );
+          { transaction: t }
+        );
+
+        nextParent = await Comment.findByPk(nextParent.parentId);
+      }
 
       await Post.decrement(
         "commentCount",
@@ -547,7 +568,7 @@ export const getSingleComment = async (
 
   try {
     const comment = await Comment.findByPk(req.params.id, {
-      where: { isDeleted: false },
+      //where: { isDeleted: false },
       include: [
         {
           model: User,
